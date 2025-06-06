@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3 uid="uid://c2bodmfhqakyo"]
+
+[ext_resource type="PackedScene" uid="uid://delgodvwvhndo" path="res://resources/boat.fbx" id="1_a202f"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_annr2"]
+radius = 0.1
+height = 0.7
+
+[node name="Boat" type="RigidBody3D"]
+
+[node name="Mesh" parent="." instance=ExtResource("1_a202f")]
+transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.01, 0, 0.0806036, -0.0634699)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.100666, 0)
+shape = SubResource("CapsuleShape3D_annr2")
+
+[node name="ProbeContainer" type="Node3D" parent="."]
+
+[node name="Probe1" type="Marker3D" parent="ProbeContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.000729993, -0.206719)
+
+[node name="Probe2" type="Marker3D" parent="ProbeContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00529994, 0.263418)

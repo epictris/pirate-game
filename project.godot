@@ -11,6 +11,10 @@ config_version=5
 [application]
 
 config/name="New Game Project"
-run/main_scene="res://node_3d.tscn"
+run/main_scene="uid://c4hnqdkt2sjgv"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
+
+[physics]
+
+3d/default_gravity=1.0

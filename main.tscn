@@ -1,0 +1,32 @@
+[gd_scene load_steps=7 format=3 uid="uid://c4hnqdkt2sjgv"]
+
+[ext_resource type="PackedScene" uid="uid://bjugq1l2b1ng8" path="res://scenes/WaterPlane.tscn" id="1_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://c2bodmfhqakyo" path="res://scenes/Boat.tscn" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://cr8lhvcnldsof" path="res://scenes/boat.gd" id="3_h2yge"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0xm2m"]
+
+[sub_resource type="Sky" id="Sky_h2yge"]
+sky_material = SubResource("ProceduralSkyMaterial_0xm2m")
+
+[sub_resource type="Environment" id="Environment_1bvp3"]
+background_mode = 2
+sky = SubResource("Sky_h2yge")
+
+[node name="Main" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1bvp3")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.819546, -0.274133, 0.503185, -0.157434, 0.736623, 0.657724, -0.550962, -0.618254, 0.560539, 0, 0, 0)
+
+[node name="Boat" parent="." instance=ExtResource("1_ig7tw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.337986, 0)
+script = ExtResource("3_h2yge")
+
+[node name="WaterPlane" parent="." instance=ExtResource("1_1bvp3")]
+transform = Transform3D(10, 0, 0, 0, 1, 0, 0, 0, 10, 0, 0, 0)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -1.02873, 0.390346, 0.0015893)
