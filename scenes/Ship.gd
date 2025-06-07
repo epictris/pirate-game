@@ -1,9 +1,9 @@
 extends RigidBody3D
 class_name Ship
 
-@export var float_force := 1
-@export var water_drag := 0
-@export var water_angular_drag := 0.2
+@export var float_force := 10
+@export var water_drag := 0.01
+@export var water_angular_drag := 0.8
 
 @onready var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 @onready var water = get_node('/root/Main/WaterPlane')
@@ -11,13 +11,12 @@ class_name Ship
 @onready var probes = $ProbeContainer.get_children()
 
 var submerged := false
-	
-
 
 @export var sail_node: Node3D
-@export var wind_direction: Vector3 = Vector3(-1, 0, 0).normalized()
-@export var wind_strength: float = 0.1
-@export var rope_slack: float = 1
+@export var wind_direction: Vector3 = Vector3(1, 0, 0).normalized()
+@export var wind_strength: float = 1
+@export var rope_slack: float = 0.5
+@export var change_slack_rate = 2
 @export var max_velocity: float = 5
 
 @export var water_drag_coefficient: float = 0.8
@@ -30,24 +29,71 @@ var target_sail_angle: float = 0.0
 var sail_side: int = 1
 var is_running: bool = false
 
+func _process(delta):
+	if Input.is_action_pressed("increase_slack") || Input.is_action_just_pressed("increase_slack"):
+		rope_slack = min(1, rope_slack + change_slack_rate * delta)
+	if Input.is_action_pressed("reduce_slack") || Input.is_action_just_pressed("reduce_slack"):
+		rope_slack = max(0, rope_slack - change_slack_rate * delta)
+
 func _physics_process(delta: float) -> void:
-	
-	
 	update_sail_direction(delta)
-	DebugDraw3D.draw_arrow(global_position + Vector3(0, 0.3, 0), global_position + wind_direction + Vector3(0, 0.3, 0), Color.RED, 0.01)
+	# DebugDraw3D.draw_arrow(global_position + Vector3(0, 0.3, 0), global_position + wind_direction + Vector3(0, 0.3, 0), Color.RED, 0.01)
 	apply_wind_force()
+	apply_lateral_resistance()
 	
 	submerged = false
-	for p in probes:
-		var depth = water.get_height(p.global_position) - p.global_position.y 
-		if depth > 0:
-			submerged = true
-			apply_force(Vector3.UP * float_force * gravity, p.global_position - global_position)
 	
+	var max_buoyancy_depth = 1.0
+	
+	for p in probes:
+		var depth = water.get_height(p.global_position) - p.global_position.y
+		if depth > 0:
+			depth = min(depth, max_buoyancy_depth)
+			submerged = true
+			var buoyant_force = Vector3.UP * depth * float_force
+			apply_force(buoyant_force, p.global_position - global_position)
+	
+	var vertical_damping = 5
+	
+	print(linear_velocity.y)
+	
+	if submerged && linear_velocity.y > 0.3:
+		apply_central_force(Vector3.DOWN * linear_velocity.y * vertical_damping)
+	
+func apply_lateral_resistance():
+	var right_vector = transform.basis.x
+	var forward_vector = transform.basis.z
+	var lateral_velocity = linear_velocity.dot(right_vector)
+	var forward_velocity = linear_velocity.dot(forward_vector)
+	
+	var lateral_resistance = -lateral_velocity * right_vector * 5.0
+	apply_central_force(lateral_resistance)
+
 func _integrate_forces(state: PhysicsDirectBodyState3D):
 	if submerged:
-		# state.linear_velocity *=  1 - water_drag
+		state.linear_velocity *=  1 - water_drag
 		state.angular_velocity *= 1 - water_angular_drag
+		
+	# Then override the roll rotation
+	var transform = state.transform
+	var basis = transform.basis
+	
+	# Get current rotation but zero out the roll
+	var euler = basis.get_euler()
+	euler.z = 0  # Zero out roll (Z-axis)
+	
+	# Reconstruct the basis without roll
+	var new_basis = Basis()
+	new_basis = new_basis.rotated(Vector3.UP, euler.y)      # Yaw
+	new_basis = new_basis.rotated(new_basis.x, euler.x)     # Pitch
+
+	transform.basis = new_basis
+	state.transform = transform
+	
+	# Also zero out roll angular velocity
+	var local_angular_vel = basis.inverse() * state.angular_velocity
+	local_angular_vel.z = 0  # Remove roll angular velocity
+	state.angular_velocity = basis * local_angular_vel
 
 
 func update_sail_direction(delta: float):
@@ -63,7 +109,7 @@ func update_sail_direction(delta: float):
 		update_sail_side(wind_angle)
 		target_sail_angle = calculate_sail_angle(wind_angle)
 	
-	sail_angle = lerp_angle(sail_angle, target_sail_angle, 2.0 * delta)
+	sail_angle = lerp_angle(sail_angle, target_sail_angle, 5.0 * delta)
 	
 	if sail_node: 
 		sail_node.rotation.y = sail_angle
@@ -81,7 +127,7 @@ func handle_running_sail(wind_angle: float):
 			sail_side = -1  # Port
 		# Otherwise keep current side
 	# Set sail perpendicular to the wind direction, on the chosen side
-	var max_running_angle = lerp(0.0, PI/3, rope_slack)
+	var max_running_angle = lerp(PI/20, PI/2, rope_slack)
 	target_sail_angle = sail_side * max_running_angle
 
 func update_sail_side(wind_angle: float):
@@ -98,10 +144,10 @@ func calculate_sail_angle(wind_angle: float) -> float:
 	var optimal_angle = wind_angle * 0.5  # Sails work best at ~45° to wind
 	
 	# Apply slack constraints
-	var max_angle = lerp(0.0, PI/3, rope_slack)  # More slack = wider angle range
+	var max_angle = lerp(PI/20, PI/2, rope_slack)  # More slack = wider angle range
 	
 	# Clamp the angle based on rope slack
-	return clamp(optimal_angle, -max_angle, max_angle)
+	return clamp(wind_angle, -max_angle, max_angle)
 
 
 func apply_wind_force():
@@ -114,8 +160,8 @@ func apply_wind_force():
 	var sail_forward = sail_node.global_transform.basis.z  # Direction sail is facing  
 	var sail_right = -sail_node.global_transform.basis.x     # Right side of sail
 	
-	DebugDraw3D.draw_arrow(global_position + Vector3(0, 0.3, 0), global_position + sail_forward * 30 + Vector3(0, 0.3, 0), Color.BLUE, 0.01)
-	DebugDraw3D.draw_arrow(global_position + Vector3(0, 0.3, 0), global_position + sail_right * 30 + Vector3(0, 0.3, 0), Color.GREEN, 0.01)
+	# DebugDraw3D.draw_arrow(global_position + Vector3(0, 0.3, 0), global_position + sail_forward * 30 + Vector3(0, 0.3, 0), Color.BLUE, 0.01)
+	# DebugDraw3D.draw_arrow(global_position + Vector3(0, 0.3, 0), global_position + sail_right * 30 + Vector3(0, 0.3, 0), Color.GREEN, 0.01)
 	
 
 #	if is_in_no_go_zone:
@@ -134,10 +180,10 @@ func apply_wind_force():
 		# Calculate force direction - wind pushes sail in the direction it's facing
 		var primary_force = sail_forward * wind_strength_on_sail * base_force
 
-		var ship_force = primary_force.length() * global_transform.basis.z
+		var ship_force = primary_force.length() * global_transform.basis.z * Vector3(1, 0, 1)
 		# Apply the forces
 		apply_central_force(ship_force)
-		DebugDraw3D.draw_arrow(global_position + Vector3(0, 0.3, 0), global_position + (ship_force) * 2 + Vector3(0, 0.3, 0), Color.YELLOW, 0.01)
+		# DebugDraw3D.draw_arrow(global_position + Vector3(0, 0.3, 0), global_position + (ship_force) * 2 + Vector3(0, 0.3, 0), Color.YELLOW, 0.01)
 
 
 		# Torque from sail position

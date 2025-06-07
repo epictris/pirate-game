@@ -31,13 +31,12 @@ transform = Transform3D(100, 0, 0, 0, 1, 0, 0, 0, 100, 0, 0, 0)
 script = ExtResource("2_lquwl")
 
 [node name="Camera3D" type="Camera3D" parent="PlayerController"]
-transform = Transform3D(-2.9222e-08, 0.743693, -0.668521, 3.25079e-08, 0.668521, 0.743693, 1, 0, -4.37114e-08, -1.32539, 1.55634, 0.0015893)
+transform = Transform3D(-2.9222e-08, 0.743693, -0.668521, 3.25079e-08, 0.668521, 0.743693, 1, -1.59872e-14, -4.37114e-08, -5.60374, 6.74514, 0.0015893)
 script = ExtResource("4_1bvp3")
 
 [node name="Boat" parent="PlayerController" instance=ExtResource("4_5vw27")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.284166, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.29964, 0)
 gravity_scale = 1.0
-wind_strength = 0.5
 
 [node name="UI" type="CanvasLayer" parent="."]
 script = ExtResource("6_7mycd")

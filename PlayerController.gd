@@ -2,6 +2,7 @@ extends Node3D
 
 signal wheel_angle_changed(new_angle)
 signal boat_rotation_changed(new_angle)
+signal rope_slack_changed(new_slack)
 
 @onready var boat: RigidBody3D = get_node('/root/Main/PlayerController/Boat')
 
@@ -23,9 +24,14 @@ func _process(delta):
 		wheel_angle -= turn_rate * delta
 		angle_changed = true
 		
-	if Input.is_action_pressed("turn_left") || Input.is_action_just_pressed("turn_left"):
+	elif Input.is_action_pressed("turn_left") || Input.is_action_just_pressed("turn_left"):
 		wheel_angle += turn_rate  * delta
 		angle_changed = true
+		
+	else:
+		angle_changed = true
+		wheel_angle = lerp(wheel_angle, 0.0, turn_rate)
+	
 	
 	if wheel_angle > 0:
 		wheel_angle = min(max_wheel_angle, wheel_angle)

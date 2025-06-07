@@ -21,19 +21,20 @@ script = ExtResource("1_qq457")
 sail_node = NodePath("boat/Sail")
 
 [node name="boat" parent="." instance=ExtResource("1_gjfe0")]
-transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, -0.121929, 0)
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, -0.121929, 0)
 
 [node name="Mast" type="MeshInstance3D" parent="boat"]
 transform = Transform3D(1, 0, 0, 0, 0.999582, 0.0289161, 0, -0.0289161, 0.999582, 0, 1.10571, 0.519235)
 mesh = SubResource("BoxMesh_xwkqa")
 
-[node name="Sail" type="Node3D" parent="boat" node_paths=PackedStringArray("top_left", "top_right", "bottom_left", "bottom_right")]
+[node name="Sail" type="Node3D" parent="boat" node_paths=PackedStringArray("top_left", "top_right", "bottom_left", "bottom_right", "rope_fixture")]
 transform = Transform3D(0.05, 0, 0, 0, 2, 0, 0, 0, 0.05, 0, 1.10571, 0.519235)
 script = ExtResource("2_qq457")
 top_left = NodePath("TopLeft")
 top_right = NodePath("TopRight")
 bottom_left = NodePath("BottomLeft")
 bottom_right = NodePath("BottomRight")
+rope_fixture = NodePath("../RopeFixture")
 
 [node name="Mast2" type="MeshInstance3D" parent="boat/Sail"]
 transform = Transform3D(20, 0, 0, 0, -0.0126082, 0.49978, 0, -16.9925, -0.593326, 0, -0.210671, -16.8201)
@@ -57,6 +58,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.215158, -33.2944)
 [node name="BottomRight" type="Marker3D" parent="boat/Sail"]
 transform = Transform3D(0.999999, 0, 0, 0, 1, 0, 0, 0, 0.999999, 0, -0.19913, 0.134158)
 
+[node name="RopeFixture" type="Marker3D" parent="boat"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.477673, -1.21404)
+
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.0882044, 0)
 shape = SubResource("CapsuleShape3D_annr2")
@@ -64,28 +68,13 @@ shape = SubResource("CapsuleShape3D_annr2")
 [node name="ProbeContainer" type="Node3D" parent="."]
 
 [node name="Probe1" type="Marker3D" parent="ProbeContainer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.137595, -0.206719)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.137595, -1.88361)
 
 [node name="Probe2" type="Marker3D" parent="ProbeContainer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.137595, -0.00152029)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.137595, 1.90599)
 
 [node name="Probe3" type="Marker3D" parent="ProbeContainer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.137595, 0.253761)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.137595, -0.785077)
 
 [node name="Probe4" type="Marker3D" parent="ProbeContainer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10611, -0.10458, -0.206205)
-
-[node name="Probe5" type="Marker3D" parent="ProbeContainer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10611, -0.10458, -0.00100686)
-
-[node name="Probe6" type="Marker3D" parent="ProbeContainer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0581987, -0.104965, 0.254513)
-
-[node name="Probe7" type="Marker3D" parent="ProbeContainer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.105801, -0.104965, -0.206487)
-
-[node name="Probe8" type="Marker3D" parent="ProbeContainer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.105801, -0.10458, -0.00100686)
-
-[node name="Probe9" type="Marker3D" parent="ProbeContainer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0584901, -0.10577, 0.254255)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.137595, 0.578754)
