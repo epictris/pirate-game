@@ -55,8 +55,6 @@ func _physics_process(delta: float) -> void:
 	
 	var vertical_damping = 5
 	
-	print(linear_velocity.y)
-	
 	if submerged && linear_velocity.y > 0.3:
 		apply_central_force(Vector3.DOWN * linear_velocity.y * vertical_damping)
 	
@@ -185,15 +183,3 @@ func apply_wind_force():
 		# Apply the forces
 		apply_central_force(ship_force)
 		# DebugDraw3D.draw_arrow(global_position + Vector3(0, 0.3, 0), global_position + (ship_force) * 2 + Vector3(0, 0.3, 0), Color.YELLOW, 0.01)
-
-
-		# Torque from sail position
-		# var sail_arm = sail_node.global_position - global_position
-		# var torque = sail_arm.cross(primary_force) * 0.1
-		# apply_torque(torque)
-		
-		# Debug info
-		if Input.is_action_just_pressed("ui_accept"):  # For testing
-			print("Wind angle to sail: ", wind_angle_to_sail)
-			print("Force direction: ", (primary_force).normalized())
-			print("Ship forward: ", -transform.basis.z)

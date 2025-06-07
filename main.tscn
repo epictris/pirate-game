@@ -74,6 +74,7 @@ pivot_offset = Vector2(256, 256)
 texture = ExtResource("7_5vw27")
 
 [node name="TextureRect" type="TextureRect" parent="UI/Wind"]
+layout_mode = 0
 offset_left = 522.667
 offset_top = -510.667
 offset_right = 1034.67
@@ -82,6 +83,7 @@ rotation = 1.5708
 texture = ExtResource("8_5vw27")
 
 [node name="TextureRect2" type="TextureRect" parent="UI/Wind"]
+layout_mode = 0
 offset_left = 649.333
 offset_top = -124.0
 offset_right = 1161.33
