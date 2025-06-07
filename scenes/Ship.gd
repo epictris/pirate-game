@@ -68,6 +68,7 @@ func apply_lateral_resistance():
 	
 	var lateral_resistance = -lateral_velocity * right_vector * 5.0
 	apply_central_force(lateral_resistance)
+	apply_central_force(forward_vector.normalized() * abs(lateral_velocity) * 2)
 
 func _integrate_forces(state: PhysicsDirectBodyState3D):
 	if submerged:
