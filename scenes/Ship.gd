@@ -34,7 +34,7 @@ func _physics_process(delta: float) -> void:
 	
 	
 	update_sail_direction(delta)
-	DebugDraw3D.draw_arrow(global_position + Vector3(0, 0.4, 0), global_position + wind_direction * 3 + Vector3(0, 0.4, 0), Color.RED, 0.01)
+	DebugDraw3D.draw_arrow(global_position + Vector3(0, 0.3, 0), global_position + wind_direction + Vector3(0, 0.3, 0), Color.RED, 0.01)
 	apply_wind_force()
 	
 	submerged = false

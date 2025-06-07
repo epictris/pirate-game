@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://c4hnqdkt2sjgv"]
+[gd_scene load_steps=10 format=3 uid="uid://c4hnqdkt2sjgv"]
 
 [ext_resource type="PackedScene" uid="uid://bjugq1l2b1ng8" path="res://scenes/WaterPlane.tscn" id="1_1bvp3"]
 [ext_resource type="Script" uid="uid://c5lwgmegj6lhl" path="res://PlayerController.gd" id="2_lquwl"]
@@ -6,8 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://df71yax4lys6c" path="res://scenes/Ship.tscn" id="4_5vw27"]
 [ext_resource type="Script" uid="uid://bjimef0diywdg" path="res://UI.gd" id="6_7mycd"]
 [ext_resource type="Texture2D" uid="uid://duo03ms62qhff" path="res://resources/wheel.webp" id="7_272bh"]
-[ext_resource type="Texture2D" uid="uid://c6mvv8p64ktf8" path="res://resources/boat_icon.png" id="8_5vw27"]
-[ext_resource type="Script" uid="uid://ghydtp65wd78" path="res://BoatHud.gd" id="9_kek77"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0xm2m"]
 
@@ -52,28 +50,3 @@ offset_bottom = 686.0
 scale = Vector2(0.3, 0.3)
 pivot_offset = Vector2(256, 256)
 texture = ExtResource("7_272bh")
-
-[node name="BoatHUD" type="TextureRect" parent="UI"]
-offset_left = -24.0
-offset_top = 299.0
-offset_right = 226.0
-offset_bottom = 549.0
-scale = Vector2(0.5, 0.5)
-pivot_offset = Vector2(125, 125)
-texture = ExtResource("8_5vw27")
-script = ExtResource("9_kek77")
-
-[node name="Sail" type="ColorRect" parent="UI/BoatHUD"]
-layout_mode = 0
-offset_left = 120.0
-offset_top = 60.0
-offset_right = 130.0
-offset_bottom = 210.0
-pivot_offset = Vector2(5, 5)
-
-[node name="RopeAttachmentSail" type="Marker2D" parent="UI/BoatHUD/Sail"]
-position = Vector2(5, 150)
-
-[node name="RopeAttachmentBoat" type="Marker2D" parent="UI/BoatHUD"]
-position = Vector2(125, 240)
-scale = Vector2(0.4, 0.4)
