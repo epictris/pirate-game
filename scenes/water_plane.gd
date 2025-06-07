@@ -3,6 +3,8 @@ extends MeshInstance3D
 var material: ShaderMaterial
 var noise: Image
 
+
+
 var noise_scale: float
 var wave_speed: float
 var height_scale: float
