@@ -1,5 +1,13 @@
 extends CharacterBody2D
 
+enum Layers{
+	LEVEL = 0b0001,
+	FALLTHROUGH = 0b0010,
+}
+var collision_mask_default := collision_mask
+
+var collision_mask_fallthrough = collision_mask & ~Layers.FALLTHROUGH
+
 @onready var player: CharacterBody2D = $"."
 
 @export var speed := 400
@@ -14,7 +22,19 @@ var is_attacking = false
 var off_edge_timer = 0.0
 var off_edge := false
 
+func _ready():
+	collision_mask_default = collision_mask
+	collision_mask_fallthrough = collision_mask & ~Layers.FALLTHROUGH
+
 func _physics_process(delta: float) -> void:
+
+	if Input.is_action_pressed("drop_down"):
+		#if we're holding down, apply the collision mask to not collide with the one-way platforms
+		collision_mask = collision_mask_fallthrough
+	else:
+		#make sure we are colliding with them otherwise
+		collision_mask = collision_mask_default
+	
 	# Add the gravity.
 	if not is_on_floor():
 		off_edge_timer += 0.1
@@ -27,15 +47,12 @@ func _physics_process(delta: float) -> void:
 	# Handle jump.
 	if Input.is_action_just_pressed("jump") and (is_on_floor() or off_edge_timer < 0.6):
 		velocity.y = jump
-	
+
 	direction = Input.get_axis("move_left", "move_right") * max_speed
+	
 	# Get the input direction and handle the movement/deceleration. 
-	
 	velocity.x = move_toward(velocity.x, direction, speed * acceleration * delta)
-	
-	if direction < 0:
-		player.transform.x.x = -1 # Flip the player to the right
-	elif direction > 0:
-		player.transform.x.x = 1
-	
+
+	# Your movement logic...
+
 	move_and_slide()
