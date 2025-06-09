@@ -15,6 +15,10 @@ run/main_scene="uid://c4hnqdkt2sjgv"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+HealthClass="*res://scripts/health_class.gd"
+
 [debug_draw_3d]
 
 settings/addon_root_folder="res://addons/debug_draw_3d"

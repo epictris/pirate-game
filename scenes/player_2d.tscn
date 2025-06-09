@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://c54rsdh0wohuc"]
+[gd_scene load_steps=4 format=3 uid="uid://c54rsdh0wohuc"]
 
-[ext_resource type="Script" uid="uid://costteloie6k8" path="res://scenes/player_2d.gd" id="1_byvnx"]
+[ext_resource type="Script" uid="uid://costteloie6k8" path="res://scripts/player_2d.gd" id="1_byvnx"]
+[ext_resource type="PackedScene" uid="uid://douak1hhqrxde" path="res://scenes/health_component.tscn" id="2_kjwfp"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gxk2l"]
 radius = 14.0
@@ -8,6 +9,8 @@ height = 50.0
 
 [node name="player_2d" type="CharacterBody2D"]
 script = ExtResource("1_byvnx")
+
+[node name="health_component" parent="." instance=ExtResource("2_kjwfp")]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -26)
