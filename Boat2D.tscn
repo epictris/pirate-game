@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://b8p7jq0abvlnl"]
+[gd_scene load_steps=15 format=3 uid="uid://b8p7jq0abvlnl"]
 
 [ext_resource type="Script" uid="uid://brxmhb8lgsqd5" path="res://boat_2d.gd" id="1_bg081"]
 [ext_resource type="Texture2D" uid="uid://duo03ms62qhff" path="res://resources/wheel.webp" id="2_kumja"]
@@ -16,6 +16,12 @@ colors = PackedColorArray(0, 0.336557, 0.276533, 1, 2.45467e-06, 0.463742, 0.621
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_grg7l"]
 gradient = SubResource("Gradient_ccv1a")
 
+[sub_resource type="Gradient" id="Gradient_wdr4r"]
+colors = PackedColorArray(0.4, 0.2728, 0.188, 1, 0.4, 0.27451, 0.188235, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ku6p5"]
+gradient = SubResource("Gradient_wdr4r")
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_ku6p5"]
 radius = 35.0
 
@@ -24,6 +30,16 @@ size = Vector2(1187, 20)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kumja"]
 size = Vector2(65, 664)
+
+[sub_resource type="Gradient" id="Gradient_8fa22"]
+interpolation_mode = 1
+colors = PackedColorArray(0, 0, 0, 0, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_s43ok"]
+gradient = SubResource("Gradient_8fa22")
+fill = 1
+fill_from = Vector2(2, -6)
+fill_to = Vector2(0.65812, 0.188034)
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_bg081")
@@ -41,6 +57,11 @@ offset_bottom = 1906.0
 rotation = -1.5708
 texture = SubResource("GradientTexture2D_grg7l")
 metadata/_edit_use_anchors_ = true
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+position = Vector2(808.25, 249.875)
+scale = Vector2(0.304687, 8.50391)
+texture = SubResource("GradientTexture2D_ku6p5")
 
 [node name="Wheel" type="Area2D" parent="."]
 unique_name_in_owner = true
@@ -91,3 +112,20 @@ unique_name_in_owner = true
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BackExitZone"]
 position = Vector2(-61, 304)
 shape = SubResource("RectangleShape2D_kumja")
+
+[node name="Sprite2D3" type="Sprite2D" parent="."]
+position = Vector2(548.75, 184)
+scale = Vector2(7.74219, 6.53125)
+texture = SubResource("GradientTexture2D_s43ok")
+
+[node name="Sprite2D4" type="Sprite2D" parent="."]
+position = Vector2(548, 37)
+rotation = -1.3908
+scale = Vector2(0.304687, 8.50391)
+texture = SubResource("GradientTexture2D_ku6p5")
+
+[node name="Sprite2D5" type="Sprite2D" parent="."]
+position = Vector2(540, 397)
+rotation = -1.5708
+scale = Vector2(0.304687, 8.50391)
+texture = SubResource("GradientTexture2D_ku6p5")
