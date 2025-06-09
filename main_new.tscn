@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://pyept1vub00q" path="res://example_2d_character_controller.tscn" id="4_i3bab"]
 [ext_resource type="Script" uid="uid://cuqyknp4nxj4c" path="res://buoyancy_manager.gd" id="5_cf05q"]
 [ext_resource type="PackedScene" uid="uid://c42f18rox8lnl" path="res://ship.tscn" id="6_i3bab"]
-[ext_resource type="PackedScene" uid="uid://bofsu8bkidjwg" path="res://Player.tscn" id="6_w6t3v"]
+[ext_resource type="PackedScene" uid="uid://bofsu8bkidjwg" path="res://PlayerController.tscn" id="6_w6t3v"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0xm2m"]
 
