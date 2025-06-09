@@ -1,0 +1,131 @@
+[gd_scene load_steps=15 format=3 uid="uid://b8p7jq0abvlnl"]
+
+[ext_resource type="Script" uid="uid://brxmhb8lgsqd5" path="res://boat_2d.gd" id="1_bg081"]
+[ext_resource type="Texture2D" uid="uid://duo03ms62qhff" path="res://resources/wheel.webp" id="2_kumja"]
+[ext_resource type="Texture2D" uid="uid://dny6fk55fk4pw" path="res://resources/boat_side_view.png" id="3_wdr4r"]
+
+[sub_resource type="Gradient" id="Gradient_kumja"]
+colors = PackedColorArray(0.238344, 0.759099, 1, 1, 0.461237, 0.886534, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_wdr4r"]
+gradient = SubResource("Gradient_kumja")
+
+[sub_resource type="Gradient" id="Gradient_ccv1a"]
+colors = PackedColorArray(0, 0.336557, 0.276533, 1, 2.45467e-06, 0.463742, 0.621247, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_grg7l"]
+gradient = SubResource("Gradient_ccv1a")
+
+[sub_resource type="Gradient" id="Gradient_wdr4r"]
+colors = PackedColorArray(0.4, 0.2728, 0.188, 1, 0.4, 0.27451, 0.188235, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ku6p5"]
+gradient = SubResource("Gradient_wdr4r")
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ku6p5"]
+radius = 35.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_grg7l"]
+size = Vector2(1187, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kumja"]
+size = Vector2(65, 664)
+
+[sub_resource type="Gradient" id="Gradient_8fa22"]
+interpolation_mode = 1
+colors = PackedColorArray(0, 0, 0, 0, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_s43ok"]
+gradient = SubResource("Gradient_8fa22")
+fill = 1
+fill_from = Vector2(2, -6)
+fill_to = Vector2(0.65812, 0.188034)
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_bg081")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(580, 243)
+scale = Vector2(19.125, 8.59375)
+texture = SubResource("GradientTexture2D_wdr4r")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_left = -7.0
+offset_top = 737.0
+offset_right = 219.0
+offset_bottom = 1906.0
+rotation = -1.5708
+texture = SubResource("GradientTexture2D_grg7l")
+metadata/_edit_use_anchors_ = true
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+position = Vector2(808.25, 249.875)
+scale = Vector2(0.304687, 8.50391)
+texture = SubResource("GradientTexture2D_ku6p5")
+
+[node name="Wheel" type="Area2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(0, 80)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Wheel"]
+position = Vector2(883.812, 345)
+shape = SubResource("CircleShape2D_ku6p5")
+debug_color = Color(0.9, 0.7839, 0.513, 0.192157)
+
+[node name="Sprite2D" type="Sprite2D" parent="Wheel"]
+position = Vector2(883, 345)
+scale = Vector2(0.24707, 0.24707)
+texture = ExtResource("2_kumja")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+position = Vector2(578, 507.745)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D"]
+polygon = PackedVector2Array(-28, -25.0001, -189, -30.0001, -445, -63.0001, -383, 27.9999, -318, 64.9999, -256, 77.9999, -106, 84.9999, 108, 82.9999, 267, 74.9999, 332, 58.9999, 404, 13.9999, 459, -76.0001, 288, -43.0001, 126, -31.0001)
+
+[node name="TextureRect2" type="TextureRect" parent="StaticBody2D"]
+offset_left = -466.0
+offset_top = -521.0
+offset_right = 471.0
+offset_bottom = 416.0
+texture = ExtResource("3_wdr4r")
+expand_mode = 1
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="."]
+position = Vector2(572, 648)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2"]
+position = Vector2(7, 15)
+shape = SubResource("RectangleShape2D_grg7l")
+debug_color = Color(0.895948, 0.713564, 3.85046e-07, 1)
+
+[node name="FrontExitZone" type="Area2D" parent="."]
+unique_name_in_owner = true
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="FrontExitZone"]
+position = Vector2(1212, 306)
+shape = SubResource("RectangleShape2D_kumja")
+
+[node name="BackExitZone" type="Area2D" parent="."]
+unique_name_in_owner = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BackExitZone"]
+position = Vector2(-61, 304)
+shape = SubResource("RectangleShape2D_kumja")
+
+[node name="Sprite2D3" type="Sprite2D" parent="."]
+position = Vector2(548.75, 184)
+scale = Vector2(7.74219, 6.53125)
+texture = SubResource("GradientTexture2D_s43ok")
+
+[node name="Sprite2D4" type="Sprite2D" parent="."]
+position = Vector2(548, 37)
+rotation = -1.3908
+scale = Vector2(0.304687, 8.50391)
+texture = SubResource("GradientTexture2D_ku6p5")
+
+[node name="Sprite2D5" type="Sprite2D" parent="."]
+position = Vector2(540, 397)
+rotation = -1.5708
+scale = Vector2(0.304687, 8.50391)
+texture = SubResource("GradientTexture2D_ku6p5")

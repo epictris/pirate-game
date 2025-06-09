@@ -4,11 +4,11 @@
 [ext_resource type="Script" uid="uid://c4ia7elrou38d" path="res://scenes/Ship.gd" id="1_qq457"]
 [ext_resource type="Script" uid="uid://blqu4wvpbb5r0" path="res://scenes/Sail.gd" id="2_qq457"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xwkqa"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qq457"]
 albedo_color = Color(0.35, 0.23345, 0.091, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_xwkqa"]
-material = SubResource("StandardMaterial3D_xwkqa")
+material = SubResource("StandardMaterial3D_qq457")
 size = Vector3(0.05, 2, 0.05)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_annr2"]
