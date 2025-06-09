@@ -12,6 +12,9 @@ extends Node2D
 
 @export var wave_length: float = 30.0  # Length of the wave
 
+func _ready():
+	GlobalScenes.set_current_2d_scene(self)  # Set this scene as the current 2D scene
+
 func _process(delta: float) -> void:
 	offset += delta * speed  # Update the offset to animate the wave
 	var wave_value: float = get_wave_gradient_at(offset)

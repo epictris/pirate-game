@@ -9,6 +9,7 @@ var collision_mask_default := collision_mask
 var collision_mask_fallthrough = collision_mask & ~Layers.FALLTHROUGH
 
 @onready var player: CharacterBody2D = $"."
+@onready var weapon_point: Node2D = $weapon_point
 
 @export var speed := 400
 @export var max_speed := 300
