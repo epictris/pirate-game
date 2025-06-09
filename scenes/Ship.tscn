@@ -202,7 +202,7 @@ size = Vector3(0.05, 2, 0.05)
 radius = 0.1
 height = 0.7
 
-[node name="Boat" type="RigidBody3D" node_paths=PackedStringArray("sail_node")]
+[node name="Boat" type="RigidBody3D" node_paths=PackedStringArray("sail_node") groups=["buoyant"]]
 gravity_scale = 0.0
 script = SubResource("GDScript_gjfe0")
 sail_node = NodePath("boat/Sail")
