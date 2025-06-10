@@ -3,8 +3,8 @@
 [ext_resource type="Script" uid="uid://dss8sqlbr1pxk" path="res://scripts/projectile.gd" id="1_c8fcr"]
 [ext_resource type="PackedScene" uid="uid://km36wfop1xyq" path="res://scenes/bullet_collider.tscn" id="2_q3m7n"]
 
-[node name="projectile" type="CharacterBody2D" node_paths=PackedStringArray("collider")]
+[node name="projectile" type="CharacterBody2D"]
 script = ExtResource("1_c8fcr")
-collider = NodePath("bullet_collider")
+collider_path = NodePath("bullet_collider")
 
 [node name="bullet_collider" parent="." instance=ExtResource("2_q3m7n")]

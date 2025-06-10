@@ -24,5 +24,5 @@ func shoot():
 	GlobalScenes.get_current_2d_scene().add_child(projectile_instance)
 	projectile_instance.global_position = barrel.global_position
 	projectile_instance.global_rotation = barrel.global_rotation
-	projectile_instance.velocity = Vector2(500, 0).rotated(barrel.global_rotation)
+	projectile_instance.velocity = Vector2(projectile_instance.speed, 0).rotated(barrel.global_rotation)
 	

@@ -4,22 +4,42 @@ extends Node
 @export var max_health: int = 100
 var health_component : health_class
 signal health_changed
+@onready var parent = get_parent()
 
 func _ready():
-	# Initialize the health component
-	health_component = health_class.new(health, max_health)
-	health_component.set_parent(get_parent())
+	if health < 0:
+		health = 0
+		health_changed.emit()
+		die()
+	elif health > max_health:
+		health = max_health
 
 func take_damage(amount: int):
-	health_component.take_damage(amount)
+	health -= amount
 	health_changed.emit()
+	if health <= 0:
+		health = 0
+		die()
 
 func heal(amount: int):
-	health_component.heal(amount)
+	health += amount
+	health_changed.emit()
+	if health > max_health:
+		health = max_health
 	health_changed.emit()
 
 func get_current_health() -> int:
-	return health_component.health
+	return health
 
 func get_max_health() -> int:
-	return health_component.max_health
+	return max_health
+
+func set_parent(new_parent):
+	parent = new_parent
+
+func is_alive() -> bool:
+	return health > 0
+
+func die():
+	if parent and parent.has_method("on_death"):
+		parent.on_death()

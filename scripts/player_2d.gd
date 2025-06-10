@@ -8,8 +8,11 @@ var collision_mask_default := collision_mask
 
 var collision_mask_fallthrough = collision_mask & ~Layers.FALLTHROUGH
 
+@onready var health_component: Node = $health_component
 @onready var player: CharacterBody2D = $"."
+@onready var weapon_point: Node2D = $weapon_point
 
+@export var respawn_point: Node2D = null
 @export var speed := 400
 @export var max_speed := 300
 @export var jump := -800
@@ -21,6 +24,7 @@ var direction = 0
 var is_attacking = false
 var off_edge_timer = 0.0
 var off_edge := false
+var respawn_timer := 0.0
 
 func _ready():
 	collision_mask_default = collision_mask
@@ -56,3 +60,19 @@ func _physics_process(delta: float) -> void:
 	# Your movement logic...
 
 	move_and_slide()
+
+func _process(delta):
+	if Input.is_action_just_pressed("take_damage"):
+		health_component.take_damage(25)
+
+func on_death():
+	# Handle player death logic here
+	print("Player has died.")
+	if respawn_point:
+		global_position = respawn_point.global_position
+		velocity = Vector2.ZERO
+		health_component.heal(health_component.get_max_health())  # Reset health on respawn
+		print("Player respawned at: ", respawn_point.global_position)
+	else:
+		print("No respawn point set, player will not respawn.")
+	
