@@ -85,6 +85,12 @@ func handle_states():
 				player_sprite.play("idle")
 			else:
 				player_sprite.play("climb")
+		animation_states.RUN:
+			if velocity.x == 0:
+				state = animation_states.IDLE
+				player_sprite.play("idle")
+			elif is_on_floor():
+				player_sprite.play("run")
 		# animation_states.ATTACK:
 		# 	if not is_attacking:
 		# 		state = animation_states.IDLE
@@ -98,6 +104,7 @@ func _process(delta):
 	handle_states()
 	#Test taking damage
 	if Input.is_action_just_pressed("take_damage"):
+		player_sprite.play("damage")
 		health_component.take_damage(25)
 	
 	#Handle jump input
@@ -109,10 +116,9 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("run"):
 		running = not running
 		state = animation_states.RUN
-		if running:
+		if running and velocity.x != 0:
 			player_sprite.play("run")
-		else:
-			player_sprite.play("walk")
+
 	elif event.is_action_released("run"):
 		running = false
 		state = animation_states.WALK if velocity.x != 0 else animation_states.IDLE
@@ -133,7 +139,6 @@ func _input(event: InputEvent) -> void:
 				player_sprite.play("idle")
 		else:
 			# If not on a ladder, reset climbing state
-			velocity.y = 0
 			state = animation_states.IDLE
 			player_sprite.play("idle")
 

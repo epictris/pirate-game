@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://c54rsdh0wohuc"]
+[gd_scene load_steps=40 format=3 uid="uid://c54rsdh0wohuc"]
 
 [ext_resource type="Script" uid="uid://costteloie6k8" path="res://scripts/player_2d.gd" id="1_byvnx"]
 [ext_resource type="PackedScene" uid="uid://douak1hhqrxde" path="res://scenes/health_component.tscn" id="2_kjwfp"]
@@ -33,6 +33,18 @@ region = Rect2(192, 192, 48, 48)
 [sub_resource type="AtlasTexture" id="AtlasTexture_7ogw2"]
 atlas = ExtResource("4_fd0ad")
 region = Rect2(240, 192, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i5w7p"]
+atlas = ExtResource("4_fd0ad")
+region = Rect2(0, 336, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0dm5j"]
+atlas = ExtResource("4_fd0ad")
+region = Rect2(48, 336, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ybr68"]
+atlas = ExtResource("4_fd0ad")
+region = Rect2(96, 336, 48, 48)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_sax2w"]
 atlas = ExtResource("4_fd0ad")
@@ -149,6 +161,20 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_i5w7p")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0dm5j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ybr68")
+}],
+"loop": false,
+"name": &"damage",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_sax2w")
 }, {
 "duration": 1.0,
@@ -258,8 +284,10 @@ texture_filter = 1
 position = Vector2(0, -27)
 scale = Vector2(1.583, 1.583)
 sprite_frames = SubResource("SpriteFrames_i5w7p")
-animation = &"climb"
+animation = &"damage"
 autoplay = "idle"
+frame = 2
+frame_progress = 1.0
 offset = Vector2(7.57895, -6.94737)
 
 [node name="ladder_collider" type="Area2D" parent="."]
