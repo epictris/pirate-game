@@ -1,9 +1,10 @@
-[gd_scene load_steps=36 format=3 uid="uid://c54rsdh0wohuc"]
+[gd_scene load_steps=37 format=3 uid="uid://c54rsdh0wohuc"]
 
 [ext_resource type="Script" uid="uid://costteloie6k8" path="res://scripts/player_2d.gd" id="1_byvnx"]
 [ext_resource type="PackedScene" uid="uid://douak1hhqrxde" path="res://scenes/health_component.tscn" id="2_kjwfp"]
 [ext_resource type="PackedScene" uid="uid://bytynuwe2o03l" path="res://scenes/gun.tscn" id="3_sxvnq"]
 [ext_resource type="Texture2D" uid="uid://b8v5lbwo6mxdv" path="res://resources/Spritesheets/sheet.png" id="4_fd0ad"]
+[ext_resource type="Script" uid="uid://ci45gf8qjxjbi" path="res://scripts/ladder_collider.gd" id="5_0eb65"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gxk2l"]
 radius = 14.0
@@ -234,7 +235,6 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fd0ad"]
-size = Vector2(28, 20)
 
 [node name="player_2d" type="CharacterBody2D"]
 top_level = true
@@ -265,7 +265,11 @@ offset = Vector2(7.57895, -6.94737)
 [node name="ladder_collider" type="Area2D" parent="."]
 collision_layer = 4
 collision_mask = 8
+script = ExtResource("5_0eb65")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ladder_collider"]
 position = Vector2(0, -29)
 shape = SubResource("RectangleShape2D_fd0ad")
+
+[connection signal="body_entered" from="ladder_collider" to="." method="_on_ladder_collider_body_entered"]
+[connection signal="body_exited" from="ladder_collider" to="." method="_on_ladder_collider_body_exited"]

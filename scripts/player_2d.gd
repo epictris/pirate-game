@@ -14,7 +14,8 @@ enum animation_states {
 	FALL,
 	ATTACK,
 	DAMAGE,
-	DIE
+	DIE,
+	CLIMB
 }
 
 var collision_mask_default := collision_mask
@@ -30,6 +31,7 @@ var collision_mask_fallthrough = collision_mask & ~Layers.FALLTHROUGH
 @export var respawn_point: Node2D = null
 @export var walk_speed := 300
 @export var run_speed := 500
+@export var climb_speed := 150
 @export var walk_max_speed := 200
 @export var run_max_speed := 400
 @export var jump := -800
@@ -45,13 +47,13 @@ var off_edge := false
 var respawn_timer := 0.0
 var state = animation_states.IDLE
 var running := false
+var on_ladder := false
+var can_climb := false
 
 
 func _ready():
 	collision_mask_default = collision_mask
 	collision_mask_fallthrough = collision_mask & ~Layers.FALLTHROUGH
-	ladder_collider.body_entered.connect(on_ladder_entered)
-	ladder_collider.area_entered.connect(on_ladder_entered)
 
 func handle_states():
 	match state:
@@ -77,6 +79,12 @@ func handle_states():
 				player_sprite.play("jump")
 			else:
 				state = animation_states.IDLE
+		animation_states.CLIMB:
+			if not on_ladder:
+				state = animation_states.IDLE
+				player_sprite.play("idle")
+			else:
+				player_sprite.play("climb")
 		# animation_states.ATTACK:
 		# 	if not is_attacking:
 		# 		state = animation_states.IDLE
@@ -93,7 +101,7 @@ func _process(delta):
 		health_component.take_damage(25)
 	
 	#Handle jump input
-	if Input.is_action_just_pressed("jump") and (is_on_floor() or off_edge_timer < 0.6):
+	if Input.is_action_just_pressed("jump") and (is_on_floor() or off_edge_timer < 0.6) and not on_ladder:
 		velocity.y = jump
 
 func _input(event: InputEvent) -> void:
@@ -109,6 +117,25 @@ func _input(event: InputEvent) -> void:
 		running = false
 		state = animation_states.WALK if velocity.x != 0 else animation_states.IDLE
 		player_sprite.play("walk" if not is_on_floor() else "idle")
+	
+	if event.is_action_pressed("climb_up") or event.is_action_pressed("climb_down"):
+		on_ladder = can_climb
+		if on_ladder:
+			# Climb up or down the ladder
+			var climb_direction = Input.get_axis("climb_up", "climb_down")
+			if climb_direction != 0:
+				velocity.y = climb_direction * climb_speed
+				state = animation_states.CLIMB
+				player_sprite.play("climb")
+			else:
+				velocity.y = 0
+				state = animation_states.IDLE
+				player_sprite.play("idle")
+		else:
+			# If not on a ladder, reset climbing state
+			velocity.y = 0
+			state = animation_states.IDLE
+			player_sprite.play("idle")
 
 func _physics_process(delta: float) -> void:
 	#Drop down through one-way platforms
@@ -120,11 +147,14 @@ func _physics_process(delta: float) -> void:
 		collision_mask = collision_mask_default
 
 	# Add the gravity.
-	if not is_on_floor():
+	if not is_on_floor() and not on_ladder:
 		off_edge_timer += 0.1
 		velocity.y += gravity * 1.1 * delta
 		if velocity.y > term_velocity:
 			velocity.y = term_velocity
+	elif on_ladder and Input.get_axis("climb_up", "climb_down") == 0:
+		velocity.y = 0
+		player_sprite.pause()
 	else:
 		off_edge_timer = 0.0
 	
@@ -156,6 +186,9 @@ func on_death():
 		print("No respawn point set, player will not respawn.")
 	
 
-func on_ladder_entered():
-	# Handle logic when the player enters a ladder
-	print("Player entered ladder.")
+func _on_ladder_collider_body_entered(body: Node2D) -> void:
+	can_climb = true
+
+func _on_ladder_collider_body_exited(body: Node2D) -> void:
+	can_climb = false
+	on_ladder = false
