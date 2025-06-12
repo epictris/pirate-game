@@ -38,5 +38,5 @@ player_3d = NodePath("PlayerBody")
 script = ExtResource("5_cf05q")
 water = NodePath("../WaterPlane")
 
-[node name="Ship" parent="." instance=ExtResource("6_i3bab")]
+[node name="Ship" parent="." groups=["buoyant"] instance=ExtResource("6_i3bab")]
 transform = Transform3D(0.272129, 0, 0.962261, 0, 1, 0, -0.962261, 0, 0.272129, -10.42, 1.04815, -5.68313)
