@@ -60,10 +60,11 @@ func _on_player_took_control():
 	player_controlled = true
 	remove_child(arena)
 
+
 func _on_player_left_arena(left_at_front: bool):
 	arena.queue_free()
 	var front_direction = global_basis.z
-	var boat_length = %CollisionShape3D.shape.get_size().z
+	var boat_length = %BoatCollider.shape.get_size().z
 	if left_at_front:
 		player_left_arena.emit(front_direction * 3 + linear_velocity, Vector3(global_position + front_direction.normalized() * 3) + Vector3.UP)
 	else:
@@ -132,8 +133,8 @@ func _physics_process(delta: float) -> void:
 
 	
 func apply_lateral_resistance():
-	var right_vector = transform.basis.x
-	var forward_vector = transform.basis.z
+	var right_vector = -transform.basis.x
+	var forward_vector = -transform.basis.z
 	var lateral_velocity = linear_velocity.dot(right_vector)
 	var forward_velocity = linear_velocity.dot(forward_vector)
 	
@@ -147,11 +148,11 @@ func _integrate_forces(state: PhysicsDirectBodyState3D):
 		state.angular_velocity *= 1 - water_angular_drag
 		
 	# Then override the roll rotation
-	var transform = state.transform
-	var basis = transform.basis
+	var current_transform = state.transform
+	var current_basis = current_transform.basis
 	
 	# Get current rotation but zero out the roll
-	var euler = basis.get_euler()
+	var euler = current_basis.get_euler()
 	euler.z = 0  # Zero out roll (Z-axis)
 	
 	# Reconstruct the basis without roll
@@ -159,8 +160,8 @@ func _integrate_forces(state: PhysicsDirectBodyState3D):
 	new_basis = new_basis.rotated(Vector3.UP, euler.y)      # Yaw
 	new_basis = new_basis.rotated(new_basis.x, euler.x)     # Pitch
 
-	transform.basis = new_basis
-	state.transform = transform
+	current_transform.basis = new_basis
+	state.transform = current_transform
 	
 	# Also zero out roll angular velocity
 	var local_angular_vel = basis.inverse() * state.angular_velocity
@@ -168,7 +169,7 @@ func _integrate_forces(state: PhysicsDirectBodyState3D):
 	state.angular_velocity = basis * local_angular_vel
 
 func update_sail_direction(delta: float):
-	var ship_forward = -transform.basis.z
+	var ship_forward = transform.basis.z
 	var wind_angle = ship_forward.signed_angle_to(wind_direction, Vector3.UP)
 	
 	var wind_angle_abs = abs(wind_angle)
@@ -217,6 +218,6 @@ func apply_wind_force():
 	if abs(wind_angle_to_sail) > 0.1:  # Small threshold to avoid tiny forces
 		var wind_strength_on_sail = wind_strength * abs(wind_angle_to_sail)
 		var primary_force = sail_forward * wind_strength_on_sail * 100
-		var ship_force = primary_force.length() * global_transform.basis.z
+		var ship_force = primary_force.length() * -global_transform.basis.z
 		ship_force *= Vector3(1, 0, 1) # negate all vertical force generated from wind
 		apply_central_force(ship_force)
