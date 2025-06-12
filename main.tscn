@@ -1,0 +1,93 @@
+[gd_scene load_steps=14 format=3 uid="uid://cfku2o7mngso6"]
+
+[ext_resource type="PackedScene" uid="uid://bjugq1l2b1ng8" path="res://scenes/WaterPlane.tscn" id="1_1bvp3"]
+[ext_resource type="Script" uid="uid://1c2uwyf3kyn" path="res://PlayerController.gd" id="2_lquwl"]
+[ext_resource type="Script" path="res://PlayerCamera.gd" id="4_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://df71yax4lys6c" path="res://scenes/Ship.tscn" id="4_5vw27"]
+[ext_resource type="Script" path="res://UI.gd" id="6_7mycd"]
+[ext_resource type="Texture2D" path="res://resources/wind.webp" id="7_5vw27"]
+[ext_resource type="Texture2D" uid="uid://duo03ms62qhff" path="res://resources/wheel.webp" id="7_272bh"]
+[ext_resource type="Texture2D" path="res://resources/arrow.webp" id="8_5vw27"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0xm2m"]
+
+[sub_resource type="Sky" id="Sky_h2yge"]
+sky_material = SubResource("ProceduralSkyMaterial_0xm2m")
+
+[sub_resource type="Environment" id="Environment_1bvp3"]
+background_mode = 2
+sky = SubResource("Sky_h2yge")
+
+[sub_resource type="Gradient" id="Gradient_5vw27"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0.43007, 0.643357, 0.70979)
+colors = PackedColorArray(0, 0, 0, 0, 0, 0.592311, 0.974439, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_kek77"]
+gradient = SubResource("Gradient_5vw27")
+width = 200
+height = 200
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[node name="Main" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1bvp3")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.819546, -0.274133, 0.503185, -0.157434, 0.736623, 0.657724, -0.550962, -0.618254, 0.560539, 0, 0, 0)
+
+[node name="WaterPlane" parent="." instance=ExtResource("1_1bvp3")]
+transform = Transform3D(200, 0, 0, 0, 1, 0, 0, 0, 200, 0, 0, 0)
+
+[node name="PlayerController" type="Node3D" parent="."]
+script = ExtResource("2_lquwl")
+
+[node name="Camera3D" type="Camera3D" parent="PlayerController"]
+transform = Transform3D(-2.9222e-08, 0.743693, -0.668521, 3.25079e-08, 0.668521, 0.743693, 1, -1.59872e-14, -4.37114e-08, -9.84762, 9.33922, 0.0015893)
+script = ExtResource("4_1bvp3")
+
+[node name="Boat" parent="PlayerController" instance=ExtResource("4_5vw27")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.29964, 0)
+gravity_scale = 1.0
+
+[node name="UI" type="CanvasLayer" parent="."]
+script = ExtResource("6_7mycd")
+
+[node name="Wheel" type="TextureRect" parent="UI"]
+offset_left = 590.0
+offset_top = 174.0
+offset_right = 1102.0
+offset_bottom = 686.0
+scale = Vector2(0.3, 0.3)
+pivot_offset = Vector2(256, 256)
+texture = ExtResource("7_272bh")
+
+[node name="Wind" type="TextureRect" parent="UI"]
+offset_left = -156.0
+offset_top = 188.0
+offset_right = 356.0
+offset_bottom = 700.0
+scale = Vector2(0.15, 0.15)
+pivot_offset = Vector2(256, 256)
+texture = ExtResource("7_5vw27")
+
+[node name="TextureRect" type="TextureRect" parent="UI/Wind"]
+layout_mode = 0
+offset_left = 522.667
+offset_top = -510.667
+offset_right = 1034.67
+offset_bottom = 1.3335
+rotation = 1.5708
+texture = ExtResource("8_5vw27")
+
+[node name="TextureRect2" type="TextureRect" parent="UI/Wind"]
+layout_mode = 0
+offset_left = 649.333
+offset_top = -124.0
+offset_right = 1161.33
+offset_bottom = 388.0
+rotation = 1.5708
+scale = Vector2(1.5, 1.5)
+texture = SubResource("GradientTexture2D_kek77")
