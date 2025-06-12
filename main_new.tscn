@@ -1,11 +1,12 @@
-[gd_scene load_steps=10 format=3 uid="uid://clqvc5an3mf3w"]
+[gd_scene load_steps=12 format=3 uid="uid://clqvc5an3mf3w"]
 
 [ext_resource type="PackedScene" uid="uid://bjugq1l2b1ng8" path="res://scenes/WaterPlane.tscn" id="1_i3bab"]
 [ext_resource type="PackedScene" uid="uid://ccbdr4sugn3lw" path="res://PlayerBody.tscn" id="3_u24s4"]
 [ext_resource type="PackedScene" uid="uid://pyept1vub00q" path="res://example_2d_character_controller.tscn" id="4_i3bab"]
-[ext_resource type="Script" path="res://buoyancy_manager.gd" id="5_cf05q"]
+[ext_resource type="Script" uid="uid://cuqyknp4nxj4c" path="res://buoyancy_manager.gd" id="5_cf05q"]
 [ext_resource type="PackedScene" uid="uid://c42f18rox8lnl" path="res://ship.tscn" id="6_i3bab"]
 [ext_resource type="PackedScene" uid="uid://bofsu8bkidjwg" path="res://PlayerController.tscn" id="6_w6t3v"]
+[ext_resource type="Script" uid="uid://yf3jtkvnedig" path="res://interaction_ui.gd" id="7_u24s4"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0xm2m"]
 
@@ -15,6 +16,9 @@ sky_material = SubResource("ProceduralSkyMaterial_0xm2m")
 [sub_resource type="Environment" id="Environment_1bvp3"]
 background_mode = 2
 sky = SubResource("Sky_h2yge")
+
+[sub_resource type="LabelSettings" id="LabelSettings_u24s4"]
+font_size = 32
 
 [node name="Main" type="Node3D"]
 
@@ -40,3 +44,20 @@ water = NodePath("../WaterPlane")
 
 [node name="Ship" parent="." groups=["buoyant"] instance=ExtResource("6_i3bab")]
 transform = Transform3D(-0.470011, 0, -0.882661, 0, 1, 0, 0.882661, 0, -0.470011, -10.42, 1.04815, -5.68313)
+
+[node name="InteractionUI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("7_u24s4")
+
+[node name="PromptLabel" type="Label" parent="InteractionUI"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1.0
+offset_top = 23.0
+offset_right = 1152.0
+offset_bottom = 98.0
+label_settings = SubResource("LabelSettings_u24s4")
+horizontal_alignment = 1

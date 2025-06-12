@@ -2,6 +2,8 @@ extends CharacterBody3D
 
 signal body_entered_area(body)
 
+signal joined_boat(boat)
+
 @export var acceleration: float = 1.0
 @export var max_swim_speed: float = 3
 @export var drag: float = 0.95
@@ -16,6 +18,9 @@ func apply_buoyancy(water: MeshInstance3D):
 		is_swimming = true
 	else:
 		is_swimming = false
+
+func join_boat(boat: Node3D):
+	joined_boat.emit(boat)
 	
 func handle_swimming_movement(delta: float) -> void:	
 	var move_direction = Vector2.ZERO

@@ -35,6 +35,22 @@ var target_sail_angle: float = 0.0
 var sail_side: int = 1
 var is_running: bool = false
 
+func _ready():
+	var boarding_area: Area3D = %BoardingArea
+	boarding_area.body_entered.connect(_on_entered_boarding_area)
+	boarding_area.body_exited.connect(_on_left_boarding_area)
+
+func _on_entered_boarding_area(body: Node3D):
+	if body.has_method("join_boat"):
+		var join_boat = func ():
+			body.join_boat(self)
+			InteractionManager.unregister_interaction()
+		InteractionManager.register_interaction("Press E to join boat", join_boat)
+
+func _on_left_boarding_area(body: Node3D):
+	if body.has_method("join_boat"):
+		InteractionManager.unregister_interaction()
+
 signal player_left_arena()
 
 var player_controlled: bool = false
@@ -44,6 +60,7 @@ var arena: Node2D
 func join_2d_arena(player: Node2D, join_at_front: bool) -> void:
 	arena = scene_2d.instantiate()
 	arena.player = player
+	arena.boat_3d = self
 	if join_at_front:
 		player.position = Vector2(get_viewport().get_visible_rect().size.x, 400)
 		player.velocity = Vector2(-400, -400)
@@ -64,7 +81,6 @@ func _on_player_took_control():
 func _on_player_left_arena(left_at_front: bool):
 	arena.queue_free()
 	var front_direction = global_basis.z
-	var boat_length = %BoatCollider.shape.get_size().z
 	if left_at_front:
 		player_left_arena.emit(front_direction * 3 + linear_velocity, Vector3(global_position + front_direction.normalized() * 3) + Vector3.UP)
 	else:

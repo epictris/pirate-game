@@ -4,6 +4,7 @@ signal player_left_arena
 signal player_took_control
 
 var player: Node2D
+var boat_3d: Node3D
 
 func _ready() -> void:
 	%FrontExitZone.connect("body_entered", body_exit_front)
@@ -23,3 +24,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		if event.pressed and event.keycode == KEY_E:
 			if %Wheel.overlaps_body(player):
 				player_took_control.emit()
+
+func _process(delta: float) -> void: 
+	var boat: Node2D = %Boat
+	boat.rotation = boat_3d.rotation.x
+	print(boat_3d.name)
+	print(boat_3d.rotation)
