@@ -18,7 +18,6 @@ func body_exit_front(body: Node2D):
 	if body == player:
 		player_left_arena.emit(true)
 	
-		
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		if event.pressed and event.keycode == KEY_E:
@@ -28,5 +27,4 @@ func _unhandled_input(event: InputEvent) -> void:
 func _process(delta: float) -> void: 
 	var boat: Node2D = %Boat
 	boat.rotation = boat_3d.rotation.x
-	print(boat_3d.name)
-	print(boat_3d.rotation)
+	boat.position.y = boat_3d.global_position.y * 100 + 450
