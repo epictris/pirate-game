@@ -327,8 +327,6 @@ sources/0 = SubResource("TileSetAtlasSource_grsf8")
 
 [node name="Ship_level" type="Node2D"]
 script = ExtResource("1_qvj3w")
-amplitude = 3.385
-wave_length = 32.3
 
 [node name="Waves" type="Line2D" parent="."]
 position = Vector2(826, 32)
@@ -374,5 +372,3 @@ position = Vector2(197, 444)
 script = ExtResource("6_4xhj7")
 player_node = NodePath("../player_2d")
 ship_node = NodePath("../ship")
-amplitude = 2.33
-speed = 2.78

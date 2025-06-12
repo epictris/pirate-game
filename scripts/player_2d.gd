@@ -49,7 +49,7 @@ var state = animation_states.IDLE
 var running := false
 var on_ladder := false
 var can_climb := false
-
+var ship_rotation := 0.0
 
 func _ready():
 	collision_mask_default = collision_mask
@@ -130,7 +130,7 @@ func _input(event: InputEvent) -> void:
 			# Climb up or down the ladder
 			var climb_direction = Input.get_axis("climb_up", "climb_down")
 			if climb_direction != 0:
-				velocity.y = climb_direction * climb_speed
+				velocity = Vector2(0.0,climb_direction * climb_speed).rotated(-ship_rotation)
 				state = animation_states.CLIMB
 				player_sprite.play("climb")
 			else:

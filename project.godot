@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 HealthClass="*res://scripts/health_class.gd"
 GlobalScenes="*res://scripts/global_scenes.gd"
+GlobalShipData="*res://scripts/global_ship_data.gd"
 
 [debug_draw_3d]
 
@@ -32,6 +33,7 @@ window/stretch/mode="viewport"
 
 buoyant=""
 ladders=""
+on_ship=""
 
 [input]
 
