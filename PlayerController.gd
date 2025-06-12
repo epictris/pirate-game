@@ -51,5 +51,3 @@ func player_left_boat(velocity: Vector3, location: Vector3):
 
 func reset_timer():
 	can_join_scene = true
-	
-	
