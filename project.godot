@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Pirate Game"
-run/main_scene="uid://clqvc5an3mf3w"
+run/main_scene="uid://c4hnqdkt2sjgv"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -31,9 +31,6 @@ window/stretch/mode="viewport"
 [global_group]
 
 buoyant=""
-
-[global_group]
-
 ladders=""
 
 [input]
