@@ -1,0 +1,82 @@
+[gd_scene load_steps=8 format=3 uid="uid://c42f18rox8lnl"]
+
+[ext_resource type="Script" uid="uid://crsf8j6qq6b8r" path="res://Ship.gd" id="1_4cq66"]
+[ext_resource type="PackedScene" uid="uid://b8p7jq0abvlnl" path="res://Boat2D.tscn" id="2_v4325"]
+[ext_resource type="PackedScene" uid="uid://delgodvwvhndo" path="res://resources/boat.fbx" id="3_v4325"]
+[ext_resource type="Script" uid="uid://blqu4wvpbb5r0" path="res://scenes/Sail.gd" id="4_c3vuw"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_doq14"]
+size = Vector3(0.704346, 1.47557, 1.67595)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xwkqa"]
+albedo_color = Color(0.35, 0.23345, 0.091, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_78o8j"]
+material = SubResource("StandardMaterial3D_xwkqa")
+size = Vector3(0.05, 2, 0.05)
+
+[node name="Boat" type="RigidBody3D" node_paths=PackedStringArray("sail_node")]
+script = ExtResource("1_4cq66")
+scene_2d = ExtResource("2_v4325")
+sail_node = NodePath("boat2/Sail")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -0.00915527, 1.02601, 0.0135296)
+shape = SubResource("BoxShape3D_doq14")
+debug_color = Color(0.646919, 0.262419, 0, 1)
+
+[node name="boat2" parent="." instance=ExtResource("3_v4325")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, -0.121929, 0)
+
+[node name="Mast" type="MeshInstance3D" parent="boat2"]
+transform = Transform3D(1, 0, 0, 0, 0.999582, 0.0289161, 0, -0.0289161, 0.999582, 0, 1.10571, 0.519235)
+mesh = SubResource("BoxMesh_78o8j")
+
+[node name="Sail" type="Node3D" parent="boat2" node_paths=PackedStringArray("top_left", "top_right", "bottom_left", "bottom_right", "rope_fixture")]
+transform = Transform3D(0.05, 0, 0, 0, 2, 0, 0, 0, 0.05, 0, 1.10571, 0.519235)
+script = ExtResource("4_c3vuw")
+top_left = NodePath("TopLeft")
+top_right = NodePath("TopRight")
+bottom_left = NodePath("BottomLeft")
+bottom_right = NodePath("BottomRight")
+rope_fixture = NodePath("../RopeFixture")
+
+[node name="Mast2" type="MeshInstance3D" parent="boat2/Sail"]
+transform = Transform3D(20, 0, 0, 0, -0.0126082, 0.49978, 0, -16.9925, -0.593326, 0, -0.210671, -16.8201)
+mesh = SubResource("BoxMesh_78o8j")
+skeleton = NodePath("../..")
+
+[node name="Mast3" type="MeshInstance3D" parent="boat2/Sail"]
+transform = Transform3D(20, 0, 0, 0, 0.117152, 0.4603, 0, -11.0472, 7.81013, 0, 0.410956, -11.2782)
+mesh = SubResource("BoxMesh_78o8j")
+skeleton = NodePath("../..")
+
+[node name="TopLeft" type="Marker3D" parent="boat2/Sail"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.522507, -21.9956)
+
+[node name="TopRight" type="Marker3D" parent="boat2/Sail"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.298959, -0.431981)
+
+[node name="BottomLeft" type="Marker3D" parent="boat2/Sail"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.215158, -33.2944)
+
+[node name="BottomRight" type="Marker3D" parent="boat2/Sail"]
+transform = Transform3D(0.999999, 0, 0, 0, 1, 0, 0, 0, 0.999999, 0, -0.19913, 0.134158)
+
+[node name="RopeFixture" type="Marker3D" parent="boat2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.477673, -1.21404)
+
+[node name="ProbeContainer" type="Node3D" parent="."]
+
+[node name="Probe1" type="Marker3D" parent="ProbeContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.137595, -1.88361)
+
+[node name="Probe2" type="Marker3D" parent="ProbeContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.137595, 1.90599)
+
+[node name="Probe3" type="Marker3D" parent="ProbeContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.137595, -0.785077)
+
+[node name="Probe4" type="Marker3D" parent="ProbeContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.137595, 0.578754)

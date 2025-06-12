@@ -1,13 +1,13 @@
-[gd_scene load_steps=14 format=3 uid="uid://c4hnqdkt2sjgv"]
+[gd_scene load_steps=14 format=3 uid="uid://cfku2o7mngso6"]
 
 [ext_resource type="PackedScene" uid="uid://bjugq1l2b1ng8" path="res://scenes/WaterPlane.tscn" id="1_1bvp3"]
-[ext_resource type="Script" uid="uid://c5lwgmegj6lhl" path="res://PlayerController.gd" id="2_lquwl"]
-[ext_resource type="Script" uid="uid://bi661sjxr1er4" path="res://PlayerCamera.gd" id="4_1bvp3"]
+[ext_resource type="Script" uid="uid://1c2uwyf3kyn" path="res://PlayerController.gd" id="2_lquwl"]
+[ext_resource type="Script" path="res://PlayerCamera.gd" id="4_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://df71yax4lys6c" path="res://scenes/Ship.tscn" id="4_5vw27"]
-[ext_resource type="Script" uid="uid://bjimef0diywdg" path="res://UI.gd" id="6_7mycd"]
-[ext_resource type="Texture2D" uid="uid://djae4sghha7sq" path="res://resources/wind.webp" id="7_5vw27"]
+[ext_resource type="Script" path="res://UI.gd" id="6_7mycd"]
+[ext_resource type="Texture2D" path="res://resources/wind.webp" id="7_5vw27"]
 [ext_resource type="Texture2D" uid="uid://duo03ms62qhff" path="res://resources/wheel.webp" id="7_272bh"]
-[ext_resource type="Texture2D" uid="uid://cw4me0y27vd17" path="res://resources/arrow.webp" id="8_5vw27"]
+[ext_resource type="Texture2D" path="res://resources/arrow.webp" id="8_5vw27"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0xm2m"]
 

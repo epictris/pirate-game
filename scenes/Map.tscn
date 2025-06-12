@@ -1,8 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://bcctp5jpheo65"]
-
-[ext_resource type="PackedScene" uid="uid://bjugq1l2b1ng8" path="res://scenes/WaterPlane.tscn" id="1_5hauk"]
-
-[node name="Map" type="Node3D"]
-
-[node name="WaterPlane" parent="." instance=ExtResource("1_5hauk")]
-transform = Transform3D(3.48495, 0, 0, 0, 1, 0, 0, 0, 3.52828, -0.0442777, 0, 0.137267)

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cw4me0y27vd17"
-path="res://.godot/imported/arrow.webp-829e039d893e7367c0f75e74facaa865.ctex"
+uid="uid://dny6fk55fk4pw"
+path="res://.godot/imported/boat_side_view.png-c65d63bc14df0904f801d286d9332ea7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/arrow.webp"
-dest_files=["res://.godot/imported/arrow.webp-829e039d893e7367c0f75e74facaa865.ctex"]
+source_file="res://resources/boat_side_view.png"
+dest_files=["res://.godot/imported/boat_side_view.png-c65d63bc14df0904f801d286d9332ea7.ctex"]
 
 [params]
 

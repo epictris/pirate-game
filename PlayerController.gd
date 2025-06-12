@@ -1,46 +1,55 @@
-extends Node3D
+extends Node
 
-signal wheel_angle_changed(new_angle)
-signal boat_rotation_changed(new_angle)
-signal rope_slack_changed(new_slack)
+var current_2d_scene: Node2D
+@export var player_scene_3d: PackedScene
+@export var player_scene_2d: PackedScene
+@export var player_3d: CharacterBody3D
 
-@onready var boat: RigidBody3D = get_node('/root/Main/PlayerController/Boat')
+@export var boarded_boat: Node3D
 
-@export var turn_rate: float = 0.1
-@export var max_wheel_angle: float = 0.03
+var player_2d: CharacterBody2D
 
-@export var max_sheet_length: float = 10
-@export var min_sheet_length: float = 1
-@export var sheet_release_speed: float = 3
-@export var sheet_haul_speed: float = 1
-@export var sail_length = 20
+var can_join_scene: bool = true
 
-var wheel_angle: float = 0
-var main_sheet_length = 1
+func _ready():
+	if player_3d:
+		player_3d.connect("body_entered_area", _on_player_3d_collision)
+	
+func _process(delta: float) -> void:
+	if player_3d:
+		%Camera3D.global_position.x = player_3d.global_position.x
+		%Camera3D.global_position.z = player_3d.global_position.z + 5
+	
+	elif boarded_boat:
+		%Camera3D.global_position.x = boarded_boat.global_position.x
+		%Camera3D.global_position.z = boarded_boat.global_position.z + 5
 
-func _process(delta):
-	var angle_changed: bool = false
-	if Input.is_action_pressed("turn_right") || Input.is_action_just_pressed("turn_right"):
-		wheel_angle -= turn_rate * delta
-		angle_changed = true
+func _on_player_3d_collision(collision: KinematicCollision3D) -> void:
+	var collided_with: Node3D = collision.get_collider()
+	
+	print(collision.get_position())
+	print(collided_with.global_position)
+	
+	var collision_angle = Vector2(collision.get_position().x, collision.get_position().z).direction_to(Vector2(collided_with.global_position.x, collided_with.global_position.z)).dot(Vector2(collided_with.global_basis.z.x, collided_with.global_basis.z.z))
+
+	if collided_with.has_method("join_2d_arena"):
+		player_3d.queue_free()
+		boarded_boat = collided_with
+		boarded_boat.connect("player_left_arena", player_left_boat)
+		collided_with.join_2d_arena(player_scene_2d.instantiate(), collision_angle < 0)
 		
-	elif Input.is_action_pressed("turn_left") || Input.is_action_just_pressed("turn_left"):
-		wheel_angle += turn_rate  * delta
-		angle_changed = true
-		
-	else:
-		angle_changed = true
-		wheel_angle = lerp(wheel_angle, 0.0, turn_rate)
+	get_tree().create_timer(0.5).timeout.connect(reset_timer)
+	
+func player_left_boat(velocity: Vector3, location: Vector3):
+	player_3d = player_scene_3d.instantiate()
+	player_3d.velocity = velocity
+	player_3d.connect("body_entered_area", _on_player_3d_collision)
+	add_child(player_3d)
+	player_3d.global_position = location
+	boarded_boat.disconnect("player_left_arena", player_left_boat)
+	boarded_boat = null
+
+func reset_timer():
+	can_join_scene = true
 	
 	
-	if wheel_angle > 0:
-		wheel_angle = min(max_wheel_angle, wheel_angle)
-	else:
-		wheel_angle = max(-max_wheel_angle, wheel_angle)
-		
-	if angle_changed:
-		wheel_angle_changed.emit(wheel_angle)
-	
-func _physics_process(delta: float) -> void:
-	boat.rotate_y(wheel_angle)
-	boat_rotation_changed.emit(-(boat.rotation.y - PI/2))
