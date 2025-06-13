@@ -20,6 +20,11 @@ config/icon="res://icon.svg"
 HealthClass="*res://scripts/health_class.gd"
 GlobalScenes="*res://scripts/global_scenes.gd"
 GlobalShipData="*res://scripts/global_ship_data.gd"
+GlobalEnums="*res://scripts/global_enums.gd"
+
+[debug]
+
+settings/stdout/print_fps=true
 
 [debug_draw_3d]
 
