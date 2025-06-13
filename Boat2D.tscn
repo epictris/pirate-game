@@ -1,20 +1,56 @@
-[gd_scene load_steps=15 format=3 uid="uid://b8p7jq0abvlnl"]
+[gd_scene load_steps=20 format=3 uid="uid://b8p7jq0abvlnl"]
 
 [ext_resource type="Script" uid="uid://brxmhb8lgsqd5" path="res://boat_2d.gd" id="1_bg081"]
+[ext_resource type="Shader" uid="uid://1m5shxjm4fst" path="res://shaders/water_2d.gdshader" id="2_ku6p5"]
 [ext_resource type="Texture2D" uid="uid://duo03ms62qhff" path="res://resources/wheel.webp" id="2_kumja"]
+[ext_resource type="Script" uid="uid://p7lq47byvd5" path="res://color_rect.gd" id="3_8fa22"]
 [ext_resource type="Texture2D" uid="uid://dny6fk55fk4pw" path="res://resources/boat_side_view.png" id="3_wdr4r"]
 
-[sub_resource type="Gradient" id="Gradient_kumja"]
-colors = PackedColorArray(0.238344, 0.759099, 1, 1, 0.461237, 0.886534, 1, 1)
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_s43ok"]
+noise_type = 3
+fractal_type = 2
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_wdr4r"]
-gradient = SubResource("Gradient_kumja")
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_4hfaj"]
+seamless = true
+as_normal_map = true
+bump_strength = 1.5
+noise = SubResource("FastNoiseLite_s43ok")
 
-[sub_resource type="Gradient" id="Gradient_ccv1a"]
-colors = PackedColorArray(0, 0.336557, 0.276533, 1, 2.45467e-06, 0.463742, 0.621247, 1)
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_siums"]
+noise_type = 3
+seed = 10
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_grg7l"]
-gradient = SubResource("Gradient_ccv1a")
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_w6t3v"]
+seamless = true
+as_normal_map = true
+bump_strength = 1.5
+noise = SubResource("FastNoiseLite_siums")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_lcm70"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_inc1t"]
+seamless = true
+bump_strength = 1.5
+noise = SubResource("FastNoiseLite_lcm70")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cnt35"]
+shader = ExtResource("2_ku6p5")
+shader_parameter/texture_normal = SubResource("NoiseTexture2D_4hfaj")
+shader_parameter/texture_normal2 = SubResource("NoiseTexture2D_w6t3v")
+shader_parameter/wave = SubResource("NoiseTexture2D_inc1t")
+shader_parameter/noise_scale = 100.0
+shader_parameter/wave_time = 0.0
+shader_parameter/wave_speed = 0.02
+shader_parameter/height_scale = 2.0
+shader_parameter/world_position = Vector3(0, 0, -1.015)
+shader_parameter/cross_section_width = 5.0
+shader_parameter/cross_section_direction = Vector3(0, 0, -1)
+shader_parameter/ocean_depth = 0.515
+shader_parameter/view_scale = 5.0
+shader_parameter/ocean_color = Vector4(0.1, 0.3, 0.6, 0.8)
+shader_parameter/foam_color = Vector4(0.9, 0.95, 1, 1)
+shader_parameter/deep_color = Vector4(0.05, 0.1, 0.3, 1)
+shader_parameter/foam_threshold = 0.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_grg7l"]
 size = Vector2(1187, 20)
@@ -44,19 +80,13 @@ fill_to = Vector2(0.65812, 0.188034)
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_bg081")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(580, 243)
-scale = Vector2(19.125, 8.59375)
-texture = SubResource("GradientTexture2D_wdr4r")
-
-[node name="TextureRect" type="TextureRect" parent="."]
-offset_left = -7.0
-offset_top = 737.0
-offset_right = 219.0
-offset_bottom = 1906.0
-rotation = -1.5708
-texture = SubResource("GradientTexture2D_grg7l")
-metadata/_edit_use_anchors_ = true
+[node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_cnt35")
+offset_left = 1.0
+offset_top = 4.0
+offset_right = 1152.0
+offset_bottom = 651.0
+script = ExtResource("3_8fa22")
 
 [node name="StaticBody2D2" type="StaticBody2D" parent="."]
 position = Vector2(572, 648)

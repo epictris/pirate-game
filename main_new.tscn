@@ -29,7 +29,7 @@ environment = SubResource("Environment_1bvp3")
 transform = Transform3D(0.819546, -0.274133, 0.503185, -0.157434, 0.736623, 0.657724, -0.550962, -0.618254, 0.560539, 0, 0, 0)
 
 [node name="WaterPlane" parent="." instance=ExtResource("1_i3bab")]
-transform = Transform3D(200, 0, 0, 0, 1, 0, 0, 0, 200, 0, 0, 0)
+transform = Transform3D(100, 0, 0, 0, 1, 0, 0, 0, 100, 0, 0, 0)
 
 [node name="PlayerController" parent="." node_paths=PackedStringArray("player_3d") groups=["buoyant"] instance=ExtResource("6_w6t3v")]
 player_scene_3d = ExtResource("3_u24s4")
@@ -37,13 +37,14 @@ player_scene_2d = ExtResource("4_i3bab")
 player_3d = NodePath("PlayerBody")
 
 [node name="PlayerBody" parent="PlayerController" instance=ExtResource("3_u24s4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.117512, 0, -1.30731)
 
 [node name="BuoyancyManager" type="Node" parent="." node_paths=PackedStringArray("water")]
 script = ExtResource("5_cf05q")
 water = NodePath("../WaterPlane")
 
 [node name="Ship" parent="." groups=["buoyant"] instance=ExtResource("6_i3bab")]
-transform = Transform3D(-0.470011, 0, -0.882661, 0, 1, 0, 0.882661, 0, -0.470011, -10.42, 1.04815, -5.68313)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 1.048, 0)
 
 [node name="InteractionUI" type="Control" parent="."]
 layout_mode = 3
@@ -61,3 +62,9 @@ offset_right = 1152.0
 offset_bottom = 98.0
 label_settings = SubResource("LabelSettings_u24s4")
 horizontal_alignment = 1
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0

@@ -27,4 +27,4 @@ func _unhandled_input(event: InputEvent) -> void:
 func _process(delta: float) -> void: 
 	var boat: Node2D = %Boat
 	boat.rotation = boat_3d.rotation.x
-	boat.position.y = boat_3d.global_position.y * 100 + 450
+	boat.position.y = 700 - (boat_3d.global_position.y * 250)

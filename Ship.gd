@@ -12,9 +12,9 @@ var submerged := false
 @export var sail_node: Node3D
 @export var wind_direction: Vector3 = Vector3(0, 0, -1).normalized()
 @export var wind_strength: float = 1
-@export var rope_slack: float = 0.5
+@export var rope_slack: float = 1
 @export var change_slack_rate = 2
-@export var max_velocity: float = 5
+@export var max_velocity: float = 0
 
 @export var water_drag_coefficient: float = 0.8
 @export var angular_water_drag: float = 2.0
@@ -144,7 +144,7 @@ func apply_buoyancy(water: MeshInstance3D):
 func _physics_process(delta: float) -> void:
 	rotate_y(wheel_angle)
 	update_sail_direction(delta)
-	apply_wind_force()
+	# apply_wind_force()
 	apply_lateral_resistance()
 
 	
