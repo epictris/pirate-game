@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://douak1hhqrxde" path="res://scenes/health_component.tscn" id="2_1xypj"]
 [ext_resource type="PackedScene" uid="uid://bytynuwe2o03l" path="res://scenes/gun.tscn" id="3_snvoy"]
 [ext_resource type="Texture2D" uid="uid://b8v5lbwo6mxdv" path="res://resources/Spritesheets/sheet.png" id="4_fcnk4"]
-[ext_resource type="Script" uid="uid://ci45gf8qjxjbi" path="res://scripts/ladder_collider.gd" id="5_3ysk6"]
+[ext_resource type="Script" path="res://scripts/ladder_collider.gd" id="5_3ysk6"]
 [ext_resource type="Script" uid="uid://ddgkaydiq3yu0" path="res://scripts/classes/movement_component_cabin_boy.gd" id="6_2x3va"]
 [ext_resource type="PackedScene" uid="uid://cgqtceerqhpbb" path="res://scenes/weapons/sword.tscn" id="7_e27ft"]
 

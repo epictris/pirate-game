@@ -1,11 +1,11 @@
 [gd_scene load_steps=41 format=3 uid="uid://c54rsdh0wohuc"]
 
-[ext_resource type="Script" uid="uid://costteloie6k8" path="res://scripts/player_2d.gd" id="1_byvnx"]
+[ext_resource type="Script" path="res://scripts/player_2d.gd" id="1_byvnx"]
 [ext_resource type="PackedScene" uid="uid://douak1hhqrxde" path="res://scenes/health_component.tscn" id="2_kjwfp"]
 [ext_resource type="PackedScene" uid="uid://bytynuwe2o03l" path="res://scenes/gun.tscn" id="3_sxvnq"]
 [ext_resource type="Texture2D" uid="uid://b8v5lbwo6mxdv" path="res://resources/Spritesheets/sheet.png" id="4_fd0ad"]
-[ext_resource type="Script" uid="uid://ci45gf8qjxjbi" path="res://scripts/ladder_collider.gd" id="5_0eb65"]
-[ext_resource type="Script" uid="uid://86v07cx0m7km" path="res://scripts/movement_component_base.gd" id="7_t7ilk"]
+[ext_resource type="Script" path="res://scripts/ladder_collider.gd" id="5_0eb65"]
+[ext_resource type="Script" path="res://scripts/movement_component_base.gd" id="7_t7ilk"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gxk2l"]
 radius = 14.0

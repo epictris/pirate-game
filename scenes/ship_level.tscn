@@ -1,12 +1,12 @@
 [gd_scene load_steps=12 format=4 uid="uid://bblurp18uotwg"]
 
-[ext_resource type="Script" uid="uid://chillfk4vw27x" path="res://scripts/ship_level.gd" id="1_qvj3w"]
+[ext_resource type="Script" path="res://scripts/ship_level.gd" id="1_qvj3w"]
 [ext_resource type="Texture2D" uid="uid://bx33hpf1t7qwa" path="res://Terrain (16x16).png" id="1_r7cn6"]
 [ext_resource type="PackedScene" uid="uid://cm4oqvbavrb5" path="res://scenes/classes/class_cabin_boy.tscn" id="3_1ffpu"]
-[ext_resource type="Script" uid="uid://6r00fnknpgq" path="res://scripts/ship.gd" id="3_nly5x"]
-[ext_resource type="PackedScene" uid="uid://dehqu2cqtq55m" path="res://scenes/health_display.tscn" id="4_pr3uh"]
-[ext_resource type="Script" uid="uid://4c8t686rskyl" path="res://scripts/rotation_manager.gd" id="6_4xhj7"]
-[ext_resource type="PackedScene" uid="uid://cj1ywon8fwi0t" path="res://scenes/crate.tscn" id="7_1ffpu"]
+[ext_resource type="Script" path="res://scripts/ship.gd" id="3_nly5x"]
+[ext_resource type="PackedScene" path="res://scenes/health_display.tscn" id="4_pr3uh"]
+[ext_resource type="Script" path="res://scripts/rotation_manager.gd" id="6_4xhj7"]
+[ext_resource type="PackedScene" uid="uid://cwml52cqugr7i" path="res://scenes/crate.tscn" id="7_1ffpu"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pr3uh"]
 texture = ExtResource("1_r7cn6")
@@ -380,3 +380,9 @@ amplitude = 0.565
 
 [node name="crate" parent="." instance=ExtResource("7_1ffpu")]
 position = Vector2(630, 365)
+size2 = 10.0
+
+[node name="crate2" parent="." instance=ExtResource("7_1ffpu")]
+position = Vector2(740, 343)
+mass = 5.043
+size2 = 40.0
