@@ -1,10 +1,14 @@
 extends Node2D
 
+class_name ShipArena
+
 signal player_left_arena
 signal player_took_control
 
 var player: Node2D
 var boat_3d: Node3D
+
+const EDGE_BUFFER: float = 1.0 # meters between ship and edge of arena
 
 func _ready() -> void:
 	%FrontExitZone.connect("body_entered", body_exit_front)
@@ -24,7 +28,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			if %Wheel.overlaps_body(player):
 				player_took_control.emit()
 
-func _process(delta: float) -> void: 
+func _process(_delta: float) -> void: 
 	var boat: Node2D = %Boat
 	boat.rotation = boat_3d.rotation.x
-	boat.position.y = 700 - (boat_3d.global_position.y * 250)
+	boat.position.y = 720 - (boat_3d.global_position.y * 300)

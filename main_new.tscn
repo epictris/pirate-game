@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://clqvc5an3mf3w"]
+[gd_scene load_steps=13 format=3 uid="uid://clqvc5an3mf3w"]
 
 [ext_resource type="PackedScene" uid="uid://bjugq1l2b1ng8" path="res://scenes/WaterPlane.tscn" id="1_i3bab"]
 [ext_resource type="PackedScene" uid="uid://ccbdr4sugn3lw" path="res://PlayerBody.tscn" id="3_u24s4"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://c42f18rox8lnl" path="res://ship.tscn" id="6_i3bab"]
 [ext_resource type="PackedScene" uid="uid://bofsu8bkidjwg" path="res://PlayerController.tscn" id="6_w6t3v"]
 [ext_resource type="Script" uid="uid://yf3jtkvnedig" path="res://interaction_ui.gd" id="7_u24s4"]
+[ext_resource type="PackedScene" uid="uid://dyqhgnaq4t5tb" path="res://2d_water.tscn" id="8_t54wq"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0xm2m"]
 
@@ -21,6 +22,17 @@ sky = SubResource("Sky_h2yge")
 font_size = 32
 
 [node name="Main" type="Node3D"]
+visible = false
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.65628, 8.59218)
+
+[node name="2DWater" parent="." instance=ExtResource("8_t54wq")]
+visible = false
+offset_left = 7.0
+offset_top = -235.0
+offset_right = 2007.0
+offset_bottom = 1764.19
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_1bvp3")
@@ -29,7 +41,7 @@ environment = SubResource("Environment_1bvp3")
 transform = Transform3D(0.819546, -0.274133, 0.503185, -0.157434, 0.736623, 0.657724, -0.550962, -0.618254, 0.560539, 0, 0, 0)
 
 [node name="WaterPlane" parent="." instance=ExtResource("1_i3bab")]
-transform = Transform3D(100, 0, 0, 0, 1, 0, 0, 0, 100, 0, 0, 0)
+transform = Transform3D(100, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="PlayerController" parent="." node_paths=PackedStringArray("player_3d") groups=["buoyant"] instance=ExtResource("6_w6t3v")]
 player_scene_3d = ExtResource("3_u24s4")
@@ -62,9 +74,3 @@ offset_right = 1152.0
 offset_bottom = 98.0
 label_settings = SubResource("LabelSettings_u24s4")
 horizontal_alignment = 1
-
-[node name="Control" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0

@@ -57,7 +57,7 @@ var player_controlled: bool = false
 
 var arena: Node2D
 
-func join_2d_arena(player: Node2D, join_at_front: bool) -> void:
+func join_2d_arena(player: CharacterBody2D, join_at_front: bool) -> void:
 	arena = scene_2d.instantiate()
 	arena.player = player
 	arena.boat_3d = self

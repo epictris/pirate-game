@@ -1,0 +1,59 @@
+[gd_scene load_steps=10 format=3 uid="uid://dyqhgnaq4t5tb"]
+
+[ext_resource type="Shader" uid="uid://1m5shxjm4fst" path="res://shaders/water_2d.gdshader" id="1_3sc51"]
+[ext_resource type="Script" uid="uid://cjglrtbnrk2pd" path="res://2d_water.gd" id="2_hsaoj"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_s43ok"]
+noise_type = 3
+fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_4hfaj"]
+seamless = true
+as_normal_map = true
+bump_strength = 1.5
+noise = SubResource("FastNoiseLite_s43ok")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_siums"]
+noise_type = 3
+seed = 10
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_w6t3v"]
+seamless = true
+as_normal_map = true
+bump_strength = 1.5
+noise = SubResource("FastNoiseLite_siums")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_lcm70"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_inc1t"]
+seamless = true
+bump_strength = 1.5
+noise = SubResource("FastNoiseLite_lcm70")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hsaoj"]
+shader = ExtResource("1_3sc51")
+shader_parameter/texture_normal = SubResource("NoiseTexture2D_4hfaj")
+shader_parameter/texture_normal2 = SubResource("NoiseTexture2D_w6t3v")
+shader_parameter/wave = SubResource("NoiseTexture2D_inc1t")
+shader_parameter/noise_scale = 100.0
+shader_parameter/wave_time = 0.0
+shader_parameter/wave_speed = 0.02
+shader_parameter/height_scale = 2.0
+shader_parameter/world_position = Vector3(0, 3, 0)
+shader_parameter/cross_section_width = 5.0
+shader_parameter/cross_section_direction = Vector3(0, 0, -1)
+shader_parameter/ocean_depth = 10.0
+shader_parameter/view_scale = 1.0
+shader_parameter/rect_size = Vector2(1687, 5000)
+shader_parameter/ocean_color = Vector4(0.1, 0.3, 0.6, 0.8)
+shader_parameter/foam_color = Vector4(0.9, 0.95, 1, 1)
+shader_parameter/deep_color = Vector4(0.05, 0.1, 0.3, 1)
+shader_parameter/foam_threshold = 0.0
+
+[node name="2DWater" type="ColorRect"]
+material = SubResource("ShaderMaterial_hsaoj")
+offset_left = 2.0
+offset_top = -21.0
+offset_right = 1689.0
+offset_bottom = 4979.0
+script = ExtResource("2_hsaoj")
