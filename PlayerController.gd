@@ -19,11 +19,11 @@ func _ready():
 func _process(delta: float) -> void:
 	if player_3d:
 		%Camera3D.global_position.x = player_3d.global_position.x
-		%Camera3D.global_position.z = player_3d.global_position.z + 5
+		%Camera3D.global_position.z = player_3d.global_position.z + 15
 	
 	elif boarded_boat:
 		%Camera3D.global_position.x = boarded_boat.global_position.x
-		%Camera3D.global_position.z = boarded_boat.global_position.z + 5
+		%Camera3D.global_position.z = boarded_boat.global_position.z + 15
 
 func player_joined_boat(boat: Node3D):
 	if boat.has_method("join_2d_arena"):

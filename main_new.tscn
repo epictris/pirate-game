@@ -22,17 +22,15 @@ sky = SubResource("Sky_h2yge")
 font_size = 32
 
 [node name="Main" type="Node3D"]
-visible = false
-
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.65628, 8.59218)
 
 [node name="2DWater" parent="." instance=ExtResource("8_t54wq")]
 visible = false
-offset_left = 7.0
-offset_top = -235.0
-offset_right = 2007.0
-offset_bottom = 1764.19
+offset_right = 0.0
+offset_bottom = 0.0
+position_3d = Vector3(0, 0, 0)
+width_3d = 0.0
+height_3d = 0.0
+right_vector_3d = Vector3(0, 0, 0)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_1bvp3")
@@ -41,7 +39,7 @@ environment = SubResource("Environment_1bvp3")
 transform = Transform3D(0.819546, -0.274133, 0.503185, -0.157434, 0.736623, 0.657724, -0.550962, -0.618254, 0.560539, 0, 0, 0)
 
 [node name="WaterPlane" parent="." instance=ExtResource("1_i3bab")]
-transform = Transform3D(100, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+transform = Transform3D(100, 0, 0, 0, 1, 0, 0, 0, 100, 0, 0, 0)
 
 [node name="PlayerController" parent="." node_paths=PackedStringArray("player_3d") groups=["buoyant"] instance=ExtResource("6_w6t3v")]
 player_scene_3d = ExtResource("3_u24s4")
@@ -56,7 +54,7 @@ script = ExtResource("5_cf05q")
 water = NodePath("../WaterPlane")
 
 [node name="Ship" parent="." groups=["buoyant"] instance=ExtResource("6_i3bab")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 1.048, 0)
+transform = Transform3D(0.744987, 0, 0.667079, 0, 1, 0, -0.667079, 0, 0.744987, 5.93832, 1.048, 11.0545)
 
 [node name="InteractionUI" type="Control" parent="."]
 layout_mode = 3

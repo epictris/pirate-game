@@ -59,23 +59,17 @@ var arena: Node2D
 
 func join_2d_arena(player: CharacterBody2D, join_at_front: bool) -> void:
 	arena = scene_2d.instantiate()
-	arena.player = player
+	add_child(arena)
+	arena.add_player_to_scene(player)
 	arena.boat_3d = self
-	if join_at_front:
-		player.position = Vector2(get_viewport().get_visible_rect().size.x, 400)
-		player.velocity = Vector2(-400, -400)
-	else:
-		player.position = Vector2(0, 400)
-		player.velocity = Vector2(400, -400)
-	arena.add_child(player)
+
 	arena.connect("player_took_control", _on_player_took_control)
 	arena.connect("player_left_arena", _on_player_left_arena)
-	add_child(arena)
 	
 	
 func _on_player_took_control():
 	player_controlled = true
-	remove_child(arena)
+	arena.hide()
 
 
 func _on_player_left_arena(left_at_front: bool):
@@ -90,7 +84,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		if event.pressed and event.keycode == KEY_ESCAPE and player_controlled:
 			if arena:
-				add_child(arena)
+				arena.show()
 			player_controlled = false
 
 var wheel_angle: float = 0
@@ -144,7 +138,7 @@ func apply_buoyancy(water: MeshInstance3D):
 func _physics_process(delta: float) -> void:
 	rotate_y(wheel_angle)
 	update_sail_direction(delta)
-	# apply_wind_force()
+	apply_wind_force()
 	apply_lateral_resistance()
 
 	
@@ -233,7 +227,7 @@ func apply_wind_force():
 
 	if abs(wind_angle_to_sail) > 0.1:  # Small threshold to avoid tiny forces
 		var wind_strength_on_sail = wind_strength * abs(wind_angle_to_sail)
-		var primary_force = sail_forward * wind_strength_on_sail * 100
+		var primary_force = sail_forward * wind_strength_on_sail * 30
 		var ship_force = primary_force.length() * -global_transform.basis.z
 		ship_force *= Vector3(1, 0, 1) # negate all vertical force generated from wind
 		apply_central_force(ship_force)

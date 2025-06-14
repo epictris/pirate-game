@@ -10,25 +10,20 @@ var boat_3d: Node3D
 
 const EDGE_BUFFER: float = 1.0 # meters between ship and edge of arena
 
-func _ready() -> void:
-	%FrontExitZone.connect("body_entered", body_exit_front)
-	%BackExitZone.connect("body_entered", body_exit_back)
-	
-func body_exit_back(body: Node2D):
-	if body == player:
-		player_left_arena.emit(false)
-
-func body_exit_front(body: Node2D):
-	if body == player:
-		player_left_arena.emit(true)
-	
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey:
-		if event.pressed and event.keycode == KEY_E:
-			if %Wheel.overlaps_body(player):
-				player_took_control.emit()
+		if event.pressed and event.keycode == KEY_A:
+			player_took_control.emit()
 
 func _process(_delta: float) -> void: 
-	var boat: Node2D = %Boat
+	var boat: Node2D = %Ship
 	boat.rotation = boat_3d.rotation.x
-	boat.position.y = 720 - (boat_3d.global_position.y * 300)
+	boat.position.y = -boat_3d.global_position.y * 300
+	%Water2D.set_position_3d(boat_3d.global_position)
+	%Water2D.set_right_direction_3d(Vector3(boat_3d.global_basis.x) * Vector3(1, 0, 1))
+
+func add_player_to_scene(player_to_add: CharacterBody2D) -> void:
+	player = player_to_add
+	add_child(player)
+	player.global_position = %Ship/EntryPoint.global_position
+	player.velocity = Vector2(-500, -2300)

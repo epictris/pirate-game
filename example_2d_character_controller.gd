@@ -2,9 +2,9 @@
 extends CharacterBody2D
 
 # Movement variables
-@export var speed: float = 300.0
-@export var jump_velocity: float = -400.0
-@export var acceleration: float = 1500.0
+@export var speed: float = 500.0
+@export var jump_velocity: float = -1000.0
+@export var acceleration: float = 2000.0
 @export var friction: float = 1200.0
 @export var air_acceleration: float = 500.0
 @export var air_friction: float = 200.0
