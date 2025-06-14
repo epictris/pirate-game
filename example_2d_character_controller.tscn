@@ -3,8 +3,8 @@
 [ext_resource type="Script" uid="uid://fpjwhd0j23xr" path="res://example_2d_character_controller.gd" id="1_pmidg"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_g78ey"]
-radius = 19.0
-height = 74.0
+radius = 40.0
+height = 150.0
 
 [node name="Example2DCharacterController" type="CharacterBody2D"]
 script = ExtResource("1_pmidg")
@@ -12,3 +12,6 @@ script = ExtResource("1_pmidg")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CapsuleShape2D_g78ey")
 debug_color = Color(1, 1, 1, 0.784314)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.45, 0.45)
