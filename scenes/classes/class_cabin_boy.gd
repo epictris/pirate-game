@@ -54,27 +54,6 @@ func _ready():
 			weapon.visible = false
 		weapon_point.get_child(selected_weapon).visible = true
 
-func _input(event):
-	if has_weapon:
-		if event.is_action_pressed("previous_weapon"):
-			weapon_point.get_child(selected_weapon).visible = false
-			selected_weapon = selected_weapon - 1 if selected_weapon > 0 else weapon_point.get_child_count() - 1
-			print(selected_weapon)
-			weapon_point.get_child(selected_weapon).visible = true
-
-		if event.is_action_pressed("next_weapon"):
-			weapon_point.get_child(selected_weapon).visible = false
-			selected_weapon = selected_weapon + 1 if selected_weapon < weapon_point.get_child_count() - 1 else 0
-			print(selected_weapon)
-			weapon_point.get_child(selected_weapon).visible = true
-
-		if event.is_action_pressed("attack"):
-			var weapon = weapon_point.get_child(selected_weapon)
-			if weapon.has_method("attack"):
-				weapon.attack()
-			elif weapon.has_method("dir_attack"):
-				weapon.dir_attack(is_facing_right)
-
 func handle_states():
 	match state:
 		animation_states.IDLE:
@@ -105,13 +84,33 @@ func handle_states():
 			elif is_on_floor():
 				player_sprite.play("run")
 
+func _input(event):
+	if has_weapon:
+		if event.is_action_pressed("previous_weapon"):
+			weapon_point.get_child(selected_weapon).visible = false
+			selected_weapon = selected_weapon - 1 if selected_weapon > 0 else weapon_point.get_child_count() - 1
+			print(selected_weapon)
+			weapon_point.get_child(selected_weapon).visible = true
+
+		if event.is_action_pressed("next_weapon"):
+			weapon_point.get_child(selected_weapon).visible = false
+			selected_weapon = selected_weapon + 1 if selected_weapon < weapon_point.get_child_count() - 1 else 0
+			print(selected_weapon)
+			weapon_point.get_child(selected_weapon).visible = true
+
+		if event.is_action_pressed("attack"):
+			var weapon = weapon_point.get_child(selected_weapon)
+			if weapon.has_method("attack"):
+				weapon.attack()
+			elif weapon.has_method("dir_attack"):
+				weapon.dir_attack(is_facing_right)
+
 func _process(delta):
 	handle_states()
 	#Test taking damage
 	if Input.is_action_just_pressed("take_damage"):
 		player_sprite.play("damage")
 		health_component.take_damage(25)
-	print(scale.x)
 	player_sprite.scale.x = -(abs(player_sprite.scale.x)) if not is_facing_right else abs(player_sprite.scale.x)
 
 func _physics_process(delta: float) -> void:

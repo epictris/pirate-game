@@ -50,6 +50,7 @@ func _physics_process(delta: float) -> void:
 	
 	GlobalShipData.ship_rotation = velocity_visualizer.global_rotation
 	
+	player_node.velocity -= vector_from_current_position_to_new_position * 100 if Input.is_action_just_pressed("jump") else Vector2.ZERO
 	# player_velocity_from_ship += vector_from_current_position_to_new_position
 	# velocity_visualizer.target_position = velocity_visualizer.position - vector_from_current_position_to_new_position*10
 	# if vector_from_current_position_to_new_position.y > 0.1:

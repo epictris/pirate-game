@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://cumk6675n70qt"]
-
-[ext_resource type="PackedScene" uid="uid://b5r4guelosnyn" path="res://scenes/base_class.tscn" id="1_khhvw"]
-
-[node name="cabin_boy" instance=ExtResource("1_khhvw")]
-run_speed_modifier = 500.0

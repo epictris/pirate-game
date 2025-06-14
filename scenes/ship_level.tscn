@@ -1,11 +1,12 @@
-[gd_scene load_steps=11 format=4 uid="uid://bblurp18uotwg"]
+[gd_scene load_steps=12 format=4 uid="uid://bblurp18uotwg"]
 
 [ext_resource type="Script" uid="uid://chillfk4vw27x" path="res://scripts/ship_level.gd" id="1_qvj3w"]
 [ext_resource type="Texture2D" uid="uid://bx33hpf1t7qwa" path="res://Terrain (16x16).png" id="1_r7cn6"]
-[ext_resource type="PackedScene" uid="uid://c54rsdh0wohuc" path="res://scenes/player_2d.tscn" id="2_grsf8"]
+[ext_resource type="PackedScene" uid="uid://cm4oqvbavrb5" path="res://scenes/classes/class_cabin_boy.tscn" id="3_1ffpu"]
 [ext_resource type="Script" uid="uid://6r00fnknpgq" path="res://scripts/ship.gd" id="3_nly5x"]
 [ext_resource type="PackedScene" uid="uid://dehqu2cqtq55m" path="res://scenes/health_display.tscn" id="4_pr3uh"]
 [ext_resource type="Script" uid="uid://4c8t686rskyl" path="res://scripts/rotation_manager.gd" id="6_4xhj7"]
+[ext_resource type="PackedScene" uid="uid://cj1ywon8fwi0t" path="res://scenes/crate.tscn" id="7_1ffpu"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pr3uh"]
 texture = ExtResource("1_r7cn6")
@@ -333,9 +334,8 @@ position = Vector2(826, 32)
 default_color = Color(1.92523e-06, 0.690524, 0.922543, 1)
 joint_mode = 2
 
-[node name="player_2d" parent="." node_paths=PackedStringArray("respawn_point") groups=["on_ship"] instance=ExtResource("2_grsf8")]
-position = Vector2(267, 274)
-respawn_point = NodePath("../respawn_point")
+[node name="cabin_boy" parent="." instance=ExtResource("3_1ffpu")]
+position = Vector2(273, 390)
 
 [node name="ship" type="Node2D" parent="."]
 position = Vector2(562, 601)
@@ -366,14 +366,17 @@ offset_left = 13.0
 offset_top = 13.0
 offset_right = 13.0
 offset_bottom = 13.0
-health_component_path = NodePath("../player_2d/health_component")
 
 [node name="respawn_point" type="Node2D" parent="."]
 position = Vector2(197, 444)
 
 [node name="rotation_manager" type="Node" parent="." node_paths=PackedStringArray("player_node", "ship_node", "wave_node", "velocity_visualizer")]
 script = ExtResource("6_4xhj7")
-player_node = NodePath("../player_2d")
+player_node = NodePath("../cabin_boy")
 ship_node = NodePath("../ship")
 wave_node = NodePath("../Waves")
 velocity_visualizer = NodePath("../ship/angle_up")
+amplitude = 0.565
+
+[node name="crate" parent="." instance=ExtResource("7_1ffpu")]
+position = Vector2(630, 365)

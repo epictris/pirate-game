@@ -2,7 +2,7 @@ extends Node
 
 #nodes
 @export var parent_node: CharacterBody2D = null
-@export var class_node: Node2D = null
+# @export var class_node: Node2D = null
 
 #exported variables
 @export var walk_speed : float = 300.0
@@ -13,6 +13,7 @@ extends Node
 @export var jump : float = -800.0
 @export var acceleration : float = 8.0
 @export var deceleration : float = 1500.0
+@export var dash_speed: float = 500.0
 
 var is_facing_right = true
 const gravity = 2500
@@ -20,16 +21,12 @@ const term_velocity = 10000
 var running := false
 var off_edge_timer = 0.0
 var off_edge := false
+var dashing := false
+var can_dash := true
+var dash_timer := 0.0
+var dash_cooldown := 1.0
 
 func _ready():
-	walk_speed += class_node.walk_speed_modifier
-	run_speed += class_node.run_speed_modifier
-	climb_speed += class_node.climb_speed_modifier
-	walk_max_speed += class_node.walk_max_speed_modifier
-	run_max_speed += class_node.run_max_speed_modifier
-	jump += class_node.jump_modifier
-	acceleration += class_node.acceleration_modifier
-	deceleration += class_node.deceleration_modifier
 	parent_node = get_parent() as CharacterBody2D if parent_node == null else parent_node
 	if parent_node == null:
 		push_error("MovementComponent requires a parent of type CharacterBody2D.")
@@ -89,13 +86,26 @@ func _physics_process(delta: float) -> void:
 	var move_speed = run_speed if running else walk_speed
 	
 	# Get the input direction and handle the movement/deceleration. 
-	var direction = Input.get_axis("move_left", "move_right") * max_speed
-	if direction != 0:
+	var direction = Input.get_axis("move_left", "move_right")
+	if dashing:
+		parent_node.velocity.x = direction * dash_speed
+		dash_timer += 0.1 * delta
+		print(dash_timer)
+	elif direction != 0:
 		parent_node.is_facing_right = direction > 0
 		# player_sprite.scale.x = -1 * abs(player_sprite.scale.x) if not is_facing_right else abs(player_sprite.scale.x)
-		parent_node.velocity.x = move_toward(parent_node.velocity.x, direction, move_speed * acceleration * delta)
+		parent_node.velocity.x = move_toward(parent_node.velocity.x, direction * max_speed, move_speed * acceleration * delta)
 	else:
-		parent_node.velocity.x = move_toward(parent_node.velocity.x, direction, deceleration * delta)
+		parent_node.velocity.x = move_toward(parent_node.velocity.x, direction * max_speed, deceleration * delta)
+
+	if dash_timer > 0.3 and dashing:
+		dashing = false
+		dash_timer = 0.0
+	elif dash_timer > dash_cooldown and not dashing:
+		can_dash = true
+		dash_timer = 0.0
+	dash_timer += delta if not dashing and not can_dash else dash_timer
+		
 
 	parent_node.move_and_slide()
 	

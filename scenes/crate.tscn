@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://cj1ywon8fwi0t"]
+
+[ext_resource type="Script" uid="uid://x6ivy3130xvn" path="res://scripts/crate.gd" id="1_dwt0d"]
+[ext_resource type="PackedScene" uid="uid://douak1hhqrxde" path="res://scenes/health_component.tscn" id="2_kn6iu"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_74u5o"]
+
+[node name="crate" type="RigidBody2D" node_paths=PackedStringArray("health_component")]
+script = ExtResource("1_dwt0d")
+health_component = NodePath("health_component")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_74u5o")
+
+[node name="health_component" parent="." instance=ExtResource("2_kn6iu")]
+health = 10
+max_health = 10

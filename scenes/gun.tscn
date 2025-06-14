@@ -17,3 +17,8 @@ disabled = true
 
 [node name="barrel" type="Node2D" parent="body"]
 position = Vector2(15.5, 0)
+
+[node name="can_shoot" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="can_shoot" to="." method="_on_can_shoot_timeout"]
