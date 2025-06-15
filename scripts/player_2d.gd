@@ -111,7 +111,6 @@ func _process(delta):
 	if Input.is_action_just_pressed("take_damage"):
 		player_sprite.play("damage")
 		health_component.take_damage(25)
-	print(scale.x)
 	player_sprite.scale.x = -(abs(player_sprite.scale.x)) if not is_facing_right else abs(player_sprite.scale.x)
 
 func _physics_process(delta: float) -> void:

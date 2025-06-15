@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://cu3jubo2j3jfm"]
+
+[ext_resource type="Script" uid="uid://bxb7ufdnqbuf7" path="res://scripts/weapons/bomb_explosion_script.gd" id="1_yfa8c"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_yfa8c"]
+
+[node name="bomb_explosion" type="Area2D" node_paths=PackedStringArray("collision_shape")]
+collision_mask = 5
+script = ExtResource("1_yfa8c")
+collision_shape = NodePath("CollisionShape2D")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_yfa8c")
+
+[node name="fuse_timer" type="Timer" parent="."]
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
+[connection signal="area_exited" from="." to="." method="_on_area_exited"]
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]
+[connection signal="timeout" from="fuse_timer" to="." method="_on_fuse_timer_timeout"]

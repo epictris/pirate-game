@@ -1,7 +1,7 @@
-extends Node
+extends Area2D
 
-@export var health: int = 100
-@export var max_health: int = 100
+@export var health:= 100.0
+@export var max_health:= 100.0
 var health_component : health_class
 signal health_changed
 @onready var parent = get_parent()
@@ -14,12 +14,20 @@ func _ready():
 	elif health > max_health:
 		health = max_health
 
-func take_damage(amount: int):
-	health -= amount
-	health_changed.emit()
-	if health <= 0:
-		health = 0
-		die()
+func take_damage(amount, body = null):
+	if parent and parent.has_method("shielded"):
+		if not parent.shielded(body):
+			health -= amount
+			health_changed.emit()
+			if health <= 0:
+				health = 0
+				die()
+	else:
+		health -= amount
+		health_changed.emit()
+		if health <= 0:
+			health = 0
+			die()
 
 func heal(amount: int):
 	health += amount

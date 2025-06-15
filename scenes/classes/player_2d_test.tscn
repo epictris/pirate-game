@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" uid="uid://costteloie6k8" path="res://scripts/player_2d.gd" id="1_ie3sv"]
 [ext_resource type="PackedScene" uid="uid://douak1hhqrxde" path="res://scenes/health_component.tscn" id="2_ovffs"]
-[ext_resource type="PackedScene" uid="uid://bytynuwe2o03l" path="res://scenes/gun.tscn" id="3_5dufc"]
+[ext_resource type="PackedScene" uid="uid://bytynuwe2o03l" path="res://scenes/weapons/gun.tscn" id="3_5dufc"]
 [ext_resource type="Texture2D" uid="uid://b8v5lbwo6mxdv" path="res://resources/Spritesheets/sheet.png" id="4_tdv5b"]
-[ext_resource type="Script" uid="uid://ci45gf8qjxjbi" path="res://scripts/ladder_collider.gd" id="5_otyft"]
-[ext_resource type="Script" uid="uid://86v07cx0m7km" path="res://scripts/movement_component_base.gd" id="6_1xfp4"]
+[ext_resource type="Script" path="res://scripts/ladder_collider.gd" id="5_otyft"]
+[ext_resource type="Script" path="res://scripts/movement_component_base.gd" id="6_1xfp4"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gxk2l"]
 radius = 14.0

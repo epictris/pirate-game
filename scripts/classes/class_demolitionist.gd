@@ -31,6 +31,8 @@ var collision_mask_no_projectiles = collision_mask & ~Layers.PROJECTILES
 @onready var player_sprite: AnimatedSprite2D = $player_sprite
 @onready var ladder_collider: Area2D = $ladder_collider
 @onready var weapons : Node2D = $weapon_point
+@export var shield : Node2D = null
+@export var hitscan : RayCast2D = null
 
 @export var respawn_point: Node2D = null
 const gravity = 2500
@@ -86,8 +88,6 @@ func handle_states():
 				state = animation_states.IDLE
 			elif is_on_floor():
 				player_sprite.play("walk")
-			else:
-				player_sprite.play("fall")
 		animation_states.JUMP:
 			if not is_on_floor():
 				player_sprite.play("jump")
@@ -133,6 +133,19 @@ func on_death():
 	else:
 		print("No respawn point set, player will not respawn.")
 	
+func shielded(body):
+	if shield.shield_up:
+		hitscan.target_position = body.global_position - hitscan.global_position
+		hitscan.force_raycast_update()
+		print(hitscan.is_colliding())
+		if hitscan.is_colliding():
+			print(hitscan.get_collider())
+			print(shield.collider)
+			if hitscan.get_collider() == shield.collider:
+				shield.drop_shield()
+				print("shield down")
+				return true
+	return false
 
 func _on_ladder_collider_body_entered(body: Node2D) -> void:
 	can_climb = true

@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://bytynuwe2o03l"]
+
+[ext_resource type="Script" uid="uid://cynyrb6opfnao" path="res://scripts/gun_script.gd" id="1_x77fm"]
+[ext_resource type="PackedScene" uid="uid://dsyobucutlkbq" path="res://scenes/projectile.tscn" id="2_og67c"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_k27wv"]
+size = Vector2(25, 10)
+
+[node name="gun" type="Node2D"]
+script = ExtResource("1_x77fm")
+projectile = ExtResource("2_og67c")
+
+[node name="body" type="CollisionShape2D" parent="."]
+position = Vector2(14.5, 0)
+shape = SubResource("RectangleShape2D_k27wv")
+disabled = true
+
+[node name="barrel" type="Node2D" parent="body"]
+position = Vector2(15.5, 0)
+
+[node name="can_shoot" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="can_shoot" to="." method="_on_can_shoot_timeout"]

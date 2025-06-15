@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b37e2e6jqban6" path="res://scenes/classes/class_cabin_boy.gd" id="1_2x3va"]
 [ext_resource type="PackedScene" uid="uid://douak1hhqrxde" path="res://scenes/health_component.tscn" id="2_1xypj"]
-[ext_resource type="PackedScene" uid="uid://bytynuwe2o03l" path="res://scenes/gun.tscn" id="3_snvoy"]
+[ext_resource type="PackedScene" uid="uid://bytynuwe2o03l" path="res://scenes/weapons/gun.tscn" id="3_snvoy"]
 [ext_resource type="Texture2D" uid="uid://b8v5lbwo6mxdv" path="res://resources/Spritesheets/sheet.png" id="4_fcnk4"]
 [ext_resource type="Script" path="res://scripts/ladder_collider.gd" id="5_3ysk6"]
 [ext_resource type="Script" uid="uid://ddgkaydiq3yu0" path="res://scripts/classes/movement_component_cabin_boy.gd" id="6_2x3va"]
@@ -271,6 +271,10 @@ collision_mask = 19
 script = ExtResource("1_2x3va")
 
 [node name="health_component" parent="." instance=ExtResource("2_1xypj")]
+
+[node name="hitbox" type="CollisionShape2D" parent="health_component"]
+position = Vector2(0, -20)
+shape = SubResource("CapsuleShape2D_gxk2l")
 
 [node name="hitbox" type="CollisionShape2D" parent="."]
 position = Vector2(0, -20)

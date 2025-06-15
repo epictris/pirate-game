@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://dpqui3tqclk53"]
+
+[ext_resource type="Script" uid="uid://8pmqlq7pdrqw" path="res://scripts/weapons/grenade_script.gd" id="1_i07oa"]
+[ext_resource type="PackedScene" uid="uid://cu3jubo2j3jfm" path="res://scenes/bomb_explosion.tscn" id="2_ob3kd"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ob3kd"]
+radius = 5.0
+
+[node name="grenade" type="RigidBody2D"]
+collision_mask = 3
+mass = 0.02
+continuous_cd = 1
+script = ExtResource("1_i07oa")
+explosion = ExtResource("2_ob3kd")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_ob3kd")

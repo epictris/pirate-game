@@ -39,6 +39,7 @@ window/stretch/mode="viewport"
 buoyant=""
 ladders=""
 on_ship=""
+hitbox=""
 
 [input]
 
@@ -144,3 +145,4 @@ next_weapon={
 2d_physics/layer_3="Player"
 2d_physics/layer_4="Ladders"
 2d_physics/layer_5="Projectiles"
+2d_physics/layer_6="Shields"

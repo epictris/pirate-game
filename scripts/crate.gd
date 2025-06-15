@@ -10,9 +10,7 @@ func _ready():
 	collision_shape.set_shape(shape)
 	print(collision_shape.shape.size)
 	add_child(collision_shape)
-
-func take_damage(dmg):
-	health_component.take_damage(dmg)
+	health_component.add_child(collision_shape)
 
 func on_death():
 	queue_free()
