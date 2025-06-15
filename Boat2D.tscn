@@ -47,9 +47,9 @@ scale = Vector2(1.2, 1.2)
 
 [node name="Water2D" parent="." instance=ExtResource("4_wdr4r")]
 unique_name_in_owner = true
-offset_left = 4500.0
+offset_left = -4500.0
 offset_top = -4500.0
-offset_right = 13500.0
+offset_right = 4500.0
 offset_bottom = 4500.0
 width_3d = 30.0
 height_3d = 30.0
