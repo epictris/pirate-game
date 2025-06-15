@@ -1,10 +1,9 @@
-[gd_scene load_steps=40 format=3 uid="uid://c54rsdh0wohuc"]
+[gd_scene load_steps=39 format=3 uid="uid://c54rsdh0wohuc"]
 
-[ext_resource type="Script" uid="uid://costteloie6k8" path="res://scripts/player_2d.gd" id="1_byvnx"]
 [ext_resource type="PackedScene" uid="uid://douak1hhqrxde" path="res://scenes/health_component.tscn" id="2_kjwfp"]
 [ext_resource type="PackedScene" uid="uid://bytynuwe2o03l" path="res://scenes/gun.tscn" id="3_sxvnq"]
 [ext_resource type="Texture2D" uid="uid://b8v5lbwo6mxdv" path="res://resources/Spritesheets/sheet.png" id="4_fd0ad"]
-[ext_resource type="Script" uid="uid://ci45gf8qjxjbi" path="res://scripts/ladder_collider.gd" id="5_0eb65"]
+[ext_resource type="Script" path="res://scripts/ladder_collider.gd" id="5_0eb65"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gxk2l"]
 radius = 14.0
@@ -266,7 +265,6 @@ animations = [{
 top_level = true
 collision_layer = 4
 collision_mask = 3
-script = ExtResource("1_byvnx")
 
 [node name="health_component" parent="." instance=ExtResource("2_kjwfp")]
 

@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=4 uid="uid://bblurp18uotwg"]
 
-[ext_resource type="Script" uid="uid://chillfk4vw27x" path="res://scripts/ship_level.gd" id="1_qvj3w"]
+[ext_resource type="Script" uid="uid://chillfk4vw27x" path="res://scenes/ship_level.gd" id="1_qvj3w"]
 [ext_resource type="Texture2D" uid="uid://bx33hpf1t7qwa" path="res://Terrain (16x16).png" id="1_r7cn6"]
 [ext_resource type="PackedScene" uid="uid://c54rsdh0wohuc" path="res://scenes/player_2d.tscn" id="2_grsf8"]
 [ext_resource type="PackedScene" uid="uid://dehqu2cqtq55m" path="res://scenes/health_display.tscn" id="4_pr3uh"]
@@ -332,9 +332,8 @@ position = Vector2(826, 32)
 default_color = Color(1.92523e-06, 0.690524, 0.922543, 1)
 joint_mode = 2
 
-[node name="player_2d" parent="." node_paths=PackedStringArray("respawn_point") instance=ExtResource("2_grsf8")]
+[node name="player_2d" parent="." instance=ExtResource("2_grsf8")]
 position = Vector2(267, 274)
-respawn_point = NodePath("../respawn_point")
 
 [node name="ship" type="Node2D" parent="."]
 position = Vector2(562, 601)
