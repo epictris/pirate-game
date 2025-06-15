@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://bk8dfle0ovk3i"]
+
+[ext_resource type="Script" uid="uid://wes4v070j7ba" path="res://networked_character.gd" id="1_encyl"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_dh2b2"]
+radius = 14.0
+height = 60.0
+
+[node name="NetworkedCharacter" type="CharacterBody2D"]
+script = ExtResource("1_encyl")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_dh2b2")
