@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Pirate Game"
-run/main_scene="uid://cfku2o7mngso6"
+run/main_scene="uid://epcpkiv2n3y7"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 InteractionManager="*res://autoloads/interaction_manager.gd"
 HealthClass="*res://scripts/health_class.gd"
 GlobalScenes="*res://scripts/global_scenes.gd"
+Lobby="*res://lobby.gd"
 
 [debug_draw_3d]
 
