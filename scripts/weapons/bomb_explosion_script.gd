@@ -1,16 +1,49 @@
 extends Area2D
 
 var bomb_radius := 20.0
-var bomb_damage := 10.0
+var bomb_damage := 100.0
 var shape = CircleShape2D.new()
 var has_expoded := false
 var fuse := 5.0
 @onready var fuse_timer : Timer = $fuse_timer
 var can_explode := false
 @export var collision_shape : CollisionShape2D = null
-var targets := []
 signal exploded
 signal fizzed
+
+func explode():
+	var explosion_center = global_position
+
+	# Wait one frame to ensure area updates
+	await get_tree().process_frame
+
+	var areas = get_overlapping_areas()
+	for area in areas:
+		if not area.has_method("take_damage"):
+			continue
+
+		# Create ray from explosion to body
+		var ray = RayCast2D.new()
+		ray.global_position = explosion_center
+		ray.target_position = area.global_position - explosion_center
+		ray.collision_mask = (1 << 0) | (1 << 5) #check layers 1 and 6 (walls and shields)
+		ray.enabled = true
+		ray.exclude_parent = true
+		add_child(ray)
+		ray.force_raycast_update()
+		print(ray.is_colliding())
+		if ray.is_colliding():
+			var collider = ray.get_collider()
+			print(collider)
+			if collider == area:
+				area.take_damage(bomb_damage,self)
+		else:
+			# print(area)
+			area.take_damage(bomb_damage,self)  # No collision, apply damage
+
+		ray.queue_free()
+	exploded.emit()
+	expire()
 
 func _ready():
 	fuse_timer.wait_time = fuse
@@ -30,29 +63,11 @@ func _process(delta):
 			fizzed.emit()
 			expire()
 		else:
-			collision_shape.disabled = false
-			for body in targets:
-				if body.has_method("take_damage"):
-					body.take_damage(bomb_damage,self)
+			explode()
 			has_expoded = true
-			exploded.emit()
-			expire()
-			# collision_shape.disabled = true
 
 func expire():
 	queue_free()
-
-func _on_body_exited(body:Node2D) -> void:
-	targets.erase(body)
-
-func _on_body_entered(body:Node2D) -> void:
-	targets.append(body)
-
-func _on_area_exited(area:Area2D) -> void:
-	targets.erase(area)
-
-func _on_area_entered(area:Area2D) -> void:
-	targets.append(area)
 
 func _on_fuse_timer_timeout() -> void:
 	print("exploding!")

@@ -10,7 +10,8 @@ func _ready():
 	collision_shape.set_shape(shape)
 	print(collision_shape.shape.size)
 	add_child(collision_shape)
-	health_component.add_child(collision_shape)
+	var hitbox_shape = collision_shape.duplicate()
+	health_component.add_child(hitbox_shape)
 
 func on_death():
 	queue_free()

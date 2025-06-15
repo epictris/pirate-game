@@ -8,3 +8,5 @@ script = ExtResource("1_dwt0d")
 health_component = NodePath("health_component")
 
 [node name="health_component" parent="." instance=ExtResource("2_kn6iu")]
+health = 10.0
+max_health = 10.0

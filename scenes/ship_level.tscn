@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=4 uid="uid://bblurp18uotwg"]
+[gd_scene load_steps=11 format=4 uid="uid://bblurp18uotwg"]
 
 [ext_resource type="Script" path="res://scripts/ship_level.gd" id="1_qvj3w"]
 [ext_resource type="Texture2D" uid="uid://bx33hpf1t7qwa" path="res://Terrain (16x16).png" id="1_r7cn6"]
@@ -6,7 +6,6 @@
 [ext_resource type="Script" path="res://scripts/ship.gd" id="3_nly5x"]
 [ext_resource type="Script" uid="uid://4c8t686rskyl" path="res://scripts/rotation_manager.gd" id="6_4xhj7"]
 [ext_resource type="PackedScene" uid="uid://cwml52cqugr7i" path="res://scenes/crate.tscn" id="7_1ffpu"]
-[ext_resource type="PackedScene" uid="uid://dpqui3tqclk53" path="res://scenes/weapons/grenade.tscn" id="8_8clkq"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pr3uh"]
 texture = ExtResource("1_r7cn6")
@@ -378,6 +377,3 @@ size2 = 40.0
 
 [node name="demo" parent="." instance=ExtResource("2_1ffpu")]
 position = Vector2(356, 384)
-
-[node name="grenade" parent="." instance=ExtResource("8_8clkq")]
-position = Vector2(637, 236)

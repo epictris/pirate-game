@@ -8,9 +8,9 @@ size = Vector2(49, 8)
 [node name="shield" type="Node2D"]
 script = ExtResource("1_t0abt")
 
-[node name="collider" type="Area2D" parent="."]
+[node name="collider" type="Area2D" parent="." groups=["shield"]]
 collision_layer = 32
-collision_mask = 20
+collision_mask = 53
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="collider"]
 position = Vector2(15, -25.5)

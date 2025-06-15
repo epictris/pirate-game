@@ -274,7 +274,6 @@ shield = NodePath("shield")
 hitscan = NodePath("check_shield")
 
 [node name="health_component" parent="." instance=ExtResource("2_mfv6w")]
-health = 10.0
 
 [node name="hitbox" type="CollisionShape2D" parent="health_component"]
 position = Vector2(0, -26)
@@ -315,12 +314,14 @@ script = ExtResource("6_7euxv")
 parent_node = NodePath("..")
 
 [node name="shield" parent="." instance=ExtResource("7_mfv6w")]
+position = Vector2(4, 0)
 
 [node name="health_display" parent="." instance=ExtResource("8_da0nn")]
-offset_left = 13.0
-offset_top = 13.0
-offset_right = 13.0
-offset_bottom = 13.0
+offset_left = -18.0
+offset_top = -66.0
+offset_right = -18.0
+offset_bottom = -66.0
+scale = Vector2(0.253926, 0.253926)
 health_component_path = NodePath("../health_component")
 
 [node name="check_shield" type="RayCast2D" parent="."]
