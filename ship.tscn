@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://c42f18rox8lnl"]
 
-[ext_resource type="Script" uid="uid://crsf8j6qq6b8r" path="res://Ship.gd" id="1_4cq66"]
+[ext_resource type="Script" uid="uid://cfwd55wi0hbvf" path="res://Ship.gd" id="1_4cq66"]
 [ext_resource type="PackedScene" uid="uid://b8p7jq0abvlnl" path="res://Boat2D.tscn" id="2_v4325"]
 [ext_resource type="PackedScene" uid="uid://delgodvwvhndo" path="res://resources/boat.fbx" id="3_v4325"]
 [ext_resource type="Script" uid="uid://blqu4wvpbb5r0" path="res://scenes/Sail.gd" id="4_c3vuw"]

@@ -44,7 +44,7 @@ shader_parameter/cross_section_width = 5.0
 shader_parameter/cross_section_direction = Vector3(0, 0, 0)
 shader_parameter/ocean_depth = 3.0
 shader_parameter/view_scale = 1.0
-shader_parameter/rect_size = Vector2(9000, 9000)
+shader_parameter/rect_size = Vector2(0, 0)
 shader_parameter/ocean_color = Vector4(0.1, 0.3, 0.6, 0.8)
 shader_parameter/foam_color = Vector4(0.9, 0.95, 1, 1)
 shader_parameter/deep_color = Vector4(0.05, 0.1, 0.3, 1)
@@ -52,10 +52,4 @@ shader_parameter/foam_threshold = 0.5
 
 [node name="2DWater" type="ColorRect"]
 material = SubResource("ShaderMaterial_hsaoj")
-offset_right = 1000.0
-offset_bottom = 1000.0
 script = ExtResource("2_hsaoj")
-position_3d = null
-width_3d = null
-height_3d = null
-right_vector_3d = null

@@ -51,7 +51,5 @@ offset_left = -4500.0
 offset_top = -4500.0
 offset_right = 4500.0
 offset_bottom = 4500.0
-position_3d = Vector3(0, 0, 0)
 width_3d = 30.0
 height_3d = 30.0
-right_vector_3d = Vector3(0, 0, 0)

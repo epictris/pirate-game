@@ -1,10 +1,12 @@
 @tool
 extends ColorRect
 
-@export var position_3d: Vector3
 @export var width_3d: float
 @export var height_3d: float
+
+@export var position_3d: Vector3
 @export var right_vector_3d: Vector3
+
 
 func _ready():
 	# Set initial shader parameters

@@ -25,12 +25,6 @@ font_size = 32
 
 [node name="2DWater" parent="." instance=ExtResource("8_t54wq")]
 visible = false
-offset_right = 0.0
-offset_bottom = 0.0
-position_3d = Vector3(0, 0, 0)
-width_3d = 0.0
-height_3d = 0.0
-right_vector_3d = Vector3(0, 0, 0)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_1bvp3")
