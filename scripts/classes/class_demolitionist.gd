@@ -34,6 +34,7 @@ var collision_mask_no_projectiles = collision_mask & ~Layers.PROJECTILES
 @onready var weapons : Node2D = $weapon_point
 @export var shield : Node2D = null
 @export var hitscan : RayCast2D = null
+@onready var explosion : PackedScene = preload("res://scenes/bomb_explosion.tscn")
 
 @onready var directionals : Node2D = $directionals
 
@@ -49,6 +50,7 @@ var can_climb := false
 var ship_rotation := 0.0
 var has_weapon := false
 var selected_weapon := 0
+var bombs := 3
 
 func _ready():
 	collision_mask_default = collision_mask
@@ -60,6 +62,13 @@ func _ready():
 		weapon_point.get_child(selected_weapon).visible = true
 
 func _input(event):
+	if event.is_action_pressed("special_ability"):
+		if bombs > 0:
+			var exp_instance = explosion.instantiate()
+			exp_instance.global_position = global_position
+			exp_instance.setup(40.0,40.0,6.0)
+			GlobalScenes.current_2d_scene.add_child(exp_instance)
+
 	if has_weapon:
 		if event.is_action_pressed("previous_weapon"):
 			weapon_point.get_child(selected_weapon).visible = false

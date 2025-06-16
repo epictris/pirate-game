@@ -13,7 +13,7 @@ collision_layer = 32
 collision_mask = 53
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="collider"]
-position = Vector2(15, -25.5)
+position = Vector2(19, -25.5)
 rotation = -1.5708
 shape = SubResource("RectangleShape2D_iokhx")
 one_way_collision_margin = 0.0

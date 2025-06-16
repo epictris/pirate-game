@@ -1,13 +1,9 @@
-[gd_scene load_steps=14 format=3 uid="uid://cfku2o7mngso6"]
+[gd_scene load_steps=10 format=3 uid="uid://cfku2o7mngso6"]
 
 [ext_resource type="PackedScene" uid="uid://bjugq1l2b1ng8" path="res://scenes/WaterPlane.tscn" id="1_1bvp3"]
 [ext_resource type="Script" uid="uid://1c2uwyf3kyn" path="res://PlayerController.gd" id="2_lquwl"]
-[ext_resource type="Script" path="res://PlayerCamera.gd" id="4_1bvp3"]
-[ext_resource type="PackedScene" uid="uid://df71yax4lys6c" path="res://scenes/Ship.tscn" id="4_5vw27"]
-[ext_resource type="Script" path="res://UI.gd" id="6_7mycd"]
-[ext_resource type="Texture2D" path="res://resources/wind.webp" id="7_5vw27"]
+[ext_resource type="PackedScene" uid="uid://c5ycs8hy4s7xj" path="res://scenes/Ship.tscn" id="4_5vw27"]
 [ext_resource type="Texture2D" uid="uid://duo03ms62qhff" path="res://resources/wheel.webp" id="7_272bh"]
-[ext_resource type="Texture2D" path="res://resources/arrow.webp" id="8_5vw27"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0xm2m"]
 
@@ -46,14 +42,12 @@ script = ExtResource("2_lquwl")
 
 [node name="Camera3D" type="Camera3D" parent="PlayerController"]
 transform = Transform3D(-2.9222e-08, 0.743693, -0.668521, 3.25079e-08, 0.668521, 0.743693, 1, -1.59872e-14, -4.37114e-08, -9.84762, 9.33922, 0.0015893)
-script = ExtResource("4_1bvp3")
 
 [node name="Boat" parent="PlayerController" instance=ExtResource("4_5vw27")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.29964, 0)
 gravity_scale = 1.0
 
 [node name="UI" type="CanvasLayer" parent="."]
-script = ExtResource("6_7mycd")
 
 [node name="Wheel" type="TextureRect" parent="UI"]
 offset_left = 590.0
@@ -71,7 +65,6 @@ offset_right = 356.0
 offset_bottom = 700.0
 scale = Vector2(0.15, 0.15)
 pivot_offset = Vector2(256, 256)
-texture = ExtResource("7_5vw27")
 
 [node name="TextureRect" type="TextureRect" parent="UI/Wind"]
 layout_mode = 0
@@ -80,7 +73,6 @@ offset_top = -510.667
 offset_right = 1034.67
 offset_bottom = 1.3335
 rotation = 1.5708
-texture = ExtResource("8_5vw27")
 
 [node name="TextureRect2" type="TextureRect" parent="UI/Wind"]
 layout_mode = 0
