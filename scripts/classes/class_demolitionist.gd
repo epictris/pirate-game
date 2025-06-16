@@ -28,11 +28,14 @@ var collision_mask_no_projectiles = collision_mask & ~Layers.PROJECTILES
 @onready var health_component: Node = $health_component
 @onready var player: CharacterBody2D = $"."
 @onready var weapon_point: Node2D = $weapon_point
-@onready var player_sprite: AnimatedSprite2D = $player_sprite
+@export var player_sprite: AnimatedSprite2D = null
 @onready var ladder_collider: Area2D = $ladder_collider
+
 @onready var weapons : Node2D = $weapon_point
 @export var shield : Node2D = null
 @export var hitscan : RayCast2D = null
+
+@onready var directionals : Node2D = $directionals
 
 @export var respawn_point: Node2D = null
 const gravity = 2500
@@ -111,7 +114,7 @@ func _process(delta):
 	if Input.is_action_just_pressed("take_damage"):
 		player_sprite.play("damage")
 		health_component.take_damage(25)
-	player_sprite.scale.x = -(abs(player_sprite.scale.x)) if not is_facing_right else abs(player_sprite.scale.x)
+	directionals.scale.x = -1 if not is_facing_right else 1
 
 func _physics_process(delta: float) -> void:
 	# Drop down through one-way platforms

@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=3 uid="uid://c18dwoukjhoc6"]
+[gd_scene load_steps=45 format=3 uid="uid://c18dwoukjhoc6"]
 
 [ext_resource type="Script" uid="uid://duuiq6tt5r4ly" path="res://scripts/classes/class_demolitionist.gd" id="1_iokhx"]
 [ext_resource type="PackedScene" uid="uid://douak1hhqrxde" path="res://scenes/health_component.tscn" id="2_mfv6w"]
@@ -8,10 +8,13 @@
 [ext_resource type="PackedScene" uid="uid://bs40tx07ipu6d" path="res://scenes/weapons/grenade_launcher.tscn" id="6_dnupx"]
 [ext_resource type="PackedScene" uid="uid://bj5iuyorvwgka" path="res://scenes/weapons/shield.tscn" id="7_mfv6w"]
 [ext_resource type="PackedScene" uid="uid://dehqu2cqtq55m" path="res://scenes/health_display.tscn" id="8_da0nn"]
+[ext_resource type="Script" uid="uid://deycutwub25yj" path="res://scripts/door_opener.gd" id="9_4jh5k"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gxk2l"]
 radius = 14.0
 height = 50.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fd0ad"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0eb65"]
 atlas = ExtResource("4_4jh5k")
@@ -263,14 +266,15 @@ animations = [{
 "speed": 7.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_fd0ad"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mcyci"]
 
-[node name="demo" type="CharacterBody2D" node_paths=PackedStringArray("shield", "hitscan")]
+[node name="demo" type="CharacterBody2D" node_paths=PackedStringArray("player_sprite", "shield", "hitscan")]
 top_level = true
 collision_layer = 4
 collision_mask = 35
 script = ExtResource("1_iokhx")
-shield = NodePath("shield")
+player_sprite = NodePath("directionals/player_sprite")
+shield = NodePath("directionals/shield")
 hitscan = NodePath("check_shield")
 
 [node name="health_component" parent="." instance=ExtResource("2_mfv6w")]
@@ -289,17 +293,6 @@ position = Vector2(0, -27)
 [node name="grenade_launcher" parent="weapon_point" instance=ExtResource("6_dnupx")]
 position = Vector2(0, -1)
 
-[node name="player_sprite" type="AnimatedSprite2D" parent="."]
-texture_filter = 1
-position = Vector2(0, -27)
-scale = Vector2(1.583, 1.583)
-sprite_frames = SubResource("SpriteFrames_i5w7p")
-animation = &"damage"
-autoplay = "idle"
-frame = 2
-frame_progress = 1.0
-offset = Vector2(7.57895, -6.94737)
-
 [node name="ladder_collider" type="Area2D" parent="."]
 collision_layer = 4
 collision_mask = 8
@@ -312,9 +305,6 @@ shape = SubResource("RectangleShape2D_fd0ad")
 [node name="movement_component" type="Node" parent="." node_paths=PackedStringArray("parent_node")]
 script = ExtResource("6_7euxv")
 parent_node = NodePath("..")
-
-[node name="shield" parent="." instance=ExtResource("7_mfv6w")]
-position = Vector2(4, 0)
 
 [node name="health_display" parent="." instance=ExtResource("8_da0nn")]
 offset_left = -18.0
@@ -329,6 +319,29 @@ position = Vector2(0, -28)
 target_position = Vector2(0, 0)
 collision_mask = 32
 collide_with_areas = true
+
+[node name="directionals" type="Node2D" parent="."]
+
+[node name="shield" parent="directionals" instance=ExtResource("7_mfv6w")]
+position = Vector2(4, 0)
+
+[node name="player_sprite" type="AnimatedSprite2D" parent="directionals"]
+texture_filter = 1
+position = Vector2(0, -27)
+scale = Vector2(1.583, 1.583)
+sprite_frames = SubResource("SpriteFrames_i5w7p")
+animation = &"damage"
+autoplay = "idle"
+frame = 2
+frame_progress = 1.0
+offset = Vector2(7.57895, -6.94737)
+
+[node name="door_opener" type="Area2D" parent="directionals"]
+script = ExtResource("9_4jh5k")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="directionals/door_opener"]
+position = Vector2(20, -28)
+shape = SubResource("RectangleShape2D_mcyci")
 
 [connection signal="body_entered" from="ladder_collider" to="." method="_on_ladder_collider_body_entered"]
 [connection signal="body_exited" from="ladder_collider" to="." method="_on_ladder_collider_body_exited"]

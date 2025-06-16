@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=4 uid="uid://bblurp18uotwg"]
+[gd_scene load_steps=13 format=4 uid="uid://bblurp18uotwg"]
 
 [ext_resource type="Script" path="res://scripts/ship_level.gd" id="1_qvj3w"]
 [ext_resource type="Texture2D" uid="uid://bx33hpf1t7qwa" path="res://Terrain (16x16).png" id="1_r7cn6"]
 [ext_resource type="PackedScene" uid="uid://c18dwoukjhoc6" path="res://scenes/classes/class_demolitionist.tscn" id="2_1ffpu"]
 [ext_resource type="Script" path="res://scripts/ship.gd" id="3_nly5x"]
+[ext_resource type="Script" uid="uid://c7vbmhwxr1oe0" path="res://scripts/door.gd" id="4_1ffpu"]
 [ext_resource type="Script" uid="uid://4c8t686rskyl" path="res://scripts/rotation_manager.gd" id="6_4xhj7"]
 [ext_resource type="PackedScene" uid="uid://cwml52cqugr7i" path="res://scenes/crate.tscn" id="7_1ffpu"]
 
@@ -325,6 +326,9 @@ physics_layer_1/collision_layer = 2
 physics_layer_1/collision_mask = 4
 sources/0 = SubResource("TileSetAtlasSource_grsf8")
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4xhj7"]
+size = Vector2(10, 72)
+
 [node name="Ship_level" type="Node2D"]
 script = ExtResource("1_qvj3w")
 
@@ -356,6 +360,15 @@ target_position = Vector2(0, -50)
 
 [node name="point" type="Node2D" parent="ship"]
 position = Vector2(5, -448)
+
+[node name="door" type="StaticBody2D" parent="ship" node_paths=PackedStringArray("collider")]
+position = Vector2(-122, -123)
+script = ExtResource("4_1ffpu")
+collider = NodePath("CollisionShape2D")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ship/door"]
+position = Vector2(0, -36)
+shape = SubResource("RectangleShape2D_4xhj7")
 
 [node name="respawn_point" type="Node2D" parent="."]
 position = Vector2(197, 444)
