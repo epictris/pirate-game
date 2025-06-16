@@ -33,6 +33,7 @@ var collision_mask_no_projectiles = collision_mask & ~Layers.PROJECTILES
 @onready var weapons : Node2D = $weapon_point
 @export var shield : Node2D = null
 @export var hitscan : RayCast2D = null
+@onready var explosion : PackedScene = preload("res://scenes/bomb_explosion.tscn")
 
 @export var respawn_point: Node2D = null
 const gravity = 2500
@@ -46,6 +47,7 @@ var can_climb := false
 var ship_rotation := 0.0
 var has_weapon := false
 var selected_weapon := 0
+var bombs := 3
 
 func _ready():
 	collision_mask_default = collision_mask
@@ -57,6 +59,13 @@ func _ready():
 		weapon_point.get_child(selected_weapon).visible = true
 
 func _input(event):
+	if event.is_action_pressed("special_ability"):
+		if bombs > 0:
+			var exp_instance = explosion.instantiate()
+			exp_instance.global_position = global_position
+			exp_instance.setup(40.0,40.0,6.0)
+			GlobalScenes.current_2d_scene.add_child(exp_instance)
+
 	if has_weapon:
 		if event.is_action_pressed("previous_weapon"):
 			weapon_point.get_child(selected_weapon).visible = false
@@ -112,6 +121,7 @@ func _process(delta):
 		player_sprite.play("damage")
 		health_component.take_damage(25)
 	player_sprite.scale.x = -(abs(player_sprite.scale.x)) if not is_facing_right else abs(player_sprite.scale.x)
+	shield.scale.x = -(abs(shield.scale.x)) if not is_facing_right else abs(shield.scale.x)
 
 func _physics_process(delta: float) -> void:
 	# Drop down through one-way platforms
