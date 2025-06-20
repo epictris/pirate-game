@@ -74,9 +74,9 @@ func _on_reset_button_pressed():
 
 func _on_syncmanager_sync_started():
 	message_label.text = "Started"
-	if not SyncReplay.active:
-		var log_file_name: String = "replay_" + str(multiplayer.get_unique_id()) + ".log"
-		SyncManager.start_logging("/home/tris/projects/pirate-game/" + log_file_name)
+	# if not SyncReplay.active:
+	# 	var log_file_name: String = "replay_" + str(multiplayer.get_unique_id()) + ".log"
+		# SyncManager.start_logging("/home/tris/projects/pirate-game/" + log_file_name)
 
 func _on_syncmanager_sync_stopped():
 	pass
