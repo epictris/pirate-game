@@ -658,6 +658,7 @@ func _call_network_process(input_frame: InputBufferFrame) -> void:
 func _call_save_state() -> Dictionary:
 	var state := {}
 	var nodes: Array = get_tree().get_nodes_in_group('network_sync')
+	nodes.sort_custom(func(a, b): return str(a.get_path()) < str(b.get_path()))
 	for node in nodes:
 		if node.has_method('_save_state') and node.is_inside_tree() and not node.is_queued_for_deletion():
 			var node_path = str(node.get_path())
