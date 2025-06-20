@@ -11,16 +11,18 @@ config_version=5
 [application]
 
 config/name="Pirate Game"
-run/main_scene="uid://epcpkiv2n3y7"
+run/main_scene="uid://dbdmk71mpvywe"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
 InteractionManager="*res://autoloads/interaction_manager.gd"
-HealthClass="*res://scripts/health_class.gd"
-GlobalScenes="*res://scripts/global_scenes.gd"
-Lobby="*res://lobby.gd"
+HealthClass="res://scripts/health_class.gd"
+GlobalScenes="res://scripts/global_scenes.gd"
+SyncManager="*res://addons/godot-rollback-netcode/SyncManager.gd"
+SyncDebugger="*res://addons/godot-rollback-netcode/SyncDebugger.gd"
+SyncReplay="*res://addons/godot-rollback-netcode/SyncReplay.gd"
 
 [debug_draw_3d]
 
@@ -30,11 +32,16 @@ settings/addon_root_folder="res://addons/debug_draw_3d"
 
 window/stretch/mode="viewport"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/godot-rollback-netcode/plugin.cfg")
+
 [global_group]
 
 buoyant=""
 player=""
 ladders=""
+network_sync=""
 
 [input]
 
@@ -122,6 +129,11 @@ climb_down={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":83,"key_label":0,"unicode":115,"location":0,"echo":false,"script":null)
 ]
 }
+sync_debug={
+&"deadzone": 0.5,
+&"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":4194342,"physical_keycode":0,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+]
+}
 
 [layer_names]
 
@@ -130,6 +142,13 @@ climb_down={
 2d_physics/layer_3="Player"
 2d_physics/layer_4="Ladders"
 
+[network]
+
+rollback/debug/rollback_ticks=3
+rollback/debug/random_rollback_ticks=6
+rollback/debug/check_local_state_consistency=true
+
 [physics]
 
+2d/physics_engine="Dummy"
 2d/default_gravity=2940.0

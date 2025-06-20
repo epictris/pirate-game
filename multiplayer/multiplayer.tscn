@@ -1,0 +1,140 @@
+[gd_scene load_steps=6 format=3 uid="uid://dbdmk71mpvywe"]
+
+[ext_resource type="Script" uid="uid://ciqbe3pwo1nha" path="res://multiplayer/multiplayer.gd" id="1_o4y1c"]
+[ext_resource type="PackedScene" uid="uid://dun8dcjxi0li0" path="res://multiplayer/networked_character.tscn" id="2_nhdnw"]
+
+[sub_resource type="SGRectangleShape2D" id="SGRectangleShape2D_wktud"]
+extents_x = 40986400
+
+[sub_resource type="SGRectangleShape2D" id="SGRectangleShape2D_nhdnw"]
+extents_y = 32768000
+
+[sub_resource type="SGRectangleShape2D" id="SGRectangleShape2D_uwdxy"]
+extents_x = 18520416
+extents_y = 738392
+
+[node name="Multiplayer" type="Node2D"]
+script = ExtResource("1_o4y1c")
+player_scene = ExtResource("2_nhdnw")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ConnectionPanel" type="PanelContainer" parent="CanvasLayer"]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -108.5
+offset_top = -50.5
+offset_right = 108.5
+offset_bottom = 50.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer/ConnectionPanel"]
+layout_mode = 2
+columns = 2
+
+[node name="HostLabel" type="Label" parent="CanvasLayer/ConnectionPanel/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = " Host:"
+
+[node name="HostField" type="LineEdit" parent="CanvasLayer/ConnectionPanel/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "127.0.0.1"
+placeholder_text = "IP Address"
+
+[node name="PortLabel" type="Label" parent="CanvasLayer/ConnectionPanel/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = " Port: "
+
+[node name="PortField" type="LineEdit" parent="CanvasLayer/ConnectionPanel/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "7000"
+placeholder_text = "Port"
+
+[node name="HostButton" type="Button" parent="CanvasLayer/ConnectionPanel/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Host"
+metadata/_edit_use_anchors_ = true
+
+[node name="JoinButton" type="Button" parent="CanvasLayer/ConnectionPanel/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Join"
+metadata/_edit_use_anchors_ = true
+
+[node name="MessageLabel" type="Label" parent="CanvasLayer"]
+unique_name_in_owner = true
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 2
+horizontal_alignment = 1
+
+[node name="ResetButton" type="Button" parent="CanvasLayer"]
+unique_name_in_owner = true
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -107.0
+offset_top = -31.0
+grow_horizontal = 0
+grow_vertical = 0
+size_flags_horizontal = 3
+text = "Reset"
+
+[node name="SpawnPoint" type="Marker2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(577, 144)
+
+[node name="SGStaticBody2D" type="SGStaticBody2D" parent="."]
+
+[node name="SGCollisionShape2D" type="SGCollisionShape2D" parent="SGStaticBody2D"]
+shape = SubResource("SGRectangleShape2D_wktud")
+fixed_position_x = 35100001
+fixed_position_y = 42250000
+position = Vector2(535.583, 644.684)
+
+[node name="SGStaticBody2D2" type="SGStaticBody2D" parent="."]
+
+[node name="SGCollisionShape2D" type="SGCollisionShape2D" parent="SGStaticBody2D2"]
+shape = SubResource("SGRectangleShape2D_nhdnw")
+fixed_position_x = 3893834
+fixed_position_y = 11409469
+position = Vector2(59.4152, 174.095)
+
+[node name="SGStaticBody2D3" type="SGStaticBody2D" parent="."]
+fixed_position_x = 64880640
+position = Vector2(990, 0)
+
+[node name="SGCollisionShape2D" type="SGCollisionShape2D" parent="SGStaticBody2D3"]
+shape = SubResource("SGRectangleShape2D_nhdnw")
+fixed_position_x = 3893834
+fixed_position_y = 11409469
+position = Vector2(59.4152, 174.095)
+
+[node name="SGStaticBody2D4" type="SGStaticBody2D" parent="."]
+fixed_position_x = 36044800
+fixed_position_y = 26214400
+position = Vector2(550, 400)
+
+[node name="SGCollisionShape2D" type="SGCollisionShape2D" parent="SGStaticBody2D4"]
+shape = SubResource("SGRectangleShape2D_uwdxy")
