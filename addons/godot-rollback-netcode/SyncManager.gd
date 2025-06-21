@@ -658,23 +658,35 @@ func _call_network_process(input_frame: InputBufferFrame) -> void:
 func _call_save_state() -> Dictionary:
 	var state := {}
 	var nodes: Array = get_tree().get_nodes_in_group('network_sync')
-	nodes.sort_custom(func(a, b): return str(a.get_path()) < str(b.get_path()))
 	for node in nodes:
 		if node.has_method('_save_state') and node.is_inside_tree() and not node.is_queued_for_deletion():
 			var node_path = str(node.get_path())
 			if node_path != "":
 				state[node_path] = node._save_state()
+				state[node_path]["$index"] = node.get_index()
 
 	return state
 
 func _call_load_state(state: Dictionary) -> void:
+	var node_movements: Array = []
 	for node_path in state:
 		if node_path == '$':
 			continue
 		var node = get_node_or_null(node_path)
 		assert(node != null, "Unable to restore state to missing node: %s" % node_path)
+
+		if node.get_index() != state[node_path]["$index"]:
+			node_movements.append({
+					"node": node,
+					"new_index": state[node_path]["$index"]
+				})
+
 		if node and node.has_method('_load_state'):
 			node._load_state(state[node_path])
+
+	node_movements.sort_custom(func(a, b): return a.node.get_index() < b.node.get_index())
+	for movement in node_movements:
+		movement["node"].get_parent().move_child(movement["node"], movement["new_index"])
 
 func _call_interpolate_state(weight: float) -> void:
 	for node_path in _interpolation_state:
