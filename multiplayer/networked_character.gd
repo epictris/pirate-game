@@ -1,6 +1,7 @@
 extends SGCharacterBody2D
 
 var arrow: PackedScene = preload("res://multiplayer/arrow.tscn")
+var bouncy_ball: PackedScene = preload("res://multiplayer/bouncy_ball.tscn")
 
 const MAX_SPEED = 65536 * 10
 const WALL_SLIDE_SPEED = 65536 * 2
@@ -87,6 +88,10 @@ func _get_local_input() -> Dictionary:
 	if Input.is_action_just_pressed("attack"):
 		input["mouse_click_x"] = SGFixed.from_float(get_viewport().get_mouse_position().x)
 		input["mouse_click_y"] = SGFixed.from_float(get_viewport().get_mouse_position().y)
+	
+	if Input.is_action_just_pressed("alt_attack"):
+		input["right_mouse_click_x"] = SGFixed.from_float(get_viewport().get_mouse_position().x)
+		input["right_mouse_click_y"] = SGFixed.from_float(get_viewport().get_mouse_position().y)
 
 	return input
 
@@ -129,11 +134,17 @@ func _network_process(input: Dictionary) -> void:
 			fixed_rotation = angle_to_mouse_click,
 			owner_node_path = get_path(),
 		}
-		# print(str(multiplayer.get_unique_id()) + ": spawning arrow on tick ", SyncManager.current_tick)
-		# debug_hierarchy()
 		SyncManager.spawn("arrow", get_parent(), arrow, arrow_data)
-		# debug_hierarchy()
-		# print(str(multiplayer.get_unique_id()) + ": spawned arrow on tick ", SyncManager.current_tick)
+
+	if input.get("right_mouse_click_x"):
+		var mouse_click_position = SGFixed.vector2(input.get("right_mouse_click_x"), input.get("right_mouse_click_y"))
+		var angle_to_mouse_click: int = fixed_position.angle_to_point(mouse_click_position)
+		var ball_data: Dictionary = {
+			fixed_position_x = fixed_position_x,
+			fixed_position_y = fixed_position_y,
+			fixed_rotation = angle_to_mouse_click,
+		}
+		SyncManager.spawn("ball", get_parent(), bouncy_ball, ball_data)
 
 	var right_motion: int = SGFixed.ONE if input.get("right") else 0
 	var left_motion: int = SGFixed.NEG_ONE if input.get("left") else 0
@@ -223,6 +234,16 @@ func _predict_remote_input(previous_input: Dictionary, ticks_since_last_input: i
 	if input.get("mouse_click_x"):
 		input.erase("mouse_click_x")
 		input.erase("mouse_click_y")
+
+	if input.get("right_mouse_click_x"):
+		input.erase("right_mouse_click_x")
+		input.erase("right_mouse_click_y")
+
+	if input.get("up_just_pressed"):
+		input.erase("up_just_pressed")
+
+	if input.get("up"):
+		input.erase("up")
 	return input
 
 func take_damage() -> void:
