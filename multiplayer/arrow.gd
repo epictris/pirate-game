@@ -16,6 +16,7 @@ func _network_spawn(data: Dictionary) -> void:
 func _network_process(input: Dictionary) -> void:
 	fixed_position_x += velocity.x
 	fixed_position_y += velocity.y
+	sync_to_physics_engine()
 
 	for body in get_overlapping_bodies():
 		if str(body.get_path()) != owner_node_path:
@@ -23,7 +24,6 @@ func _network_process(input: Dictionary) -> void:
 				body.take_damage()
 			SyncManager.despawn(self)
 
-	sync_to_physics_engine()
 
 func _save_state() -> Dictionary:
 	var state: Dictionary = {
