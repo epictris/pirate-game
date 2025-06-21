@@ -11,6 +11,11 @@ extends Node2D
 @onready var reset_button: Button = %ResetButton
 @onready var spawn_point: Marker2D = %SpawnPoint
 
+var logging_enabled = true
+
+var host_player: SGCharacterBody2D
+var client_player: SGCharacterBody2D
+
 func _ready():
 	join_button.pressed.connect(_join_game)
 	host_button.pressed.connect(_host_game)
@@ -37,18 +42,20 @@ func _host_game():
 	connection_panel.visible = false
 	message_label.text = "Listening..."
 
+
 func _on_peer_connected(peer_id: int):
 	message_label.text = "Connected"
 	SyncManager.add_peer(peer_id)
-	var host_player: SGCharacterBody2D = player_scene.instantiate()
-	var client_player: SGCharacterBody2D = player_scene.instantiate()
+	host_player = player_scene.instantiate()
+	client_player = player_scene.instantiate()
+
 	host_player.set_multiplayer_authority(1)
 	if multiplayer.is_server():
 		client_player.set_multiplayer_authority(peer_id)
 	else:
 		client_player.set_multiplayer_authority(multiplayer.get_unique_id())
-	host_player.fixed_position = SGFixed.vector2(SGFixed.ONE * 200, SGFixed.ONE * 400)
-	client_player.fixed_position = SGFixed.vector2(SGFixed.ONE * 900, SGFixed.ONE * 400)
+	host_player.spawn_position = SGFixed.vector2(SGFixed.ONE * 200, SGFixed.ONE * 400) 
+	client_player.spawn_position = SGFixed.vector2(SGFixed.ONE * 900, SGFixed.ONE * 400)
 	add_child(host_player)
 	add_child(client_player)
 
@@ -74,12 +81,13 @@ func _on_reset_button_pressed():
 
 func _on_syncmanager_sync_started():
 	message_label.text = "Started"
-	# if not SyncReplay.active:
-	# 	var log_file_name: String = "replay_" + str(multiplayer.get_unique_id()) + ".log"
-		# SyncManager.start_logging("/home/tris/projects/pirate-game/" + log_file_name)
+	if logging_enabled and not SyncReplay.active:
+		var log_file_name: String = "replay_" + str(multiplayer.get_unique_id()) + ".log"
+		SyncManager.start_logging("/home/tris/projects/pirate-game/replays/" + log_file_name)
 
 func _on_syncmanager_sync_stopped():
-	pass
+	if logging_enabled:
+		SyncManager.stop_logging()
 
 func _on_syncmanager_sync_lost():
 	pass

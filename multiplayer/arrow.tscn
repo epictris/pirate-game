@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://dsiq7f8jpmb6q"]
+
+[ext_resource type="Script" uid="uid://baa2r5ujxqifv" path="res://multiplayer/arrow.gd" id="1_0g4gy"]
+
+[sub_resource type="SGRectangleShape2D" id="SGRectangleShape2D_20nbj"]
+extents_x = 771653
+extents_y = 148472
+
+[node name="Arrow" type="SGArea2D" groups=["network_sync"]]
+script = ExtResource("1_0g4gy")
+
+[node name="SGCollisionShape2D" type="SGCollisionShape2D" parent="."]
+shape = SubResource("SGRectangleShape2D_20nbj")

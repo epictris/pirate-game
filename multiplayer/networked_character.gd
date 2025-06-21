@@ -1,5 +1,7 @@
 extends SGCharacterBody2D
 
+var arrow: PackedScene = preload("res://multiplayer/arrow.tscn")
+
 const MAX_SPEED = 65536 * 10
 const WALL_SLIDE_SPEED = 65536 * 2
 const WALL_FRICTION = 65536
@@ -12,6 +14,9 @@ const JUMP = 65536 * 30
 @export var jump_height: int
 @export var jump_time_to_peak: int
 @export var jump_time_to_descent: int
+
+var spawn_location_x: int
+var spawn_location_y: int
 
 @onready var jump_velocity: int = SGFixed.div(
 	SGFixed.mul(
@@ -48,7 +53,6 @@ var _is_on_wall: bool = false
 var _touching_wall_normal: int
 
 var _player_state: PlayerState = PlayerState.IDLE
-var _buffered_jump_input: bool = false
 
 enum PlayerState {
 	IDLE,
@@ -59,27 +63,34 @@ enum PlayerState {
 	WALL_SLIDING,
 }
 
+var spawn_position: SGFixedVector2
 
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey:
-		if event.is_action_pressed("ui_up"):
-			_buffered_jump_input = true
+func _ready():
+	respawn()
 
+func respawn() -> void:
+	fixed_position_x = spawn_position.x
+	fixed_position_y = spawn_position.y
+	velocity.x = 0
+	velocity.y = 0
+	sync_to_physics_engine()
 
 func _get_local_input() -> Dictionary:
 	var input := {
-		up = _buffered_jump_input or Input.is_action_pressed("ui_up"),
-		up_just_pressed = _buffered_jump_input or Input.is_action_just_pressed("ui_up"),
+		up = Input.is_action_pressed("ui_up"),
+		up_just_pressed = Input.is_action_just_pressed("ui_up"),
 		down = Input.is_action_pressed("ui_down"),
 		left = Input.is_action_pressed("ui_left"),
 		right = Input.is_action_pressed("ui_right"),
 	}
-	_buffered_jump_input = false
+
+	if Input.is_action_just_pressed("attack"):
+		input["mouse_click_x"] = SGFixed.from_float(get_viewport().get_mouse_position().x)
+		input["mouse_click_y"] = SGFixed.from_float(get_viewport().get_mouse_position().y)
 
 	return input
 
 func _update_player_velocity() -> void:
-
 	if _player_state == PlayerState.JUMPING:
 		if _is_on_floor:
 			velocity.y -= jump_velocity
@@ -102,7 +113,27 @@ func _update_player_velocity() -> void:
 	else:
 		velocity.y -= fall_gravity
 
+func debug_hierarchy():
+	print("=== HIERARCHY DEBUG ===")
+	for child in get_parent().get_children():
+		print(child.name, " - ", child.get_path())
+	print("=====================")
+
 func _network_process(input: Dictionary) -> void:
+	if input.get("mouse_click_x"):
+		var mouse_click_position = SGFixed.vector2(input.get("mouse_click_x"), input.get("mouse_click_y"))
+		var angle_to_mouse_click: int = fixed_position.angle_to_point(mouse_click_position)
+		var arrow_data: Dictionary = {
+			fixed_position_x = fixed_position_x,
+			fixed_position_y = fixed_position_y,
+			fixed_rotation = angle_to_mouse_click,
+			owner_node_path = get_path(),
+		}
+		# print(str(multiplayer.get_unique_id()) + ": spawning arrow on tick ", SyncManager.current_tick)
+		# debug_hierarchy()
+		SyncManager.spawn("arrow", get_parent(), arrow, arrow_data)
+		# debug_hierarchy()
+		# print(str(multiplayer.get_unique_id()) + ": spawned arrow on tick ", SyncManager.current_tick)
 
 	var right_motion: int = SGFixed.ONE if input.get("right") else 0
 	var left_motion: int = SGFixed.NEG_ONE if input.get("left") else 0
@@ -157,7 +188,7 @@ func _network_process(input: Dictionary) -> void:
 
 
 func _save_state() -> Dictionary:
-	return {
+	var state: Dictionary = {
 		fixed_position_x = fixed_position_x,
 		fixed_position_y = fixed_position_y,
 		velocity_x = velocity.x,
@@ -168,6 +199,7 @@ func _save_state() -> Dictionary:
 		player_state = _player_state,
 		touching_wall_normal = _touching_wall_normal,
 	}
+	return state
 
 func _load_state(state: Dictionary) -> void:
 	fixed_position_x = state["fixed_position_x"]
@@ -187,4 +219,11 @@ func _predict_remote_input(previous_input: Dictionary, ticks_since_last_input: i
 	if ticks_since_last_input > 2:
 		input.erase("left")
 		input.erase("right")
+
+	if input.get("mouse_click_x"):
+		input.erase("mouse_click_x")
+		input.erase("mouse_click_y")
 	return input
+
+func take_damage() -> void:
+	respawn()

@@ -144,6 +144,7 @@ sync_debug={
 
 [network]
 
+rollback/limits/max_state_mismatch_count=0
 rollback/debug/rollback_ticks=3
 rollback/debug/random_rollback_ticks=6
 rollback/debug/check_local_state_consistency=true
