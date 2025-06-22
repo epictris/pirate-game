@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://duuiq6tt5r4ly" path="res://scripts/classes/class_demolitionist.gd" id="1_iokhx"]
 [ext_resource type="PackedScene" uid="uid://douak1hhqrxde" path="res://scenes/health_component.tscn" id="2_mfv6w"]
 [ext_resource type="Texture2D" uid="uid://b8v5lbwo6mxdv" path="res://resources/Spritesheets/sheet.png" id="4_4jh5k"]
-[ext_resource type="Script" uid="uid://ci45gf8qjxjbi" path="res://scripts/ladder_collider.gd" id="5_mcyci"]
+[ext_resource type="Script" path="res://scripts/ladder_collider.gd" id="5_mcyci"]
 [ext_resource type="Script" path="res://scripts/movement_component_base.gd" id="6_7euxv"]
 [ext_resource type="PackedScene" uid="uid://bs40tx07ipu6d" path="res://scenes/weapons/grenade_launcher.tscn" id="6_dnupx"]
 [ext_resource type="PackedScene" uid="uid://bj5iuyorvwgka" path="res://scenes/weapons/shield.tscn" id="7_mfv6w"]
@@ -306,11 +306,6 @@ shape = SubResource("RectangleShape2D_fd0ad")
 script = ExtResource("6_7euxv")
 parent_node = NodePath("..")
 
-<<<<<<< HEAD
-=======
-[node name="shield" parent="." instance=ExtResource("7_mfv6w")]
-
->>>>>>> 72bedc7ded08d2fbac5aa53d627f70a0519c0cf0
 [node name="health_display" parent="." instance=ExtResource("8_da0nn")]
 offset_left = -18.0
 offset_top = -66.0
