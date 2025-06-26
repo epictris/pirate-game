@@ -2,8 +2,11 @@ extends Node2D
 
 @export var player_scene: PackedScene
 
+const DummyNetworkAdaptor = preload("res://addons/godot-rollback-netcode/DummyNetworkAdaptor.gd")
+
 @onready var join_button: Button = %JoinButton
 @onready var host_button: Button = %HostButton
+@onready var play_offline_button: Button = %PlayOfflineButton
 @onready var ip_field: LineEdit = %HostField
 @onready var port_field: LineEdit = %PortField
 @onready var connection_panel: PanelContainer = %ConnectionPanel
@@ -19,6 +22,7 @@ var client_player: SGCharacterBody2D
 func _ready():
 	join_button.pressed.connect(_join_game)
 	host_button.pressed.connect(_host_game)
+	play_offline_button.pressed.connect(_play_offline)
 	multiplayer.peer_connected.connect(_on_peer_connected)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
@@ -41,6 +45,18 @@ func _host_game():
 	multiplayer.multiplayer_peer = peer
 	connection_panel.visible = false
 	message_label.text = "Listening..."
+
+func _play_offline():
+	SyncManager.set_network_adaptor(DummyNetworkAdaptor.new())
+	SyncManager.start()
+	connection_panel.visible = false
+	_spawn_host()
+
+
+func _spawn_host():
+	host_player = player_scene.instantiate()
+	host_player.spawn_position = SGFixed.vector2(SGFixed.ONE * 200, SGFixed.ONE * 400) 
+	add_child(host_player)
 
 
 func _on_peer_connected(peer_id: int):

@@ -3,14 +3,35 @@ extends SGCharacterBody2D
 var arrow: PackedScene = preload("res://multiplayer/arrow.tscn")
 var bouncy_ball: PackedScene = preload("res://multiplayer/bouncy_ball.tscn")
 
-const MAX_SPEED = 65536 * 10
-const WALL_SLIDE_SPEED = 65536 * 2
-const WALL_FRICTION = 65536
-const GROUND_ACCEL = 65536 * 2
-const GROUND_FRICTION = 65536
-const AIR_ACCEL = SGFixed.HALF
-const GRAVITY = 65536 * 2
-const JUMP = 65536 * 30
+const F0_1 = 6553
+const F0_2 = 6553 * 2
+const F0_3 = 6553 * 3
+const F0_4 = 6553 * 4
+const F0_5 = 6553 * 5
+const F0_6 = 6553 * 6
+const F0_7 = 6553 * 7
+const F0_8 = 6553 * 8
+const F0_9 = 6553 * 9
+const F1 = 65536
+const F1_1 = F1 + F0_1
+const F1_2 = F1 + F0_2
+const F1_3 = F1 + F0_3
+const F1_4 = F1 + F0_4
+const F1_5 = F1 + F0_5
+const F1_6 = F1 + F0_6
+const F1_7 = F1 + F0_7
+const F1_8 = F1 + F0_8
+const F1_9 = F1 + F0_9
+const F2 = F1 * 2
+
+const MAX_SPEED = 65536 * 8 * 2
+const WALL_SLIDE_SPEED = 65536 * 2 * 2
+const WALL_FRICTION = 65536 * 2
+const GROUND_ACCEL = 65536 * 3 * 2
+const GROUND_FRICTION = 65536 + F1_2
+const AIR_ACCEL = F0_4 * 2
+const GRAVITY = 65536 * 2 * 2
+const JUMP = 65536 * 10 * 2
 
 @export var jump_height: int
 @export var jump_time_to_peak: int
@@ -99,6 +120,7 @@ func _update_player_velocity() -> void:
 	if _player_state == PlayerState.JUMPING:
 		if _is_on_floor:
 			velocity.y -= jump_velocity
+			velocity.x += SGFixed.mul(velocity.x, F0_2)
 		elif velocity.y < 0:
 			velocity.y -= jump_gravity
 		else:
@@ -153,20 +175,25 @@ func _network_process(input: Dictionary) -> void:
 	if _is_on_floor:
 		if !right_motion and !left_motion:
 			if velocity.x > 0:
-				velocity.x = velocity.x - GROUND_FRICTION
+				velocity.x = max(velocity.x - GROUND_FRICTION, 0)
 			elif velocity.x < 0:
-				velocity.x = velocity.x + GROUND_FRICTION
+				velocity.x = min(velocity.x + GROUND_FRICTION, 0)
 
 	# apply air or ground acceleration
 	if _is_on_floor or _is_on_wall:
 		velocity.x += SGFixed.mul(right_motion + left_motion, GROUND_ACCEL)
+		velocity.x = clamp(velocity.x, -MAX_SPEED, MAX_SPEED)
 	else:
-		velocity.x += SGFixed.mul(right_motion + left_motion, AIR_ACCEL)
-	velocity.x = clampi(velocity.x, -MAX_SPEED, MAX_SPEED)
+		var x_acceleration = SGFixed.mul(right_motion + left_motion, AIR_ACCEL)
+		if velocity.x * x_acceleration > 0: # if we're accelerating in the same direction we are moving
+			var allowed_acceleration = max(MAX_SPEED - abs(velocity.x), 0)
+			velocity.x += min(x_acceleration, allowed_acceleration)
+		else:
+			velocity.x += x_acceleration
 
 
 	if _is_on_floor:
-		if input.get("up_just_pressed"):
+		if input.get("up"):
 			_player_state = PlayerState.JUMPING
 		elif velocity.x != 0:
 			_player_state = PlayerState.RUNNING
@@ -227,9 +254,10 @@ func _load_state(state: Dictionary) -> void:
 func _predict_remote_input(previous_input: Dictionary, ticks_since_last_input: int) -> Dictionary:
 	var input = previous_input.duplicate()
 
-	if ticks_since_last_input > 2:
-		input.erase("left")
-		input.erase("right")
+	if ticks_since_last_input > 1:
+		if _is_on_floor:
+			input.erase("left")
+			input.erase("right")
 
 	if input.get("mouse_click_x"):
 		input.erase("mouse_click_x")
@@ -242,9 +270,13 @@ func _predict_remote_input(previous_input: Dictionary, ticks_since_last_input: i
 	if input.get("up_just_pressed"):
 		input.erase("up_just_pressed")
 
-	if input.get("up"):
-		input.erase("up")
 	return input
 
 func take_damage() -> void:
 	respawn()
+
+func _interpolate_state(old_state: Dictionary, new_state: Dictionary, weight: float) -> void:
+	position.x = lerp(SGFixed.to_float(old_state.fixed_position_x), SGFixed.to_float(new_state.fixed_position_x), weight)
+	position.y = lerp(SGFixed.to_float(old_state.fixed_position_y), SGFixed.to_float(new_state.fixed_position_y), weight)
+
+

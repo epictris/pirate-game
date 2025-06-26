@@ -1,7 +1,7 @@
 extends SGCharacterBody2D
 
-const SPEED = 65536 * 20
-const DISABLED_TICKS = 2
+const SPEED = 65536 * 20 * 2
+const DISABLED_TICKS = 1
 
 @onready var collision_shape: SGCollisionShape2D = %Collider
 @onready var disable_timer: NetworkTimer = %DisableTimer
