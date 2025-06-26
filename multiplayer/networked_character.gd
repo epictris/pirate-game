@@ -29,7 +29,7 @@ const WALL_SLIDE_SPEED = 65536 * 2 * 2
 const WALL_FRICTION = 65536 * 2
 const GROUND_ACCEL = 65536 * 3 * 2
 const GROUND_FRICTION = 65536 + F1_2
-const AIR_ACCEL = F0_4 * 2
+const AIR_ACCEL = F0_4 * 4
 const GRAVITY = 65536 * 2 * 2
 const JUMP = 65536 * 10 * 2
 
@@ -74,9 +74,9 @@ var _is_on_wall: bool = false
 
 var _touching_wall_normal: int
 
-var _player_state: PlayerState = PlayerState.IDLE
+var movement_state: MovementState = MovementState.IDLE
 
-enum PlayerState {
+enum MovementState {
 	IDLE,
 	RUNNING,	
 	JUMPING,
@@ -116,114 +116,33 @@ func _get_local_input() -> Dictionary:
 
 	return input
 
-func _update_player_velocity() -> void:
-	if _player_state == PlayerState.JUMPING:
-		if _is_on_floor:
-			velocity.y -= jump_velocity
-			velocity.x += SGFixed.mul(velocity.x, F0_2)
-		elif velocity.y < 0:
-			velocity.y -= jump_gravity
-		else:
-			_player_state = PlayerState.FALLING
-	elif _player_state == PlayerState.WALL_JUMPING:
-		if _is_on_wall:
-			velocity.y = -jump_velocity
-			var wall_jump_direction = _touching_wall_normal
-			velocity.x = SGFixed.mul(wall_jump_direction, jump_velocity)
-			_player_state = PlayerState.JUMPING
-	elif _player_state == PlayerState.WALL_SLIDING:
-		if velocity.y < 0:
-			velocity.y -= jump_gravity
-		else:
-			velocity.y -= WALL_FRICTION
-			velocity.y = max(velocity.y, WALL_SLIDE_SPEED)
-	else:
-		velocity.y -= fall_gravity
+func _jump() -> void:
+	movement_state = MovementState.JUMPING
+	velocity.y -= jump_velocity
+	velocity.x = SGFixed.mul(velocity.x, FI.ONE_POINT_TWO)
 
-func debug_hierarchy():
-	print("=== HIERARCHY DEBUG ===")
-	for child in get_parent().get_children():
-		print(child.name, " - ", child.get_path())
-	print("=====================")
+func _wall_jump() -> void:
+	movement_state = MovementState.WALL_JUMPING
+	velocity.y = -jump_velocity
+	velocity.x = SGFixed.mul(_touching_wall_normal, jump_velocity)
 
 func _network_process(input: Dictionary) -> void:
-	if input.get("mouse_click_x"):
-		var mouse_click_position = SGFixed.vector2(input.get("mouse_click_x"), input.get("mouse_click_y"))
-		var angle_to_mouse_click: int = fixed_position.angle_to_point(mouse_click_position)
-		var arrow_data: Dictionary = {
-			fixed_position_x = fixed_position_x,
-			fixed_position_y = fixed_position_y,
-			fixed_rotation = angle_to_mouse_click,
-			owner_node_path = get_path(),
-		}
-		SyncManager.spawn("arrow", get_parent(), arrow, arrow_data)
-
-	if input.get("right_mouse_click_x"):
-		var mouse_click_position = SGFixed.vector2(input.get("right_mouse_click_x"), input.get("right_mouse_click_y"))
-		var angle_to_mouse_click: int = fixed_position.angle_to_point(mouse_click_position)
-		var ball_data: Dictionary = {
-			fixed_position_x = fixed_position_x,
-			fixed_position_y = fixed_position_y,
-			fixed_rotation = angle_to_mouse_click,
-		}
-		SyncManager.spawn("ball", get_parent(), bouncy_ball, ball_data)
-
-	var right_motion: int = SGFixed.ONE if input.get("right") else 0
-	var left_motion: int = SGFixed.NEG_ONE if input.get("left") else 0
-
-	# apply friction force
-	if _is_on_floor:
-		if !right_motion and !left_motion:
-			if velocity.x > 0:
-				velocity.x = max(velocity.x - GROUND_FRICTION, 0)
-			elif velocity.x < 0:
-				velocity.x = min(velocity.x + GROUND_FRICTION, 0)
-
-	# apply air or ground acceleration
-	if _is_on_floor or _is_on_wall:
-		velocity.x += SGFixed.mul(right_motion + left_motion, GROUND_ACCEL)
-		velocity.x = clamp(velocity.x, -MAX_SPEED, MAX_SPEED)
-	else:
-		var x_acceleration = SGFixed.mul(right_motion + left_motion, AIR_ACCEL)
-		if velocity.x * x_acceleration > 0: # if we're accelerating in the same direction we are moving
-			var allowed_acceleration = max(MAX_SPEED - abs(velocity.x), 0)
-			velocity.x += min(x_acceleration, allowed_acceleration)
-		else:
-			velocity.x += x_acceleration
-
-
-	if _is_on_floor:
-		if input.get("up"):
-			_player_state = PlayerState.JUMPING
-		elif velocity.x != 0:
-			_player_state = PlayerState.RUNNING
-		else:
-			_player_state = PlayerState.IDLE
-
-	elif _is_on_wall:
-		if input.get("up_just_pressed"):
-			_player_state = PlayerState.WALL_JUMPING
-		elif input.get("right") and _touching_wall_normal < 0:
-			_player_state = PlayerState.WALL_SLIDING
-		elif input.get("left") and _touching_wall_normal > 0:
-			_player_state = PlayerState.WALL_SLIDING
-
-	elif !_player_state == PlayerState.JUMPING:
-		_player_state = PlayerState.FALLING
-
-	_update_player_velocity()
-
-	move_and_slide()
+	if movement_state == MovementState.IDLE:
+		_idle(input)
+	elif movement_state == MovementState.RUNNING:
+		_running(input)
+	elif movement_state == MovementState.JUMPING:
+		_jumping(input)
+	elif movement_state == MovementState.FALLING:
+		_falling(input)
+	elif movement_state == MovementState.WALL_JUMPING:
+		_wall_jumping(input)
+	elif movement_state == MovementState.WALL_SLIDING:
+		_wall_sliding(input)
 
 	_is_on_floor = is_on_floor()
 	_is_on_ceiling = is_on_ceiling()
-
-	if is_on_wall():
-		_touching_wall_normal = get_last_slide_collision().normal.x
-		_is_on_wall = true
-	else:
-		_is_on_wall = false
-
+	_is_on_wall = is_on_wall()
 
 func _save_state() -> Dictionary:
 	var state: Dictionary = {
@@ -234,7 +153,7 @@ func _save_state() -> Dictionary:
 		is_on_floor = _is_on_floor,
 		is_on_ceiling = _is_on_ceiling,
 		is_on_wall = _is_on_wall,
-		player_state = _player_state,
+		player_state = movement_state,
 		touching_wall_normal = _touching_wall_normal,
 	}
 	return state
@@ -247,7 +166,7 @@ func _load_state(state: Dictionary) -> void:
 	_is_on_floor = state["is_on_floor"]
 	_is_on_ceiling = state["is_on_ceiling"]
 	_is_on_wall = state["is_on_wall"]
-	_player_state = state["player_state"]
+	movement_state = state["player_state"]
 	_touching_wall_normal = state["touching_wall_normal"]
 	sync_to_physics_engine()
 
@@ -279,4 +198,128 @@ func _interpolate_state(old_state: Dictionary, new_state: Dictionary, weight: fl
 	position.x = lerp(SGFixed.to_float(old_state.fixed_position_x), SGFixed.to_float(new_state.fixed_position_x), weight)
 	position.y = lerp(SGFixed.to_float(old_state.fixed_position_y), SGFixed.to_float(new_state.fixed_position_y), weight)
 
+func _apply_ground_friction() -> void:
+	if velocity.x > 0:
+		velocity.x = max(velocity.x - GROUND_FRICTION, 0)
+	elif velocity.x < 0:
+		velocity.x = min(velocity.x + GROUND_FRICTION, 0)
 
+func _apply_gravity() -> void:
+	velocity.y -= fall_gravity
+
+func _idle(input: Dictionary) -> void:
+	movement_state = MovementState.IDLE
+	if input.get("left") or input.get("right"):
+		return _running(input)
+	move_and_slide()
+	if !is_on_floor():
+		movement_state = MovementState.FALLING
+
+func _running(input: Dictionary) -> void:
+	movement_state = MovementState.RUNNING
+
+	if !_is_on_floor:
+		return _falling(input)
+
+	var right_motion: int = SGFixed.ONE if input.get("right") else 0
+	var left_motion: int = SGFixed.NEG_ONE if input.get("left") else 0
+
+	_apply_gravity()
+
+	if !right_motion and !left_motion:
+		_apply_ground_friction()
+
+	velocity.x += SGFixed.mul(right_motion + left_motion, GROUND_ACCEL)
+	velocity.x = clamp(velocity.x, -MAX_SPEED, MAX_SPEED)
+
+	if input.get("up"):
+		_jump()
+
+	move_and_slide()
+
+func _apply_air_acceleration(input: Dictionary) -> void:
+	var x_acceleration = SGFixed.mul(get_x_input(input), AIR_ACCEL)
+	print(x_acceleration)
+	if velocity.x * x_acceleration > 0: # if we're accelerating in the same direction we are moving
+		var allowed_acceleration = max(MAX_SPEED - abs(velocity.x), 0)
+		var actual_acceleration = min(allowed_acceleration, abs(x_acceleration))
+		if x_acceleration > 0:
+			velocity.x += actual_acceleration
+		else:
+			velocity.x -= actual_acceleration
+	else:
+		velocity.x += x_acceleration
+
+func _jumping(input: Dictionary) -> void:
+	movement_state = MovementState.JUMPING
+	velocity.y -= jump_gravity
+	_apply_air_acceleration(input)
+	move_and_slide()
+	if velocity.y > 0:
+		movement_state = MovementState.FALLING
+
+	if is_on_wall():
+		_touching_wall_normal = get_last_slide_collision().normal.x
+		movement_state = MovementState.WALL_SLIDING
+
+func _falling(input: Dictionary) -> void:
+	movement_state = MovementState.FALLING
+	_apply_gravity()
+	_apply_air_acceleration(input)
+	move_and_slide()
+	if is_on_floor():
+		if velocity.x == 0:
+			movement_state = MovementState.IDLE
+		else:
+			movement_state = MovementState.RUNNING
+	
+	if is_on_wall():
+		_touching_wall_normal = get_last_slide_collision().normal.x
+		movement_state = MovementState.WALL_SLIDING
+
+func _wall_jumping(input: Dictionary) -> void:
+	movement_state = MovementState.WALL_JUMPING
+	velocity.y -= jump_gravity
+	_apply_air_acceleration(input)
+	move_and_slide()
+
+	if velocity.y > 0:
+		movement_state = MovementState.FALLING
+
+	if is_on_wall():
+		_touching_wall_normal = get_last_slide_collision().normal.x
+		movement_state = MovementState.WALL_SLIDING
+
+func get_x_input(input: Dictionary) -> int:
+	var right_motion: int = SGFixed.ONE if input.get("right") else 0
+	var left_motion: int = SGFixed.NEG_ONE if input.get("left") else 0
+	return right_motion + left_motion
+
+
+func _wall_sliding(input: Dictionary) -> void:
+	movement_state = MovementState.WALL_SLIDING
+	if input.get("up_just_pressed"):
+		_wall_jump()
+		move_and_slide()
+		return
+
+	if input.get("down"):
+		return _falling(input)
+
+	if get_x_input(input) * _touching_wall_normal > 0:
+		return _falling(input)
+
+	if velocity.y < 0:
+		velocity.y -= jump_gravity
+	else:
+		velocity.y -= WALL_FRICTION
+		velocity.y = max(velocity.y, WALL_SLIDE_SPEED)
+
+	velocity.x = -_touching_wall_normal # small x velocity to ensure is_on_wall() resolves to true
+	move_and_slide()
+
+	if is_on_floor():
+		movement_state = MovementState.IDLE
+	elif !is_on_wall():
+		movement_state = MovementState.FALLING
+		velocity.x = 0
