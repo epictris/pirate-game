@@ -1,6 +1,6 @@
 extends SGArea2D
 
-const SPEED = 65536 * 20
+const SPEED = 65536 * 20 * 2
 
 var velocity: SGFixedVector2 = SGFixed.vector2(0, 0)
 var owner_node_path: String
@@ -41,3 +41,7 @@ func _load_state(state: Dictionary) -> void:
 	velocity.y = state["velocity_y"]
 
 	sync_to_physics_engine()
+
+func _interpolate_state(old_state: Dictionary, new_state: Dictionary, weight: float) -> void:
+	position.x = lerp(SGFixed.to_float(old_state.fixed_position_x), SGFixed.to_float(new_state.fixed_position_x), weight)
+	position.y = lerp(SGFixed.to_float(old_state.fixed_position_y), SGFixed.to_float(new_state.fixed_position_y), weight)

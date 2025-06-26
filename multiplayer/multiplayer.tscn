@@ -39,48 +39,59 @@ grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="GridContainer" type="GridContainer" parent="CanvasLayer/ConnectionPanel"]
+[node name="GridContainer2" type="GridContainer" parent="CanvasLayer/ConnectionPanel"]
 layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer/ConnectionPanel/GridContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
 columns = 2
 
-[node name="HostLabel" type="Label" parent="CanvasLayer/ConnectionPanel/GridContainer"]
+[node name="HostLabel" type="Label" parent="CanvasLayer/ConnectionPanel/GridContainer2/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = " Host:"
 
-[node name="HostField" type="LineEdit" parent="CanvasLayer/ConnectionPanel/GridContainer"]
+[node name="HostField" type="LineEdit" parent="CanvasLayer/ConnectionPanel/GridContainer2/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "127.0.0.1"
 placeholder_text = "IP Address"
 
-[node name="PortLabel" type="Label" parent="CanvasLayer/ConnectionPanel/GridContainer"]
+[node name="PortLabel" type="Label" parent="CanvasLayer/ConnectionPanel/GridContainer2/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = " Port: "
 
-[node name="PortField" type="LineEdit" parent="CanvasLayer/ConnectionPanel/GridContainer"]
+[node name="PortField" type="LineEdit" parent="CanvasLayer/ConnectionPanel/GridContainer2/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "7000"
 placeholder_text = "Port"
 
-[node name="HostButton" type="Button" parent="CanvasLayer/ConnectionPanel/GridContainer"]
+[node name="HostButton" type="Button" parent="CanvasLayer/ConnectionPanel/GridContainer2/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Host"
 metadata/_edit_use_anchors_ = true
 
-[node name="JoinButton" type="Button" parent="CanvasLayer/ConnectionPanel/GridContainer"]
+[node name="JoinButton" type="Button" parent="CanvasLayer/ConnectionPanel/GridContainer2/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Join"
+metadata/_edit_use_anchors_ = true
+
+[node name="PlayOfflineButton" type="Button" parent="CanvasLayer/ConnectionPanel/GridContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Play Offline"
 metadata/_edit_use_anchors_ = true
 
 [node name="MessageLabel" type="Label" parent="CanvasLayer"]
