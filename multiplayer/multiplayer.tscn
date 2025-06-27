@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://dbdmk71mpvywe"]
 
 [ext_resource type="Script" uid="uid://ciqbe3pwo1nha" path="res://multiplayer/multiplayer.gd" id="1_o4y1c"]
-[ext_resource type="PackedScene" uid="uid://dun8dcjxi0li0" path="res://player/networked_character.tscn" id="2_nhdnw"]
+[ext_resource type="PackedScene" uid="uid://dun8dcjxi0li0" path="res://player/player.tscn" id="2_nhdnw"]
 
 [sub_resource type="SGRectangleShape2D" id="SGRectangleShape2D_wktud"]
 extents_x = 40986400

@@ -3,43 +3,30 @@ class_name Player extends SGCharacterBody2D
 var arrow: PackedScene = preload("res://multiplayer/arrow.tscn")
 var bouncy_ball: PackedScene = preload("res://multiplayer/bouncy_ball.tscn")
 
-const F0_1 = 6553
-const F0_2 = 6553 * 2
-const F0_3 = 6553 * 3
-const F0_4 = 6553 * 4
-const F0_5 = 6553 * 5
-const F0_6 = 6553 * 6
-const F0_7 = 6553 * 7
-const F0_8 = 6553 * 8
-const F0_9 = 6553 * 9
-const F1 = 65536
-const F1_1 = F1 + F0_1
-const F1_2 = F1 + F0_2
-const F1_3 = F1 + F0_3
-const F1_4 = F1 + F0_4
-const F1_5 = F1 + F0_5
-const F1_6 = F1 + F0_6
-const F1_7 = F1 + F0_7
-const F1_8 = F1 + F0_8
-const F1_9 = F1 + F0_9
-const F2 = F1 * 2
+const MAX_SPEED = FI.ONE * 8 * 2
+const WALL_SLIDE_SPEED = FI.ONE * 2 * 2
+const WALL_FRICTION = FI.ONE * 2
+const GROUND_ACCEL = FI.ONE * 3 * 2
+const GROUND_FRICTION = FI.ONE + FI.ONE_POINT_TWO
+const AIR_ACCEL = FI.POINT_FOUR * 2
+const GRAVITY = FI.ONE * 2 * 2
+const JUMP = FI.ONE * 10 * 2
 
-const MAX_SPEED = 65536 * 8 * 2
-const WALL_SLIDE_SPEED = 65536 * 2 * 2
-const WALL_FRICTION = 65536 * 2
-const GROUND_ACCEL = 65536 * 3 * 2
-const GROUND_FRICTION = 65536 + F1_2
-const AIR_ACCEL = F0_4 * 4
-const GRAVITY = 65536 * 2 * 2
-const JUMP = 65536 * 10 * 2
+var current_max_speed: int = MAX_SPEED
+
+func override_max_speed(new_max_speed: int) -> void:
+	current_max_speed = new_max_speed
+
+func reset_max_speed() -> void:
+	current_max_speed = MAX_SPEED
 
 @export var jump_height: int
 @export var jump_time_to_peak: int
 @export var jump_time_to_descent: int
 
-@export var ability_primary: Node
-@export var ability_secondary: Node
-@export var ability_special: Node
+@export var ability_primary: AbilityBase
+@export var ability_secondary: AbilityBase
+@export var ability_special: AbilityBase
 
 var spawn_location_x: int
 var spawn_location_y: int
@@ -78,6 +65,8 @@ var _is_on_wall: bool = false
 
 var _touching_wall_normal: int
 
+var _movement_overridden: bool = false
+
 var movement_state: MovementState = MovementState.IDLE
 
 enum MovementState {
@@ -101,6 +90,10 @@ func respawn() -> void:
 	velocity.y = 0
 	sync_to_physics_engine()
 
+func set_movement_override(override_movement: bool) -> void:
+	_movement_overridden = override_movement
+
+
 func _get_local_input() -> Dictionary:
 	var input := {
 		up = Input.is_action_pressed("ui_up"),
@@ -110,24 +103,53 @@ func _get_local_input() -> Dictionary:
 		right = Input.is_action_pressed("ui_right"),
 	}
 
-	if Input.is_action_just_pressed("attack"):
-		input["mouse_click_x"] = SGFixed.from_float(get_viewport().get_mouse_position().x)
-		input["mouse_click_y"] = SGFixed.from_float(get_viewport().get_mouse_position().y)
+	if Input.is_action_just_pressed("left_click"):
+		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
+		input["primary_activated"] = {
+			x = direction.x,
+			y = direction.y,
+		}
 
-	if Input.is_action_just_released("attack"):
-		print("released mouse button")
-		input["primary_deactivated"] = true
+	if Input.is_action_pressed("left_click"):
+		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
+		input["primary_updated"] = {
+			x = direction.x,
+			y = direction.y,
+		}
 
-	
-	if Input.is_action_just_pressed("alt_attack"):
-		input["right_mouse_click_x"] = SGFixed.from_float(get_viewport().get_mouse_position().x)
-		input["right_mouse_click_y"] = SGFixed.from_float(get_viewport().get_mouse_position().y)
+	if Input.is_action_just_released("left_click"):
+		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
+		input["primary_deactivated"] = {
+			x = direction.x,
+			y = direction.y,
+		}
+
+	if Input.is_action_just_pressed("right_click"):
+		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
+		input["secondary_activated"] = {
+			x = direction.x,
+			y = direction.y,
+		}
+
+	if Input.is_action_pressed("right_click"):
+		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
+		input["secondary_updated"] = {
+			x = direction.x,
+			y = direction.y,
+		}
+
+	if Input.is_action_just_released("right_click"):
+		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
+		input["secondary_deactivated"] = {
+			x = direction.x,
+			y = direction.y,
+		}
 
 	return input
 
 func _jump() -> void:
 	movement_state = MovementState.JUMPING
-	velocity.y -= jump_velocity
+	velocity.y = -jump_velocity
 	velocity.x = SGFixed.mul(velocity.x, FI.ONE_POINT_TWO)
 
 func _wall_jump() -> void:
@@ -153,18 +175,36 @@ func _resolve_movement(input: Dictionary) -> void:
 	_is_on_ceiling = is_on_ceiling()
 	_is_on_wall = is_on_wall()
 
+func _resolve_ability(input: Dictionary) -> void:
+	if input.get("primary_activated") and ability_primary and ability_primary.has_method("activate"):
+		var direction = input["primary_activated"]
+		return ability_primary.activate(SGFixed.vector2(direction.x, direction.y))
+
+	if input.get("primary_updated") and ability_primary and ability_primary.has_method("update"):
+		var direction = input["primary_updated"]
+		return ability_primary.update(SGFixed.vector2(direction.x, direction.y))
+
+	if input.get("primary_deactivated") and ability_primary and ability_primary.has_method("deactivate"):
+		var direction = input["primary_deactivated"]
+		return ability_primary.deactivate(SGFixed.vector2(direction.x, direction.y))
+
+	if input.get("secondary_activated") and ability_secondary and ability_secondary.has_method("activate"):
+		var direction = input["secondary_activated"]
+		return ability_secondary.activate(SGFixed.vector2(direction.x, direction.y))
+
+	if input.get("secondary_updated") and ability_secondary and ability_secondary.has_method("update"):
+		var direction = input["secondary_updated"]
+		return ability_secondary.update(SGFixed.vector2(direction.x, direction.y))
+
+	if input.get("secondary_deactivated") and ability_secondary and ability_secondary.has_method("deactivate"):
+		var direction = input["secondary_deactivated"]
+		return ability_secondary.deactivate(SGFixed.vector2(direction.x, direction.y))
+
 func _network_process(input: Dictionary) -> void:
-	if input.get("mouse_click_x"):
-		if ability_primary:
-			if ability_primary.has_method("activate"):
-				ability_primary.activate(SGFixed.vector2(input["mouse_click_x"], input["mouse_click_y"]))
 
-	if input.get("primary_deactivated"):
-		if ability_primary:
-			if ability_primary.has_method("deactivate"):
-				ability_primary.deactivate()
-
-	_resolve_movement(input)
+	_resolve_ability(input)
+	if !_movement_overridden:
+		_resolve_movement(input)
 
 func _save_state() -> Dictionary:
 	var state: Dictionary = {
@@ -177,6 +217,8 @@ func _save_state() -> Dictionary:
 		is_on_wall = _is_on_wall,
 		player_state = movement_state,
 		touching_wall_normal = _touching_wall_normal,
+		max_speed = current_max_speed,
+		movement_overridden = _movement_overridden,
 	}
 	return state
 
@@ -190,7 +232,10 @@ func _load_state(state: Dictionary) -> void:
 	_is_on_wall = state["is_on_wall"]
 	movement_state = state["player_state"]
 	_touching_wall_normal = state["touching_wall_normal"]
+	current_max_speed = state["max_speed"]
+	_movement_overridden = state["movement_overridden"]
 	sync_to_physics_engine()
+
 
 func _predict_remote_input(previous_input: Dictionary, ticks_since_last_input: int) -> Dictionary:
 	var input = previous_input.duplicate()
@@ -226,13 +271,21 @@ func _apply_ground_friction() -> void:
 	elif velocity.x < 0:
 		velocity.x = min(velocity.x + GROUND_FRICTION, 0)
 
-func _apply_gravity() -> void:
+func apply_gravity() -> void:
 	velocity.y -= fall_gravity
 
 func _idle(input: Dictionary) -> void:
 	movement_state = MovementState.IDLE
 	if input.get("left") or input.get("right"):
 		return _running(input)
+
+	apply_gravity()
+
+	if input.get("up"):
+		_jump()
+		move_and_slide()
+		return
+
 	move_and_slide()
 	if !is_on_floor():
 		movement_state = MovementState.FALLING
@@ -246,23 +299,30 @@ func _running(input: Dictionary) -> void:
 	var right_motion: int = SGFixed.ONE if input.get("right") else 0
 	var left_motion: int = SGFixed.NEG_ONE if input.get("left") else 0
 
-	_apply_gravity()
+	apply_gravity()
 
 	if !right_motion and !left_motion:
 		_apply_ground_friction()
 
 	velocity.x += SGFixed.mul(right_motion + left_motion, GROUND_ACCEL)
-	velocity.x = clamp(velocity.x, -MAX_SPEED, MAX_SPEED)
+	velocity.x = clamp(velocity.x, -current_max_speed, current_max_speed)
 
 	if input.get("up"):
 		_jump()
+		move_and_slide()
+		return
 
 	move_and_slide()
+
+	if !is_on_floor():
+		movement_state = MovementState.FALLING
+	elif velocity.x == 0:
+		movement_state = MovementState.IDLE
 
 func _apply_air_acceleration(input: Dictionary) -> void:
 	var x_acceleration = SGFixed.mul(get_x_input(input), AIR_ACCEL)
 	if velocity.x * x_acceleration > 0: # if we're accelerating in the same direction we are moving
-		var allowed_acceleration = max(MAX_SPEED - abs(velocity.x), 0)
+		var allowed_acceleration = max(current_max_speed - abs(velocity.x), 0)
 		var actual_acceleration = min(allowed_acceleration, abs(x_acceleration))
 		if x_acceleration > 0:
 			velocity.x += actual_acceleration
@@ -285,7 +345,7 @@ func _jumping(input: Dictionary) -> void:
 
 func _falling(input: Dictionary) -> void:
 	movement_state = MovementState.FALLING
-	_apply_gravity()
+	apply_gravity()
 	_apply_air_acceleration(input)
 	move_and_slide()
 	if is_on_floor():
@@ -294,7 +354,7 @@ func _falling(input: Dictionary) -> void:
 		else:
 			movement_state = MovementState.RUNNING
 	
-	if is_on_wall():
+	elif is_on_wall():
 		_touching_wall_normal = get_last_slide_collision().normal.x
 		movement_state = MovementState.WALL_SLIDING
 
@@ -341,6 +401,7 @@ func _wall_sliding(input: Dictionary) -> void:
 
 	if is_on_floor():
 		movement_state = MovementState.IDLE
+
 	elif !is_on_wall():
 		movement_state = MovementState.FALLING
 		velocity.x = 0

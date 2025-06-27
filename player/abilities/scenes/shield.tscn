@@ -1,14 +1,19 @@
-[gd_scene load_steps=2 format=3 uid="uid://cv1u0dlf5tsdq"]
+[gd_scene load_steps=3 format=3 uid="uid://bwiymd7bf4w0f"]
+
+[ext_resource type="Script" uid="uid://dihkj2u4sgk1q" path="res://player/abilities/scenes/shield.gd" id="1_60dwj"]
 
 [sub_resource type="SGRectangleShape2D" id="SGRectangleShape2D_2h8co"]
 extents_y = 2361776
 
-[node name="Shield" type="SGArea2D"]
+[node name="Shield" type="SGArea2D" groups=["network_sync"]]
+script = ExtResource("1_60dwj")
 
 [node name="SGCollisionShape2D" type="SGCollisionShape2D" parent="."]
 shape = SubResource("SGRectangleShape2D_2h8co")
+fixed_position_x = -2800000
+position = Vector2(-42.7246, 0)
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="ColorRect" type="ColorRect" parent="SGCollisionShape2D"]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
