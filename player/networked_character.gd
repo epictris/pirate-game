@@ -1,4 +1,4 @@
-extends SGCharacterBody2D
+class_name Player extends SGCharacterBody2D
 
 var arrow: PackedScene = preload("res://multiplayer/arrow.tscn")
 var bouncy_ball: PackedScene = preload("res://multiplayer/bouncy_ball.tscn")
@@ -36,6 +36,10 @@ const JUMP = 65536 * 10 * 2
 @export var jump_height: int
 @export var jump_time_to_peak: int
 @export var jump_time_to_descent: int
+
+@export var ability_primary: Node
+@export var ability_secondary: Node
+@export var ability_special: Node
 
 var spawn_location_x: int
 var spawn_location_y: int
@@ -109,6 +113,11 @@ func _get_local_input() -> Dictionary:
 	if Input.is_action_just_pressed("attack"):
 		input["mouse_click_x"] = SGFixed.from_float(get_viewport().get_mouse_position().x)
 		input["mouse_click_y"] = SGFixed.from_float(get_viewport().get_mouse_position().y)
+
+	if Input.is_action_just_released("attack"):
+		print("released mouse button")
+		input["primary_deactivated"] = true
+
 	
 	if Input.is_action_just_pressed("alt_attack"):
 		input["right_mouse_click_x"] = SGFixed.from_float(get_viewport().get_mouse_position().x)
@@ -126,7 +135,7 @@ func _wall_jump() -> void:
 	velocity.y = -jump_velocity
 	velocity.x = SGFixed.mul(_touching_wall_normal, jump_velocity)
 
-func _network_process(input: Dictionary) -> void:
+func _resolve_movement(input: Dictionary) -> void:
 	if movement_state == MovementState.IDLE:
 		_idle(input)
 	elif movement_state == MovementState.RUNNING:
@@ -143,6 +152,19 @@ func _network_process(input: Dictionary) -> void:
 	_is_on_floor = is_on_floor()
 	_is_on_ceiling = is_on_ceiling()
 	_is_on_wall = is_on_wall()
+
+func _network_process(input: Dictionary) -> void:
+	if input.get("mouse_click_x"):
+		if ability_primary:
+			if ability_primary.has_method("activate"):
+				ability_primary.activate(SGFixed.vector2(input["mouse_click_x"], input["mouse_click_y"]))
+
+	if input.get("primary_deactivated"):
+		if ability_primary:
+			if ability_primary.has_method("deactivate"):
+				ability_primary.deactivate()
+
+	_resolve_movement(input)
 
 func _save_state() -> Dictionary:
 	var state: Dictionary = {
@@ -239,7 +261,6 @@ func _running(input: Dictionary) -> void:
 
 func _apply_air_acceleration(input: Dictionary) -> void:
 	var x_acceleration = SGFixed.mul(get_x_input(input), AIR_ACCEL)
-	print(x_acceleration)
 	if velocity.x * x_acceleration > 0: # if we're accelerating in the same direction we are moving
 		var allowed_acceleration = max(MAX_SPEED - abs(velocity.x), 0)
 		var actual_acceleration = min(allowed_acceleration, abs(x_acceleration))
