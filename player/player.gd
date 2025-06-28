@@ -1,0 +1,407 @@
+class_name Player extends SGCharacterBody2D
+
+var arrow: PackedScene = preload("res://multiplayer/arrow.tscn")
+var bouncy_ball: PackedScene = preload("res://multiplayer/bouncy_ball.tscn")
+
+const MAX_SPEED = FI.ONE * 8 * 2
+const WALL_SLIDE_SPEED = FI.ONE * 2 * 2
+const WALL_FRICTION = FI.ONE * 2
+const GROUND_ACCEL = FI.ONE * 3 * 2
+const GROUND_FRICTION = FI.ONE + FI.ONE_POINT_TWO
+const AIR_ACCEL = FI.POINT_FOUR * 2
+const GRAVITY = FI.ONE * 2 * 2
+const JUMP = FI.ONE * 10 * 2
+
+var current_max_speed: int = MAX_SPEED
+
+func override_max_speed(new_max_speed: int) -> void:
+	current_max_speed = new_max_speed
+
+func reset_max_speed() -> void:
+	current_max_speed = MAX_SPEED
+
+@export var jump_height: int
+@export var jump_time_to_peak: int
+@export var jump_time_to_descent: int
+
+@export var ability_primary: AbilityBase
+@export var ability_secondary: AbilityBase
+@export var ability_special: AbilityBase
+
+var spawn_location_x: int
+var spawn_location_y: int
+
+@onready var jump_velocity: int = SGFixed.div(
+	SGFixed.mul(
+		SGFixed.TWO, 
+		jump_height * SGFixed.ONE
+	), 
+	jump_time_to_peak * SGFixed.ONE
+)
+@onready var jump_gravity: int = SGFixed.div(
+	SGFixed.mul(
+		-SGFixed.TWO, 
+		jump_height * SGFixed.ONE
+	), 
+	SGFixed.mul(
+		jump_time_to_peak * SGFixed.ONE, 
+		jump_time_to_peak * SGFixed.ONE
+	)
+)
+@onready var fall_gravity: int = SGFixed.div(
+	SGFixed.mul(
+		-SGFixed.TWO, 
+		jump_height * SGFixed.ONE
+	), 
+	SGFixed.mul(
+		jump_time_to_descent * SGFixed.ONE, 
+		jump_time_to_descent * SGFixed.ONE
+	)
+)
+
+var _is_on_floor: bool = false
+var _is_on_ceiling: bool = false
+var _is_on_wall: bool = false
+
+var _touching_wall_normal: int
+
+var _movement_overridden: bool = false
+
+var movement_state: MovementState = MovementState.IDLE
+
+enum MovementState {
+	IDLE,
+	RUNNING,	
+	JUMPING,
+	FALLING,
+	WALL_JUMPING,
+	WALL_SLIDING,
+}
+
+var spawn_position: SGFixedVector2
+
+func _ready():
+	respawn()
+
+func respawn() -> void:
+	fixed_position_x = spawn_position.x
+	fixed_position_y = spawn_position.y
+	velocity.x = 0
+	velocity.y = 0
+	sync_to_physics_engine()
+
+func set_movement_override(override_movement: bool) -> void:
+	_movement_overridden = override_movement
+
+
+func _get_local_input() -> Dictionary:
+	var input := {
+		up = Input.is_action_pressed("ui_up"),
+		up_just_pressed = Input.is_action_just_pressed("ui_up"),
+		down = Input.is_action_pressed("ui_down"),
+		left = Input.is_action_pressed("ui_left"),
+		right = Input.is_action_pressed("ui_right"),
+	}
+
+	if Input.is_action_just_pressed("left_click"):
+		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
+		input["primary_activated"] = {
+			x = direction.x,
+			y = direction.y,
+		}
+
+	if Input.is_action_pressed("left_click"):
+		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
+		input["primary_updated"] = {
+			x = direction.x,
+			y = direction.y,
+		}
+
+	if Input.is_action_just_released("left_click"):
+		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
+		input["primary_deactivated"] = {
+			x = direction.x,
+			y = direction.y,
+		}
+
+	if Input.is_action_just_pressed("right_click"):
+		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
+		input["secondary_activated"] = {
+			x = direction.x,
+			y = direction.y,
+		}
+
+	if Input.is_action_pressed("right_click"):
+		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
+		input["secondary_updated"] = {
+			x = direction.x,
+			y = direction.y,
+		}
+
+	if Input.is_action_just_released("right_click"):
+		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
+		input["secondary_deactivated"] = {
+			x = direction.x,
+			y = direction.y,
+		}
+
+	return input
+
+func _jump() -> void:
+	movement_state = MovementState.JUMPING
+	velocity.y = -jump_velocity
+	velocity.x = SGFixed.mul(velocity.x, FI.ONE_POINT_TWO)
+
+func _wall_jump() -> void:
+	movement_state = MovementState.WALL_JUMPING
+	velocity.y = -jump_velocity
+	velocity.x = SGFixed.mul(_touching_wall_normal, jump_velocity)
+
+func _resolve_movement(input: Dictionary) -> void:
+	if movement_state == MovementState.IDLE:
+		_idle(input)
+	elif movement_state == MovementState.RUNNING:
+		_running(input)
+	elif movement_state == MovementState.JUMPING:
+		_jumping(input)
+	elif movement_state == MovementState.FALLING:
+		_falling(input)
+	elif movement_state == MovementState.WALL_JUMPING:
+		_wall_jumping(input)
+	elif movement_state == MovementState.WALL_SLIDING:
+		_wall_sliding(input)
+
+	_is_on_floor = is_on_floor()
+	_is_on_ceiling = is_on_ceiling()
+	_is_on_wall = is_on_wall()
+
+func _resolve_ability(input: Dictionary) -> void:
+	if input.get("primary_activated") and ability_primary and ability_primary.has_method("activate"):
+		var direction = input["primary_activated"]
+		return ability_primary.activate(SGFixed.vector2(direction.x, direction.y))
+
+	if input.get("primary_updated") and ability_primary and ability_primary.has_method("update"):
+		var direction = input["primary_updated"]
+		return ability_primary.update(SGFixed.vector2(direction.x, direction.y))
+
+	if input.get("primary_deactivated") and ability_primary and ability_primary.has_method("deactivate"):
+		var direction = input["primary_deactivated"]
+		return ability_primary.deactivate(SGFixed.vector2(direction.x, direction.y))
+
+	if input.get("secondary_activated") and ability_secondary and ability_secondary.has_method("activate"):
+		var direction = input["secondary_activated"]
+		return ability_secondary.activate(SGFixed.vector2(direction.x, direction.y))
+
+	if input.get("secondary_updated") and ability_secondary and ability_secondary.has_method("update"):
+		var direction = input["secondary_updated"]
+		return ability_secondary.update(SGFixed.vector2(direction.x, direction.y))
+
+	if input.get("secondary_deactivated") and ability_secondary and ability_secondary.has_method("deactivate"):
+		var direction = input["secondary_deactivated"]
+		return ability_secondary.deactivate(SGFixed.vector2(direction.x, direction.y))
+
+func _network_process(input: Dictionary) -> void:
+
+	_resolve_ability(input)
+	if !_movement_overridden:
+		_resolve_movement(input)
+
+func _save_state() -> Dictionary:
+	var state: Dictionary = {
+		fixed_position_x = fixed_position_x,
+		fixed_position_y = fixed_position_y,
+		velocity_x = velocity.x,
+		velocity_y = velocity.y,
+		is_on_floor = _is_on_floor,
+		is_on_ceiling = _is_on_ceiling,
+		is_on_wall = _is_on_wall,
+		player_state = movement_state,
+		touching_wall_normal = _touching_wall_normal,
+		max_speed = current_max_speed,
+		movement_overridden = _movement_overridden,
+	}
+	return state
+
+func _load_state(state: Dictionary) -> void:
+	fixed_position_x = state["fixed_position_x"]
+	fixed_position_y = state["fixed_position_y"]
+	velocity.x = state["velocity_x"]
+	velocity.y = state["velocity_y"]
+	_is_on_floor = state["is_on_floor"]
+	_is_on_ceiling = state["is_on_ceiling"]
+	_is_on_wall = state["is_on_wall"]
+	movement_state = state["player_state"]
+	_touching_wall_normal = state["touching_wall_normal"]
+	current_max_speed = state["max_speed"]
+	_movement_overridden = state["movement_overridden"]
+	sync_to_physics_engine()
+
+
+func _predict_remote_input(previous_input: Dictionary, ticks_since_last_input: int) -> Dictionary:
+	var input = previous_input.duplicate()
+
+	if ticks_since_last_input > 1:
+		if _is_on_floor:
+			input.erase("left")
+			input.erase("right")
+
+	if input.get("mouse_click_x"):
+		input.erase("mouse_click_x")
+		input.erase("mouse_click_y")
+
+	if input.get("right_mouse_click_x"):
+		input.erase("right_mouse_click_x")
+		input.erase("right_mouse_click_y")
+
+	if input.get("up_just_pressed"):
+		input.erase("up_just_pressed")
+
+	return input
+
+func take_damage() -> void:
+	respawn()
+
+func _interpolate_state(old_state: Dictionary, new_state: Dictionary, weight: float) -> void:
+	position.x = lerp(SGFixed.to_float(old_state.fixed_position_x), SGFixed.to_float(new_state.fixed_position_x), weight)
+	position.y = lerp(SGFixed.to_float(old_state.fixed_position_y), SGFixed.to_float(new_state.fixed_position_y), weight)
+
+func _apply_ground_friction() -> void:
+	if velocity.x > 0:
+		velocity.x = max(velocity.x - GROUND_FRICTION, 0)
+	elif velocity.x < 0:
+		velocity.x = min(velocity.x + GROUND_FRICTION, 0)
+
+func apply_gravity() -> void:
+	velocity.y -= fall_gravity
+
+func _idle(input: Dictionary) -> void:
+	movement_state = MovementState.IDLE
+	if input.get("left") or input.get("right"):
+		return _running(input)
+
+	apply_gravity()
+
+	if input.get("up"):
+		_jump()
+		move_and_slide()
+		return
+
+	move_and_slide()
+	if !is_on_floor():
+		movement_state = MovementState.FALLING
+
+func _running(input: Dictionary) -> void:
+	movement_state = MovementState.RUNNING
+
+	if !_is_on_floor:
+		return _falling(input)
+
+	var right_motion: int = SGFixed.ONE if input.get("right") else 0
+	var left_motion: int = SGFixed.NEG_ONE if input.get("left") else 0
+
+	apply_gravity()
+
+	if !right_motion and !left_motion:
+		_apply_ground_friction()
+
+	velocity.x += SGFixed.mul(right_motion + left_motion, GROUND_ACCEL)
+	velocity.x = clamp(velocity.x, -current_max_speed, current_max_speed)
+
+	if input.get("up"):
+		_jump()
+		move_and_slide()
+		return
+
+	move_and_slide()
+
+	if !is_on_floor():
+		movement_state = MovementState.FALLING
+	elif velocity.x == 0:
+		movement_state = MovementState.IDLE
+
+func _apply_air_acceleration(input: Dictionary) -> void:
+	var x_acceleration = SGFixed.mul(get_x_input(input), AIR_ACCEL)
+	if velocity.x * x_acceleration > 0: # if we're accelerating in the same direction we are moving
+		var allowed_acceleration = max(current_max_speed - abs(velocity.x), 0)
+		var actual_acceleration = min(allowed_acceleration, abs(x_acceleration))
+		if x_acceleration > 0:
+			velocity.x += actual_acceleration
+		else:
+			velocity.x -= actual_acceleration
+	else:
+		velocity.x += x_acceleration
+
+func _jumping(input: Dictionary) -> void:
+	movement_state = MovementState.JUMPING
+	velocity.y -= jump_gravity
+	_apply_air_acceleration(input)
+	move_and_slide()
+	if velocity.y > 0:
+		movement_state = MovementState.FALLING
+
+	if is_on_wall():
+		_touching_wall_normal = get_last_slide_collision().normal.x
+		movement_state = MovementState.WALL_SLIDING
+
+func _falling(input: Dictionary) -> void:
+	movement_state = MovementState.FALLING
+	apply_gravity()
+	_apply_air_acceleration(input)
+	move_and_slide()
+	if is_on_floor():
+		if velocity.x == 0:
+			movement_state = MovementState.IDLE
+		else:
+			movement_state = MovementState.RUNNING
+	
+	elif is_on_wall():
+		_touching_wall_normal = get_last_slide_collision().normal.x
+		movement_state = MovementState.WALL_SLIDING
+
+func _wall_jumping(input: Dictionary) -> void:
+	movement_state = MovementState.WALL_JUMPING
+	velocity.y -= jump_gravity
+	_apply_air_acceleration(input)
+	move_and_slide()
+
+	if velocity.y > 0:
+		movement_state = MovementState.FALLING
+
+	if is_on_wall():
+		_touching_wall_normal = get_last_slide_collision().normal.x
+		movement_state = MovementState.WALL_SLIDING
+
+func get_x_input(input: Dictionary) -> int:
+	var right_motion: int = SGFixed.ONE if input.get("right") else 0
+	var left_motion: int = SGFixed.NEG_ONE if input.get("left") else 0
+	return right_motion + left_motion
+
+
+func _wall_sliding(input: Dictionary) -> void:
+	movement_state = MovementState.WALL_SLIDING
+	if input.get("up_just_pressed"):
+		_wall_jump()
+		move_and_slide()
+		return
+
+	if input.get("down"):
+		return _falling(input)
+
+	if get_x_input(input) * _touching_wall_normal > 0:
+		return _falling(input)
+
+	if velocity.y < 0:
+		velocity.y -= jump_gravity
+	else:
+		velocity.y -= WALL_FRICTION
+		velocity.y = max(velocity.y, WALL_SLIDE_SPEED)
+
+	velocity.x = -_touching_wall_normal # small x velocity to ensure is_on_wall() resolves to true
+	move_and_slide()
+
+	if is_on_floor():
+		movement_state = MovementState.IDLE
+
+	elif !is_on_wall():
+		movement_state = MovementState.FALLING
+		velocity.x = 0
