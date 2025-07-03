@@ -23,3 +23,6 @@ func _interpolate_state(old_state: Dictionary, new_state: Dictionary, weight: fl
 	var old_rotation = SGFixed.to_float(old_state.fixed_rotation)
 	var new_rotation = SGFixed.to_float(new_state.fixed_rotation)
 	rotation = lerp_angle(old_rotation, new_rotation, weight)
+
+func get_velocity() -> SGFixedVector2:
+	return get_parent().get_velocity()

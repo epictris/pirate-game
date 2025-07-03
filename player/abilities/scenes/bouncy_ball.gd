@@ -49,10 +49,12 @@ func _network_process(input: Dictionary) -> void:
 			SyncManager.despawn(self)
 			return
 
-		# fixed_position = ray_cast.get_collision_point().add(velocity.normalized().mul(-FI.ONE * 15))
+		fixed_position = ray_cast.get_collision_point().add(velocity.normalized().mul(-FI.ONE * 10))
+
+		if ray_cast.get_collider().has_method("get_velocity"):
+			fixed_position = fixed_position.add(ray_cast.get_collider().get_velocity())
 
 		rebound(ray_cast.get_collision_normal())
-		fixed_position = fixed_position.add(velocity)
 		# remaining_bounces -= 1
 
 	else:
@@ -75,6 +77,7 @@ func _load_state(state: Dictionary) -> void:
 	velocity.x = state["velocity_x"]
 	velocity.y = state["velocity_y"]
 	remaining_bounces = state["remaining_bounces"]
+	position = fixed_position.to_float()
 
 func _interpolate_state(old_state: Dictionary, new_state: Dictionary, weight: float) -> void:
 	position.x = lerp(SGFixed.to_float(old_state.fixed_position_x), SGFixed.to_float(new_state.fixed_position_x), weight)

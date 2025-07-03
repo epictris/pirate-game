@@ -14,6 +14,7 @@ func activate(direction: SGFixedVector2) -> void:
 func update(direction: SGFixedVector2) -> void:
 	if shield_instance:
 		shield_instance.fixed_rotation = SGFixed.vector2(-FI.ONE, 0).angle_to(direction)
+		shield_instance.sync_to_physics_engine()
 
 func deactivate(_direction: SGFixedVector2) -> void:
 	if shield_instance:
