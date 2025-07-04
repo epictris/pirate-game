@@ -1,8 +1,5 @@
 class_name Player extends SGCharacterBody2D
 
-var arrow: PackedScene = preload("res://multiplayer/arrow.tscn")
-var bouncy_ball: PackedScene = preload("res://multiplayer/bouncy_ball.tscn")
-
 const MAX_SPEED = FI.ONE * 8 * 2
 const WALL_SLIDE_SPEED = FI.ONE * 2 * 2
 const WALL_FRICTION = FI.ONE * 2
@@ -65,8 +62,6 @@ var _is_on_wall: bool = false
 
 var _touching_wall_normal: int
 
-var _movement_overridden: bool = false
-
 var movement_state: MovementState = MovementState.IDLE
 
 enum MovementState {
@@ -78,9 +73,15 @@ enum MovementState {
 	WALL_SLIDING,
 }
 
+var frame_input: Dictionary = {}
+
 var spawn_position: SGFixedVector2
 
+var _current_ability: AbilityBase
+
 func _ready():
+	collision_layer = CollisionLayer.PLAYERS
+	collision_mask = CollisionLayer.PLAYERS | CollisionLayer.ENVIRONMENT
 	respawn()
 
 func respawn() -> void:
@@ -90,11 +91,23 @@ func respawn() -> void:
 	velocity.y = 0
 	sync_to_physics_engine()
 
-func set_movement_override(override_movement: bool) -> void:
-	_movement_overridden = override_movement
 
+func activate_ability(ability: AbilityBase, allow_overwrite: bool = false) -> void:
+	assert(allow_overwrite or !_current_ability, "Attempting to activate an ability while an ability is already active")
+	_current_ability = ability
+
+func deactivate_ability(ability: AbilityBase) -> void:
+	assert(_current_ability == ability, "Attempting to deactivate ability that is not currently active")
+	_current_ability = null
+
+func has_active_ability() -> bool:
+	return true if _current_ability else false
+
+func is_ability_active(ability: AbilityBase) -> bool:
+	return ability == _current_ability
 
 func _get_local_input() -> Dictionary:
+
 	var input := {
 		up = Input.is_action_pressed("ui_up"),
 		up_just_pressed = Input.is_action_just_pressed("ui_up"),
@@ -105,47 +118,32 @@ func _get_local_input() -> Dictionary:
 
 	if Input.is_action_just_pressed("left_click"):
 		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
-		input["primary_activated"] = {
-			x = direction.x,
-			y = direction.y,
-		}
+		input["primary_activated"] = SGFixed.vector2(direction.x, direction.y)
 
 	if Input.is_action_pressed("left_click"):
 		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
-		input["primary_updated"] = {
-			x = direction.x,
-			y = direction.y,
-		}
+		input["primary_updated"] = SGFixed.vector2(direction.x, direction.y)
 
 	if Input.is_action_just_released("left_click"):
 		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
-		input["primary_deactivated"] = {
-			x = direction.x,
-			y = direction.y,
-		}
+		input["primary_deactivated"] = SGFixed.vector2(direction.x, direction.y)
 
 	if Input.is_action_just_pressed("right_click"):
 		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
-		input["secondary_activated"] = {
-			x = direction.x,
-			y = direction.y,
-		}
+		input["secondary_activated"] = SGFixed.vector2(direction.x, direction.y)
 
 	if Input.is_action_pressed("right_click"):
 		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
-		input["secondary_updated"] = {
-			x = direction.x,
-			y = direction.y,
-		}
+		input["secondary_updated"] = SGFixed.vector2(direction.x, direction.y)
 
 	if Input.is_action_just_released("right_click"):
 		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
-		input["secondary_deactivated"] = {
-			x = direction.x,
-			y = direction.y,
-		}
+		input["secondary_deactivated"] = SGFixed.vector2(direction.x, direction.y)
 
 	return input
+
+func _network_preprocess(input: Dictionary) -> void:
+	frame_input = input
 
 func _jump() -> void:
 	movement_state = MovementState.JUMPING
@@ -175,36 +173,80 @@ func _resolve_movement(input: Dictionary) -> void:
 	_is_on_ceiling = is_on_ceiling()
 	_is_on_wall = is_on_wall()
 
-func _resolve_ability(input: Dictionary) -> void:
-	if input.get("primary_activated") and ability_primary and ability_primary.has_method("activate"):
-		var direction = input["primary_activated"]
-		return ability_primary.activate(SGFixed.vector2(direction.x, direction.y))
+func _preprocess_ability_input(input: Dictionary) -> void:
+	if ability_primary:
+		if !_current_ability and input.get("primary_activated") and ability_primary.has_method("_preprocess_on_activated"):
+			ability_primary._preprocess_on_activated(input["primary_activated"])
+		if !_current_ability and input.get("primary_updated") and ability_primary.has_method("_preprocess_on_activated"):
+			# Treat update as activation input if no ability is active
+			ability_primary._preprocess_on_activated(input["primary_updated"])
+		if _current_ability == ability_primary:
+			if input.get("primary_updated") and ability_primary.has_method("_preprocess_on_updated"):
+				ability_primary._preprocess_on_updated(input["primary_updated"])
+			if input.get("primary_deactivated") and ability_primary.has_method("_preprocess_on_deactivated"):
+				ability_primary._preprocess_on_deactivated(input["primary_deactivated"])
 
-	if input.get("primary_updated") and ability_primary and ability_primary.has_method("update"):
-		var direction = input["primary_updated"]
-		return ability_primary.update(SGFixed.vector2(direction.x, direction.y))
+	if ability_secondary:
+		if !_current_ability and input.get("secondary_activated") and ability_secondary.has_method("_preprocess_on_activated"):
+			ability_secondary._preprocess_on_activated(input["secondary_activated"])
+		if !_current_ability and input.get("secondary_updated") and ability_secondary.has_method("_preprocess_on_activated"):
+			# Treat update as activation input if no ability is active
+			ability_secondary._preprocess_on_activated(input["secondary_updated"])
+		if _current_ability == ability_secondary:
+			if input.get("secondary_updated") and ability_secondary.has_method("_preprocess_on_updated"):
+				ability_secondary._preprocess_on_updated(input["secondary_updated"])
+			if input.get("secondary_deactivated") and ability_secondary.has_method("_preprocess_on_deactivated"):
+				ability_secondary._preprocess_on_deactivated(input["secondary_deactivated"])
 
-	if input.get("primary_deactivated") and ability_primary and ability_primary.has_method("deactivate"):
-		var direction = input["primary_deactivated"]
-		return ability_primary.deactivate(SGFixed.vector2(direction.x, direction.y))
+func _postprocess_ability_input(input: Dictionary) -> void:
+	if ability_primary:
+		if (!_current_ability or _current_ability == ability_primary) and input.get("primary_activated") and ability_primary.has_method("_postprocess_on_activated"):
+			ability_primary._postprocess_on_activated(input["primary_activated"])
+		if !_current_ability and input.get("primary_updated") and ability_primary.has_method("_postprocess_on_activated"):
+			# Treat update as activation input if no ability is active
+			ability_primary._postprocess_on_activated(input["primary_updated"])
+		if _current_ability == ability_primary:
+			if input.get("primary_updated") and ability_primary.has_method("_postprocess_on_updated"):
+				ability_primary._postprocess_on_updated(input["primary_updated"])
+			if input.get("primary_deactivated") and ability_primary.has_method("_postprocess_on_deactivated"):
+				ability_primary._postprocess_on_deactivated(input["primary_deactivated"])
 
-	if input.get("secondary_activated") and ability_secondary and ability_secondary.has_method("activate"):
-		var direction = input["secondary_activated"]
-		return ability_secondary.activate(SGFixed.vector2(direction.x, direction.y))
+	if ability_secondary:
+		if (!_current_ability or _current_ability == ability_secondary) and input.get("secondary_activated") and ability_secondary.has_method("_postprocess_on_activated"):
+			ability_secondary._postprocess_on_activated(input["secondary_activated"])
+		if !_current_ability and input.get("secondary_updated") and ability_secondary.has_method("_postprocess_on_activated"):
+			# Treat update as activation input if no ability is active
+			ability_secondary._postprocess_on_activated(input["secondary_updated"])
+		if _current_ability == ability_secondary:
+			if input.get("secondary_updated") and ability_secondary.has_method("_postprocess_on_updated"):
+				ability_secondary._postprocess_on_updated(input["secondary_updated"])
+			if input.get("secondary_deactivated") and ability_secondary.has_method("_postprocess_on_deactivated"):
+				ability_secondary._postprocess_on_deactivated(input["secondary_deactivated"])
 
-	if input.get("secondary_updated") and ability_secondary and ability_secondary.has_method("update"):
-		var direction = input["secondary_updated"]
-		return ability_secondary.update(SGFixed.vector2(direction.x, direction.y))
+func _update() -> void:
+	_process_tick(frame_input)
 
-	if input.get("secondary_deactivated") and ability_secondary and ability_secondary.has_method("deactivate"):
-		var direction = input["secondary_deactivated"]
-		return ability_secondary.deactivate(SGFixed.vector2(direction.x, direction.y))
+func _process_tick(input: Dictionary) -> void:
 
-func _network_process(input: Dictionary) -> void:
+	_preprocess_ability_input(input)
 
-	_resolve_ability(input)
-	if !_movement_overridden:
+	var override_movement: bool = false
+
+	if _current_ability:
+		if _current_ability.has_method("_hook_before_player_movement"):
+			_current_ability._hook_before_player_movement()
+
+		if _current_ability.has_method("_should_override_movement"):
+			override_movement = _current_ability._should_override_movement()
+
+	if !override_movement:
 		_resolve_movement(input)
+
+	if _current_ability:
+		if _current_ability.has_method("_hook_after_player_movement"):
+			_current_ability._hook_after_player_movement()
+	
+	_postprocess_ability_input(input)
 
 func _save_state() -> Dictionary:
 	var state: Dictionary = {
@@ -218,7 +260,6 @@ func _save_state() -> Dictionary:
 		player_state = movement_state,
 		touching_wall_normal = _touching_wall_normal,
 		max_speed = current_max_speed,
-		movement_overridden = _movement_overridden,
 	}
 	return state
 
@@ -233,7 +274,6 @@ func _load_state(state: Dictionary) -> void:
 	movement_state = state["player_state"]
 	_touching_wall_normal = state["touching_wall_normal"]
 	current_max_speed = state["max_speed"]
-	_movement_overridden = state["movement_overridden"]
 	sync_to_physics_engine()
 
 

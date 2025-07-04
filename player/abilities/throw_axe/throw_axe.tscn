@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://ddwjlseep37eu"]
+
+[ext_resource type="Script" uid="uid://dkxde8ulkh7tj" path="res://player/abilities/throw_axe/throw_axe.gd" id="1_fldgv"]
+[ext_resource type="PackedScene" uid="uid://dc1lgm2vokdc8" path="res://player/abilities/throw_axe/axe.tscn" id="2_hhb5e"]
+
+[node name="ThrowAxe" type="Node"]
+script = ExtResource("1_fldgv")
+axe_scene = ExtResource("2_hhb5e")
+metadata/_custom_type_script = "uid://cemswpybrelqt"

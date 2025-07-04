@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://wgl5grjbf2cn"]
+
+[ext_resource type="Script" uid="uid://dvsn4srqase50" path="res://collision_resolution/redirect.gd" id="1_2fo4t"]
+
+[node name="Resolve Collision - Redirect" type="Node"]
+script = ExtResource("1_2fo4t")

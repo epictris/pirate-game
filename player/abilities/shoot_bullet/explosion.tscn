@@ -1,0 +1,68 @@
+[gd_scene load_steps=8 format=3 uid="uid://dyr4kjdjffjgx"]
+
+[ext_resource type="Texture2D" uid="uid://dmxkkv5vw7re2" path="res://resources/honey_explosion.webp" id="1_hx8f8"]
+[ext_resource type="Script" uid="uid://1xyu2rwx5eyb" path="res://player/abilities/shoot_bullet/explosion.gd" id="1_k71tl"]
+[ext_resource type="Script" uid="uid://cvhktfjuptb0a" path="res://addons/godot-rollback-netcode/NetworkAnimationPlayer.gd" id="2_k71tl"]
+[ext_resource type="Script" uid="uid://3c3ikrq366ts" path="res://addons/godot-rollback-netcode/NetworkTimer.gd" id="4_8ul8r"]
+
+[sub_resource type="Animation" id="Animation_8ul8r"]
+resource_name = "EXPLODE"
+length = 0.2166
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0333333, 0.0666667, 0.1, 0.133333, 0.166667, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6]
+}
+
+[sub_resource type="Animation" id="Animation_rbrur"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_kg8sh"]
+_data = {
+&"EXPLODE": SubResource("Animation_8ul8r"),
+&"RESET": SubResource("Animation_rbrur")
+}
+
+[node name="Explosion" type="Node2D"]
+script = ExtResource("1_k71tl")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, 6)
+scale = Vector2(0.221132, 0.242498)
+texture = ExtResource("1_hx8f8")
+hframes = 4
+vframes = 2
+
+[node name="NetworkAnimationPlayer" type="AnimationPlayer" parent="."]
+unique_name_in_owner = true
+libraries = {
+&"": SubResource("AnimationLibrary_kg8sh")
+}
+script = ExtResource("2_k71tl")
+metadata/_custom_type_script = "uid://cvhktfjuptb0a"
+
+[node name="NetworkTimer" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("4_8ul8r")
+one_shot = true
+wait_ticks = 8
+metadata/_custom_type_script = "uid://3c3ikrq366ts"

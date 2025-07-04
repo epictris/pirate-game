@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://dbdmk71mpvywe"]
+[gd_scene load_steps=8 format=3 uid="uid://dbdmk71mpvywe"]
 
 [ext_resource type="Script" uid="uid://ciqbe3pwo1nha" path="res://multiplayer/multiplayer.gd" id="1_o4y1c"]
 [ext_resource type="PackedScene" uid="uid://dun8dcjxi0li0" path="res://player/player.tscn" id="2_nhdnw"]
+[ext_resource type="PackedScene" uid="uid://dk2i1di725lqk" path="res://game/game_loop.tscn" id="3_uwdxy"]
 
 [sub_resource type="SGRectangleShape2D" id="SGRectangleShape2D_wktud"]
 extents_x = 40986400
@@ -20,6 +21,8 @@ extents_y = 3033596
 [node name="Multiplayer" type="Node2D"]
 script = ExtResource("1_o4y1c")
 player_scene = ExtResource("2_nhdnw")
+
+[node name="GameLoop" parent="." instance=ExtResource("3_uwdxy")]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 

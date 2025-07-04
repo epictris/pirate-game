@@ -1,19 +1,22 @@
-[gd_scene load_steps=5 format=3 uid="uid://dun8dcjxi0li0"]
+[gd_scene load_steps=8 format=3 uid="uid://dun8dcjxi0li0"]
 
 [ext_resource type="Script" uid="uid://wes4v070j7ba" path="res://player/player.gd" id="1_p55k6"]
-[ext_resource type="PackedScene" uid="uid://c2qh6bt3ve6bq" path="res://player/abilities/components/shield.tscn" id="2_rkbax"]
-[ext_resource type="PackedScene" uid="uid://bil7yda2egk5y" path="res://player/abilities/components/bouncy_ball.tscn" id="3_g1dw6"]
+[ext_resource type="PackedScene" uid="uid://c2qh6bt3ve6bq" path="res://player/abilities/deploy_shield/deploy_shield.tscn" id="2_rkbax"]
+[ext_resource type="PackedScene" uid="uid://bil7yda2egk5y" path="res://player/abilities/throw_bouncy_ball/throw_bouncy_ball.tscn" id="3_g1dw6"]
+[ext_resource type="PackedScene" uid="uid://ddwjlseep37eu" path="res://player/abilities/throw_axe/throw_axe.tscn" id="4_yw30f"]
+[ext_resource type="PackedScene" uid="uid://dvexkwbyye78h" path="res://player/abilities/swing_pan/swing_pan.tscn" id="5_qjkh3"]
+[ext_resource type="PackedScene" uid="uid://ooqryqjg5mct" path="res://player/abilities/shoot_bullet/shoot_bullet.tscn" id="6_g6k8r"]
 
 [sub_resource type="SGRectangleShape2D" id="SGRectangleShape2D_p55k6"]
 extents_x = 4240835
 extents_y = 4211567
 
-[node name="Player" type="SGCharacterBody2D" node_paths=PackedStringArray("ability_primary", "ability_secondary") groups=["network_sync"]]
+[node name="Player" type="SGCharacterBody2D" node_paths=PackedStringArray("ability_primary", "ability_secondary") groups=["network_sync", "player"]]
 script = ExtResource("1_p55k6")
 jump_height = 120
 jump_time_to_peak = 11
 jump_time_to_descent = 7
-ability_primary = NodePath("BouncyBall")
+ability_primary = NodePath("Shoot Bullet")
 ability_secondary = NodePath("Shield")
 
 [node name="SGCollisionShape2D" type="SGCollisionShape2D" parent="."]
@@ -25,3 +28,9 @@ scale = Vector2(0.413223, 0.666672)
 [node name="Shield" parent="." instance=ExtResource("2_rkbax")]
 
 [node name="BouncyBall" parent="." instance=ExtResource("3_g1dw6")]
+
+[node name="ThrowAxe" parent="." instance=ExtResource("4_yw30f")]
+
+[node name="SwingPan" parent="." instance=ExtResource("5_qjkh3")]
+
+[node name="Shoot Bullet" parent="." instance=ExtResource("6_g6k8r")]

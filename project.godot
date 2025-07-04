@@ -23,6 +23,7 @@ GlobalScenes="res://scripts/global_scenes.gd"
 SyncManager="*res://addons/godot-rollback-netcode/SyncManager.gd"
 SyncDebugger="*res://addons/godot-rollback-netcode/SyncDebugger.gd"
 SyncReplay="*res://addons/godot-rollback-netcode/SyncReplay.gd"
+DebugDraw2D="*res://addons/debugdraw2d/DebugDraw2D.gd"
 
 [debug_draw_3d]
 
@@ -34,7 +35,7 @@ window/stretch/mode="viewport"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/godot-rollback-netcode/plugin.cfg")
+enabled=PackedStringArray("res://addons/debugdraw2d/plugin.cfg", "res://addons/godot-rollback-netcode/plugin.cfg")
 
 [global_group]
 
@@ -42,6 +43,7 @@ buoyant=""
 player=""
 ladders=""
 network_sync=""
+projectile=""
 
 [input]
 
@@ -163,8 +165,6 @@ rollback/max_buffer_size=10
 rollback/input_delay=1
 rollback/interpolation=true
 rollback/limits/max_state_mismatch_count=0
-rollback/debug/rollback_ticks=3
-rollback/debug/random_rollback_ticks=6
 rollback/debug/check_local_state_consistency=true
 
 [physics]

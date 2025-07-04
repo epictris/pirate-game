@@ -1,8 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://c2qh6bt3ve6bq"]
-
-[ext_resource type="Script" uid="uid://0iklsjvmwosq" path="res://player/abilities/components/shield.gd" id="1_tkj28"]
-[ext_resource type="PackedScene" uid="uid://bwiymd7bf4w0f" path="res://player/abilities/scenes/shield.tscn" id="2_u0akd"]
-
-[node name="Shield" type="Node" groups=["network_sync"]]
-script = ExtResource("1_tkj28")
-shield = ExtResource("2_u0akd")
