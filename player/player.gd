@@ -177,6 +177,9 @@ func _preprocess_ability_input(input: Dictionary) -> void:
 	if ability_primary:
 		if !_current_ability and input.get("primary_activated") and ability_primary.has_method("_preprocess_on_activated"):
 			ability_primary._preprocess_on_activated(input["primary_activated"])
+		if !_current_ability and input.get("primary_updated") and ability_primary.has_method("_preprocess_on_activated"):
+			# Treat update as activation input if no ability is active
+			ability_primary._preprocess_on_activated(input["primary_updated"])
 		if _current_ability == ability_primary:
 			if input.get("primary_updated") and ability_primary.has_method("_preprocess_on_updated"):
 				ability_primary._preprocess_on_updated(input["primary_updated"])
@@ -186,6 +189,9 @@ func _preprocess_ability_input(input: Dictionary) -> void:
 	if ability_secondary:
 		if !_current_ability and input.get("secondary_activated") and ability_secondary.has_method("_preprocess_on_activated"):
 			ability_secondary._preprocess_on_activated(input["secondary_activated"])
+		if !_current_ability and input.get("secondary_updated") and ability_secondary.has_method("_preprocess_on_activated"):
+			# Treat update as activation input if no ability is active
+			ability_secondary._preprocess_on_activated(input["secondary_updated"])
 		if _current_ability == ability_secondary:
 			if input.get("secondary_updated") and ability_secondary.has_method("_preprocess_on_updated"):
 				ability_secondary._preprocess_on_updated(input["secondary_updated"])
@@ -196,6 +202,9 @@ func _postprocess_ability_input(input: Dictionary) -> void:
 	if ability_primary:
 		if (!_current_ability or _current_ability == ability_primary) and input.get("primary_activated") and ability_primary.has_method("_postprocess_on_activated"):
 			ability_primary._postprocess_on_activated(input["primary_activated"])
+		if !_current_ability and input.get("primary_updated") and ability_primary.has_method("_postprocess_on_activated"):
+			# Treat update as activation input if no ability is active
+			ability_primary._postprocess_on_activated(input["primary_updated"])
 		if _current_ability == ability_primary:
 			if input.get("primary_updated") and ability_primary.has_method("_postprocess_on_updated"):
 				ability_primary._postprocess_on_updated(input["primary_updated"])
@@ -205,6 +214,9 @@ func _postprocess_ability_input(input: Dictionary) -> void:
 	if ability_secondary:
 		if (!_current_ability or _current_ability == ability_secondary) and input.get("secondary_activated") and ability_secondary.has_method("_postprocess_on_activated"):
 			ability_secondary._postprocess_on_activated(input["secondary_activated"])
+		if !_current_ability and input.get("secondary_updated") and ability_secondary.has_method("_postprocess_on_activated"):
+			# Treat update as activation input if no ability is active
+			ability_secondary._postprocess_on_activated(input["secondary_updated"])
 		if _current_ability == ability_secondary:
 			if input.get("secondary_updated") and ability_secondary.has_method("_postprocess_on_updated"):
 				ability_secondary._postprocess_on_updated(input["secondary_updated"])
