@@ -23,14 +23,15 @@ func _preprocess_on_deactivated(direction: SGFixedVector2) -> void:
 	player.reset_max_speed()
 
 # IMPROVE: this component should not be calling these methods on the player directly - we need a better way to partially override player movement so that this type of component doesn't need to completely reimplement the player movement logic for a given state if only minor changes need to be made
-func _hook_before_player_movement() -> void:
-	if player.movement_state == Player.MovementState.WALL_SLIDING:
-		should_override_movement = true
-		player.movement_state = Player.MovementState.FALLING
-		player.apply_gravity()
-		player.move_and_slide()
-	else:
-		should_override_movement = false
+
+# func _hook_before_player_movement() -> void:
+# 	if player.movement_state == Player.MovementState.WALL_SLIDING:
+# 		should_override_movement = true
+# 		player.movement_state = Player.MovementState.FALLING
+# 		player.apply_gravity()
+# 		player.move_and_slide()
+# 	else:
+# 		should_override_movement = false
 
 func _should_override_movement() -> bool:
 	return should_override_movement
