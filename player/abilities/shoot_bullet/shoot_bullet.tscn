@@ -1,10 +1,17 @@
-[gd_scene load_steps=4 format=3 uid="uid://ooqryqjg5mct"]
+[gd_scene load_steps=5 format=3 uid="uid://ooqryqjg5mct"]
 
 [ext_resource type="Script" uid="uid://b776dqem32sv6" path="res://player/abilities/shoot_bullet/shoot_bullet.gd" id="1_y1hiy"]
 [ext_resource type="PackedScene" uid="uid://dyauyn1icrn6c" path="res://player/abilities/shoot_bullet/bullet.tscn" id="2_o15hn"]
 [ext_resource type="PackedScene" uid="uid://dyr4kjdjffjgx" path="res://player/abilities/shoot_bullet/explosion.tscn" id="3_vx1jy"]
+[ext_resource type="Script" uid="uid://3c3ikrq366ts" path="res://addons/godot-rollback-netcode/NetworkTimer.gd" id="4_0511y"]
 
 [node name="Shoot Bullet" type="Node"]
 script = ExtResource("1_y1hiy")
 bullet_scene = ExtResource("2_o15hn")
 explosion_scene = ExtResource("3_vx1jy")
+
+[node name="CooldownTimer" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("4_0511y")
+wait_ticks = 10
+metadata/_custom_type_script = "uid://3c3ikrq366ts"

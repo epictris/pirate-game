@@ -1,6 +1,6 @@
 extends SGCharacterBody2D
 
-const SPEED = FI.ONE * 90
+const SPEED = FI.ONE * 70
 
 @export var explosion_scene: PackedScene
 @onready var collision_shape: SGCollisionShape2D = %CollisionShape
@@ -17,7 +17,7 @@ func _network_spawn(data: Dictionary) -> void:
 func _cast_ray(exceptions: Array) -> SGRayCastCollision2D:
 	return SGPhysics2DServer.world_cast_ray(
 		SGPhysics2DServer.get_default_world(), 
-		fixed_position, 
+		fixed_position,
 		velocity, 
 		collision_mask,
 		exceptions
@@ -38,6 +38,8 @@ func _resolve_collision(collider: SGPhysicsBody2D, point: SGFixedVector2) -> voi
 func _resolve_ray_collision() -> bool:
 	var ray_cast_result = _cast_ray([self])
 	if !ray_cast_result:
+		# re-enable our collision shape if ray cast yields no result
+		collision_shape.disabled = false
 		return false
 	var inside_collider = _check_if_inside_collider(ray_cast_result)
 	if !inside_collider:
@@ -46,13 +48,17 @@ func _resolve_ray_collision() -> bool:
 		_resolve_collision(ray_cast_result.collider, ray_cast_result.point)
 		return true
 	# if we're inside a collision body, escape by excepting the body from collision then re-casting the ray
+
+	# disable our collision shape to prevent collision with the collision body
+	collision_shape.disabled = true
+
 	var recast_result = _cast_ray([self, inside_collider])
 	if recast_result:
 		fixed_position = recast_result.point.copy()
 		sync_to_physics_engine()
 		_resolve_collision(recast_result.collider, recast_result.point)
 	else:
-		fixed_position = fixed_position.add(velocity)
+		fixed_position = fixed_position.add(velocity.mul(FI.ONE_POINT_TWO))
 		sync_to_physics_engine()
 	return true
 
@@ -82,3 +88,7 @@ func _load_state(state: Dictionary) -> void:
 	velocity.x = state["velocity_x"]
 	velocity.y = state["velocity_y"]
 	sync_to_physics_engine()
+
+func _interpolate_state(old_state: Dictionary, new_state: Dictionary, weight: float) -> void:
+	position.x = lerp(SGFixed.to_float(old_state.fixed_position_x), SGFixed.to_float(new_state.fixed_position_x), weight)
+	position.y = lerp(SGFixed.to_float(old_state.fixed_position_y), SGFixed.to_float(new_state.fixed_position_y), weight)

@@ -62,8 +62,6 @@ var _is_on_wall: bool = false
 
 var _touching_wall_normal: int
 
-var _movement_overridden: bool = false
-
 var movement_state: MovementState = MovementState.IDLE
 
 enum MovementState {
@@ -79,6 +77,8 @@ var frame_input: Dictionary = {}
 
 var spawn_position: SGFixedVector2
 
+var _current_ability: AbilityBase
+
 func _ready():
 	collision_layer = CollisionLayer.PLAYERS
 	collision_mask = CollisionLayer.PLAYERS | CollisionLayer.ENVIRONMENT
@@ -91,10 +91,20 @@ func respawn() -> void:
 	velocity.y = 0
 	sync_to_physics_engine()
 
-func set_movement_override(override_movement: bool) -> void:
-	_movement_overridden = override_movement
 
+func activate_ability(ability: AbilityBase, allow_overwrite: bool = false) -> void:
+	assert(allow_overwrite or !_current_ability, "Attempting to activate an ability while an ability is already active")
+	_current_ability = ability
 
+func deactivate_ability(ability: AbilityBase) -> void:
+	assert(_current_ability == ability, "Attempting to deactivate ability that is not currently active")
+	_current_ability = null
+
+func has_active_ability() -> bool:
+	return true if _current_ability else false
+
+func is_ability_active(ability: AbilityBase) -> bool:
+	return ability == _current_ability
 
 func _get_local_input() -> Dictionary:
 
@@ -108,24 +118,15 @@ func _get_local_input() -> Dictionary:
 
 	if Input.is_action_just_pressed("left_click"):
 		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
-		input["primary_activated"] = {
-			x = direction.x,
-			y = direction.y,
-		}
+		input["primary_activated"] = SGFixed.vector2(direction.x, direction.y)
 
 	if Input.is_action_pressed("left_click"):
 		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
-		input["primary_updated"] = {
-			x = direction.x,
-			y = direction.y,
-		}
+		input["primary_updated"] = SGFixed.vector2(direction.x, direction.y)
 
 	if Input.is_action_just_released("left_click"):
 		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
-		input["primary_deactivated"] = {
-			x = direction.x,
-			y = direction.y,
-		}
+		input["primary_deactivated"] = SGFixed.vector2(direction.x, direction.y)
 
 	if Input.is_action_just_pressed("right_click"):
 		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
@@ -181,6 +182,24 @@ func _resolve_movement(input: Dictionary) -> void:
 	_is_on_ceiling = is_on_ceiling()
 	_is_on_wall = is_on_wall()
 
+func _update_ability_input(input: Dictionary) -> void:
+	if ability_primary:
+		if input.get("primary_activated") and ability_primary.has_method("_on_activate_input"):
+			ability_primary._on_activate_input(input["primary_activated"])
+		if input.get("primary_updated") and ability_primary.has_method("_on_update_input"):
+			ability_primary._on_update_input(input["primary_updated"])
+		if input.get("primary_deactivated") and ability_primary.has_method("_on_deactivate_input"):
+			ability_primary._on_deactivate_input(input["primary_deactivated"])
+
+	if ability_secondary:
+		if input.get("secondary_activated") and ability_secondary.has_method("_on_activate_input"):
+			ability_secondary._on_activate_input(input["secondary_activated"])
+		if input.get("secondary_updated") and ability_secondary.has_method("_on_update_input"):
+			ability_secondary._on_update_input(input["secondary_updated"])
+		if input.get("secondary_deactivated") and ability_secondary.has_method("_on_deactivate_input"):
+			ability_secondary._on_deactivate_input(input["secondary_deactivated"])
+
+
 func _resolve_abilities(input: Dictionary) -> void:
 	if input.get("primary_activated") and ability_primary and ability_primary.has_method("activate"):
 		var direction = input["primary_activated"]
@@ -215,9 +234,24 @@ func _update() -> void:
 	_process_tick(frame_input)
 
 func _process_tick(input: Dictionary) -> void:
-	if !_movement_overridden:
+
+	_update_ability_input(input)
+
+	var override_movement: bool = false
+
+	if _current_ability:
+		if _current_ability.has_method("_hook_before_player_movement"):
+			_current_ability._hook_before_player_movement()
+
+		if _current_ability.has_method("_override_movement"):
+			override_movement = _current_ability._override_movement()
+
+	if !override_movement:
 		_resolve_movement(input)
-	_resolve_abilities(input)
+
+	if _current_ability:
+		if _current_ability.has_method("_hook_after_player_movement"):
+			_current_ability._hook_after_player_movement()
 
 func _save_state() -> Dictionary:
 	var state: Dictionary = {
@@ -231,7 +265,6 @@ func _save_state() -> Dictionary:
 		player_state = movement_state,
 		touching_wall_normal = _touching_wall_normal,
 		max_speed = current_max_speed,
-		movement_overridden = _movement_overridden,
 	}
 	return state
 
@@ -246,7 +279,6 @@ func _load_state(state: Dictionary) -> void:
 	movement_state = state["player_state"]
 	_touching_wall_normal = state["touching_wall_normal"]
 	current_max_speed = state["max_speed"]
-	_movement_overridden = state["movement_overridden"]
 	sync_to_physics_engine()
 
 
@@ -274,9 +306,9 @@ func _predict_remote_input(previous_input: Dictionary, ticks_since_last_input: i
 func take_damage() -> void:
 	respawn()
 
-# func _interpolate_state(old_state: Dictionary, new_state: Dictionary, weight: float) -> void:
-# 	position.x = lerp(SGFixed.to_float(old_state.fixed_position_x), SGFixed.to_float(new_state.fixed_position_x), weight)
-# 	position.y = lerp(SGFixed.to_float(old_state.fixed_position_y), SGFixed.to_float(new_state.fixed_position_y), weight)
+func _interpolate_state(old_state: Dictionary, new_state: Dictionary, weight: float) -> void:
+	position.x = lerp(SGFixed.to_float(old_state.fixed_position_x), SGFixed.to_float(new_state.fixed_position_x), weight)
+	position.y = lerp(SGFixed.to_float(old_state.fixed_position_y), SGFixed.to_float(new_state.fixed_position_y), weight)
 
 func _apply_ground_friction() -> void:
 	if velocity.x > 0:
