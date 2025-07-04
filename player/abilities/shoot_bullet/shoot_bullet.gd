@@ -26,7 +26,7 @@ func _hook_after_player_movement() -> void:
 	if !on_cooldown:
 		on_cooldown = true
 		var data = {
-			fixed_position = player.fixed_position.copy().add(current_direction.mul(FI.ONE)),
+			fixed_position = player.fixed_position.copy(),
 			direction = current_direction,
 			player_path = player.get_path(),
 		}

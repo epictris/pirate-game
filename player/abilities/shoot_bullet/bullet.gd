@@ -25,8 +25,6 @@ func _cast_ray(exceptions: Array) -> SGRayCastCollision2D:
 	)
 
 func _check_if_inside_collider(ray_cast_result: SGRayCastCollision2D) -> SGCollisionObject2D:
-	if !(ray_cast_result.normal.dot(velocity.normalized()) > 0):
-		DebugDraw2D.circle(ray_cast_result.point.to_float(), 10)
 	return ray_cast_result.collider if ray_cast_result.normal.dot(velocity.normalized()) > 0 else null
 
 func _resolve_collision(collider: SGPhysicsBody2D, point: SGFixedVector2) -> void:
@@ -54,7 +52,7 @@ func _resolve_ray_collision() -> bool:
 		sync_to_physics_engine()
 		_resolve_collision(recast_result.collider, recast_result.point)
 	else:
-		fixed_position = fixed_position.add(velocity.mul(FI.ONE_POINT_TWO))
+		fixed_position = fixed_position.add(velocity)
 		sync_to_physics_engine()
 	return true
 
