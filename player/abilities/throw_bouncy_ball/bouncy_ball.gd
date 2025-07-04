@@ -18,7 +18,7 @@ func _network_spawn(data: Dictionary) -> void:
 	fixed_position.x = data["fixed_position"].x
 	fixed_position.y = data["fixed_position"].y
 	var direction: SGFixedVector2 = SGFixed.vector2(data["direction"].x, data["direction"].y)
-	fixed_position = fixed_position.add(direction.mul(FI.ONE * 70))
+	fixed_position = fixed_position.add(direction.mul(FI.ONE * 30))
 	velocity = direction.mul(SPEED)
 	position = fixed_position.to_float()
 
@@ -28,37 +28,28 @@ func _update() -> void:
 	# or maybe check two frames ahead of the ball.
 	var cast_to = velocity.mul(FI.ONE_POINT_TWO)
 
-	DebugDraw2D.line(fixed_position.to_float(), fixed_position.add(cast_to).to_float(), Color.RED)
-	DebugDraw2D.circle(fixed_position.to_float(), 5)
-
-	var exceptions = [get_tree().get_first_node_in_group("player")]
-	# exceptions = []
-	var result = SGPhysics2DServer.world_cast_ray(SGPhysics2DServer.get_default_world(), fixed_position, cast_to, 255, exceptions, true)
+	var result = SGPhysics2DServer.world_cast_ray(SGPhysics2DServer.get_default_world(), fixed_position, cast_to, 255, [], true)
 
 	if result:
 		fixed_position = result.point
 		position = fixed_position.to_float()
 		if result.collider.has_method("take_damage"):
-			print("took damage")
 			result.collider.take_damage()
 			_despawn()
 			return
 		if result.collider.has_method("collide"):
-			print("collision")
-			print(self.get_groups())
 			result.collider.collide(self)
 		if remaining_bounces == 0:
 			_despawn()
 			return
 
-		# fixed_position = ray_cast.get_collision_point().add(velocity.normalized().mul(-FI.ONE * 10))
 		if result.collider.has_method("get_velocity"):
 			fixed_position = fixed_position.add(result.collider.get_velocity())
 
 		SGPhysics2DServer.get_default_world()
 
 		rebound(result.normal)
-		# remaining_bounces -= 1
+		remaining_bounces -= 1
 
 	else:
 		fixed_position = fixed_position.add(velocity)
