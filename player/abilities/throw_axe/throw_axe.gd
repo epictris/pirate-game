@@ -2,7 +2,8 @@ extends AbilityBase
 
 @export var axe_scene: PackedScene
 
-func activate(direction: SGFixedVector2) -> void:
+func _postprocess_on_activated(direction: SGFixedVector2) -> void:
+	player.activate_ability(self)
 	var axe_position: SGFixedVector2 = player.fixed_position.add(direction.mul(FI.ONE * 70))
 	SyncManager.spawn(
 		"axe", 
@@ -15,5 +16,5 @@ func activate(direction: SGFixedVector2) -> void:
 		}
 	)
 
-func _update() -> void:
-	pass
+func _postprocess_on_deactivated(_direction: SGFixedVector2) -> void:
+	player.deactivate_ability(self)
