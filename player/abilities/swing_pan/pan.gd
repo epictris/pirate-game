@@ -2,16 +2,17 @@ extends SGCharacterBody2D
 
 @onready var timer: NetworkTimer = %NetworkTimer
 
-var _direction: SGFixedVector2
+signal finished()
 
+var _direction: SGFixedVector2
 
 func _ready():
 	collision_mask = CollisionLayer.PLAYERS
+	timer.timeout.connect(_on_timeout)
 
 func _network_spawn(data: Dictionary) -> void:
 	_direction = data["direction"]
 	fixed_rotation = _direction.angle()
-	timer.timeout.connect(_on_timeout)
 	timer.start()
 
 func _save_state() -> Dictionary:
@@ -25,6 +26,7 @@ func _load_state(state: Dictionary) -> void:
 
 func _on_timeout() -> void:
 	SyncManager.despawn(self)
+	finished.emit()
 
 # func resolve_collision(body: SGPhysicsBody2D) -> void:
 # 	if body.is_in_group("projectile"):

@@ -12,6 +12,7 @@ var should_override_movement: bool = false
 
 
 func _preprocess_on_activated(direction: SGFixedVector2) -> void:
+	player.activate_ability(self)
 	current_direction = direction
 	player.override_max_speed(SGFixed.mul(player.MAX_SPEED, FI.POINT_FIVE))
 
@@ -40,16 +41,14 @@ func _hook_after_player_movement() -> void:
 	shield_instance.sync_to_physics_engine()
 
 func _postprocess_on_activated(_direction: SGFixedVector2) -> void:
-	if !player.has_active_ability():
-		player.activate_ability(self)
-		SyncManager.spawn(
-			"shield",
-			owner,
-			shield,
-			{
-				"rotation": SGFixed.vector2(-FI.ONE, 0).angle_to(current_direction)
-			}
-		)
+	SyncManager.spawn(
+		"shield",
+		owner,
+		shield,
+		{
+			"rotation": SGFixed.vector2(-FI.ONE, 0).angle_to(current_direction)
+		}
+	)
 
 func _postprocess_on_deactivated(_direction: SGFixedVector2) -> void:
 	SyncManager.despawn(shield_instance)
