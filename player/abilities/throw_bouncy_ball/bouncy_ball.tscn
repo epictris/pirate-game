@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://d7hbrlf8psn7"]
 
-[ext_resource type="Script" uid="uid://7poa516gvv85" path="res://player/abilities/bouncy_ball.gd" id="1_dsun7"]
+[ext_resource type="Script" uid="uid://7poa516gvv85" path="res://player/abilities/throw_bouncy_ball/bouncy_ball.gd" id="1_dsun7"]
 [ext_resource type="Script" uid="uid://3c3ikrq366ts" path="res://addons/godot-rollback-netcode/NetworkTimer.gd" id="2_sudut"]
 
 [sub_resource type="Gradient" id="Gradient_n1hh4"]
