@@ -17,7 +17,7 @@ jump_height = 120
 jump_time_to_peak = 11
 jump_time_to_descent = 7
 ability_primary = NodePath("Shoot Bullet")
-ability_secondary = NodePath("SwingPan")
+ability_secondary = NodePath("Shield")
 
 [node name="SGCollisionShape2D" type="SGCollisionShape2D" parent="."]
 shape = SubResource("SGRectangleShape2D_p55k6")

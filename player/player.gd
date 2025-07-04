@@ -130,24 +130,15 @@ func _get_local_input() -> Dictionary:
 
 	if Input.is_action_just_pressed("right_click"):
 		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
-		input["secondary_activated"] = {
-			x = direction.x,
-			y = direction.y,
-		}
+		input["secondary_activated"] = SGFixed.vector2(direction.x, direction.y)
 
 	if Input.is_action_pressed("right_click"):
 		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
-		input["secondary_updated"] = {
-			x = direction.x,
-			y = direction.y,
-		}
+		input["secondary_updated"] = SGFixed.vector2(direction.x, direction.y)
 
 	if Input.is_action_just_released("right_click"):
 		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
-		input["secondary_deactivated"] = {
-			x = direction.x,
-			y = direction.y,
-		}
+		input["secondary_deactivated"] = SGFixed.vector2(direction.x, direction.y)
 
 	return input
 
@@ -182,60 +173,46 @@ func _resolve_movement(input: Dictionary) -> void:
 	_is_on_ceiling = is_on_ceiling()
 	_is_on_wall = is_on_wall()
 
-func _update_ability_input(input: Dictionary) -> void:
+func _preprocess_ability_input(input: Dictionary) -> void:
 	if ability_primary:
-		if input.get("primary_activated") and ability_primary.has_method("_on_activate_input"):
-			ability_primary._on_activate_input(input["primary_activated"])
-		if input.get("primary_updated") and ability_primary.has_method("_on_update_input"):
-			ability_primary._on_update_input(input["primary_updated"])
-		if input.get("primary_deactivated") and ability_primary.has_method("_on_deactivate_input"):
-			ability_primary._on_deactivate_input(input["primary_deactivated"])
+		if input.get("primary_activated") and ability_primary.has_method("_preprocess_on_activated"):
+			ability_primary._preprocess_on_activated(input["primary_activated"])
+		if input.get("primary_updated") and ability_primary.has_method("_preprocess_on_updated"):
+			ability_primary._preprocess_on_updated(input["primary_updated"])
+		if input.get("primary_deactivated") and ability_primary.has_method("_preprocess_on_deactivated"):
+			ability_primary._preprocess_on_deactivated(input["primary_deactivated"])
 
 	if ability_secondary:
-		if input.get("secondary_activated") and ability_secondary.has_method("_on_activate_input"):
-			ability_secondary._on_activate_input(input["secondary_activated"])
-		if input.get("secondary_updated") and ability_secondary.has_method("_on_update_input"):
-			ability_secondary._on_update_input(input["secondary_updated"])
-		if input.get("secondary_deactivated") and ability_secondary.has_method("_on_deactivate_input"):
-			ability_secondary._on_deactivate_input(input["secondary_deactivated"])
+		if input.get("secondary_activated") and ability_secondary.has_method("_preprocess_on_activated"):
+			ability_secondary._preprocess_on_activated(input["secondary_activated"])
+		if input.get("secondary_updated") and ability_secondary.has_method("_preprocess_on_updated"):
+			ability_secondary._preprocess_on_updated(input["secondary_updated"])
+		if input.get("secondary_deactivated") and ability_secondary.has_method("_preprocess_on_deactivated"):
+			ability_secondary._preprocess_on_deactivated(input["secondary_deactivated"])
 
+func _postprocess_ability_input(input: Dictionary) -> void:
+	if ability_primary:
+		if input.get("primary_activated") and ability_primary.has_method("_postprocess_on_activated"):
+			ability_primary._postprocess_on_activated(input["primary_activated"])
+		if input.get("primary_updated") and ability_primary.has_method("_postprocess_on_updated"):
+			ability_primary._postprocess_on_updated(input["primary_updated"])
+		if input.get("primary_deactivated") and ability_primary.has_method("_postprocess_on_deactivated"):
+			ability_primary._postprocess_on_deactivated(input["primary_deactivated"])
 
-func _resolve_abilities(input: Dictionary) -> void:
-	if input.get("primary_activated") and ability_primary and ability_primary.has_method("activate"):
-		var direction = input["primary_activated"]
-		return ability_primary.activate(SGFixed.vector2(direction.x, direction.y))
-	elif ability_primary.is_active() and ability_primary.has_method("_update"):
-		ability_primary._update()
-
-	if input.get("primary_updated") and ability_primary and ability_primary.has_method("update"):
-		var direction = input["primary_updated"]
-		return ability_primary.modify(SGFixed.vector2(direction.x, direction.y))
-
-	if input.get("primary_deactivated") and ability_primary and ability_primary.has_method("deactivate"):
-		var direction = input["primary_deactivated"]
-		return ability_primary.deactivate(SGFixed.vector2(direction.x, direction.y))
-
-	if input.get("secondary_activated") and ability_secondary and ability_secondary.has_method("activate"):
-		var direction = input["secondary_activated"]
-		return ability_secondary.activate(SGFixed.vector2(direction.x, direction.y))
-	elif ability_secondary.is_active() and ability_secondary.has_method("_update"):
-		ability_secondary._update()
-
-	if input.get("secondary_updated") and ability_secondary and ability_secondary.has_method("update"):
-		var direction = input["secondary_updated"]
-		return ability_secondary.modify(SGFixed.vector2(direction.x, direction.y))
-
-	if input.get("secondary_deactivated") and ability_secondary and ability_secondary.has_method("deactivate"):
-		var direction = input["secondary_deactivated"]
-		return ability_secondary.deactivate(SGFixed.vector2(direction.x, direction.y))
-
+	if ability_secondary:
+		if input.get("secondary_activated") and ability_secondary.has_method("_postprocess_on_activated"):
+			ability_secondary._postprocess_on_activated(input["secondary_activated"])
+		if input.get("secondary_updated") and ability_secondary.has_method("_postprocess_on_updated"):
+			ability_secondary._postprocess_on_updated(input["secondary_updated"])
+		if input.get("secondary_deactivated") and ability_secondary.has_method("_postprocess_on_deactivated"):
+			ability_secondary._postprocess_on_deactivated(input["secondary_deactivated"])
 
 func _update() -> void:
 	_process_tick(frame_input)
 
 func _process_tick(input: Dictionary) -> void:
 
-	_update_ability_input(input)
+	_preprocess_ability_input(input)
 
 	var override_movement: bool = false
 
@@ -243,8 +220,8 @@ func _process_tick(input: Dictionary) -> void:
 		if _current_ability.has_method("_hook_before_player_movement"):
 			_current_ability._hook_before_player_movement()
 
-		if _current_ability.has_method("_override_movement"):
-			override_movement = _current_ability._override_movement()
+		if _current_ability.has_method("_should_override_movement"):
+			override_movement = _current_ability._should_override_movement()
 
 	if !override_movement:
 		_resolve_movement(input)
@@ -252,6 +229,8 @@ func _process_tick(input: Dictionary) -> void:
 	if _current_ability:
 		if _current_ability.has_method("_hook_after_player_movement"):
 			_current_ability._hook_after_player_movement()
+	
+	_postprocess_ability_input(input)
 
 func _save_state() -> Dictionary:
 	var state: Dictionary = {

@@ -7,38 +7,59 @@ func _ready() -> void:
 	super()
 	SyncManager.scene_spawned.connect(_on_scene_spawned)
 
-func activate(direction: SGFixedVector2) -> void:
-	SyncManager.spawn("shield", owner, shield, {"rotation": SGFixed.vector2(-FI.ONE, 0).angle_to(direction)})
+var current_direction: SGFixedVector2
+var should_override_movement: bool = false
+
+
+func _preprocess_on_activated(direction: SGFixedVector2) -> void:
+	current_direction = direction
 	player.override_max_speed(SGFixed.mul(player.MAX_SPEED, FI.POINT_FIVE))
 
-func modify(direction: SGFixedVector2) -> void:
-	if shield_instance:
-		shield_instance.fixed_rotation = SGFixed.vector2(-FI.ONE, 0).angle_to(direction)
-		shield_instance.sync_to_physics_engine()
+func _preprocess_on_updated(direction: SGFixedVector2) -> void:
+	current_direction = direction
 
-func deactivate(_direction: SGFixedVector2) -> void:
-	if shield_instance:
-		SyncManager.despawn(shield_instance)
-		player.reset_max_speed()
-		shield_instance = null
-		player.set_movement_override(false)
-
+func _preprocess_on_deactivated(direction: SGFixedVector2) -> void:
+	current_direction = direction
+	player.reset_max_speed()
 
 # IMPROVE: this component should not be calling these methods on the player directly - we need a better way to partially override player movement so that this type of component doesn't need to completely reimplement the player movement logic for a given state if only minor changes need to be made
-# func _network_process(_input: Dictionary) -> void:
-# 	if shield_instance:
-# 		if player.movement_state == Player.MovementState.WALL_SLIDING:
-# 			player.set_movement_override(true)
-# 			player.movement_state = Player.MovementState.FALLING
-# 			player.apply_gravity()
-# 			player.move_and_slide()
-# 		else:
-# 			player.set_movement_override(false)
+func _hook_before_player_movement() -> void:
+	if player.movement_state == Player.MovementState.WALL_SLIDING:
+		should_override_movement = true
+		player.movement_state = Player.MovementState.FALLING
+		player.apply_gravity()
+		player.move_and_slide()
+	else:
+		should_override_movement = false
+
+func _should_override_movement() -> bool:
+	return should_override_movement
+
+func _hook_after_player_movement() -> void:
+	shield_instance.fixed_rotation = SGFixed.vector2(-FI.ONE, 0).angle_to(current_direction)
+	shield_instance.sync_to_physics_engine()
+
+func _postprocess_on_activated(_direction: SGFixedVector2) -> void:
+	if !player.has_active_ability():
+		player.activate_ability(self)
+		SyncManager.spawn(
+			"shield",
+			owner,
+			shield,
+			{
+				"rotation": SGFixed.vector2(-FI.ONE, 0).angle_to(current_direction)
+			}
+		)
+
+func _postprocess_on_deactivated(_direction: SGFixedVector2) -> void:
+	SyncManager.despawn(shield_instance)
+	shield_instance = null
+	player.deactivate_ability(self)
+
 
 func _on_scene_spawned(node_name, spawned_node, _scene, _data) -> void:
 	if node_name == "shield":
 		shield_instance = spawned_node
-
 
 func _save_state() -> Dictionary:
 	var state: Dictionary = {}
