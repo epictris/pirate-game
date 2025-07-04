@@ -62,8 +62,6 @@ var _is_on_wall: bool = false
 
 var _touching_wall_normal: int
 
-var movement_state: MovementState = MovementState.IDLE
-
 enum MovementState {
 	IDLE,
 	RUNNING,	
@@ -230,7 +228,6 @@ func _save_state() -> Dictionary:
 		is_on_floor = _is_on_floor,
 		is_on_ceiling = _is_on_ceiling,
 		is_on_wall = _is_on_wall,
-		player_state = movement_state,
 		touching_wall_normal = _touching_wall_normal,
 		max_speed = current_max_speed,
 	}
@@ -244,7 +241,6 @@ func _load_state(state: Dictionary) -> void:
 	_is_on_floor = state["is_on_floor"]
 	_is_on_ceiling = state["is_on_ceiling"]
 	_is_on_wall = state["is_on_wall"]
-	movement_state = state["player_state"]
 	_touching_wall_normal = state["touching_wall_normal"]
 	current_max_speed = state["max_speed"]
 	sync_to_physics_engine()
