@@ -2,7 +2,7 @@ extends AbilityBase
 
 @export var pan_scene: PackedScene
 
-var pan_instance: Item
+var pan_instance: SGCharacterBody2D
 
 func _ready() -> void:
 	super()
