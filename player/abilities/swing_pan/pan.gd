@@ -1,9 +1,12 @@
-extends Item
+extends SGCharacterBody2D
 
 @onready var timer: NetworkTimer = %NetworkTimer
 
 var _direction: SGFixedVector2
 
+
+func _ready():
+	collision_mask = CollisionLayer.PLAYERS
 
 func _network_spawn(data: Dictionary) -> void:
 	_direction = data["direction"]
