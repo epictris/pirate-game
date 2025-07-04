@@ -5,6 +5,7 @@ extends AbilityBase
 func _ready() -> void:
 	super()
 	SyncManager.scene_spawned.connect(_on_scene_spawned)
+	SyncManager.scene_despawned.connect(_on_scene_despawned)
 
 func _preprocess_on_activated(direction: SGFixedVector2) -> void:
 	if player.has_active_ability():
@@ -23,6 +24,11 @@ func _preprocess_on_activated(direction: SGFixedVector2) -> void:
 func _on_scene_spawned(node_name, spawned_node, _scene, _data):
 	if node_name == "pan":
 		spawned_node.finished.connect(_on_pan_finished)
+
+func _on_scene_despawned(node_name, despawned_node):
+	if node_name == "pan":
+		despawned_node.finished.disconnect(_on_pan_finished)
+		
 
 func _on_pan_finished():
 	player.deactivate_ability(self)

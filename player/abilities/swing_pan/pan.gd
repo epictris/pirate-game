@@ -25,9 +25,5 @@ func _load_state(state: Dictionary) -> void:
 	sync_to_physics_engine()
 
 func _on_timeout() -> void:
-	SyncManager.despawn(self)
 	finished.emit()
-
-# func resolve_collision(body: SGPhysicsBody2D) -> void:
-# 	if body.is_in_group("projectile"):
-# 		body.velocity = _direction.mul(body.velocity.length()).mul(FI.ONE_POINT_ONE)
+	SyncManager.despawn(self)
