@@ -1,8 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://bil7yda2egk5y"]
-
-[ext_resource type="Script" uid="uid://8otlmid8teb1" path="res://player/abilities/components/bouncy_ball.gd" id="1_3n4n7"]
-[ext_resource type="PackedScene" uid="uid://d7hbrlf8psn7" path="res://player/abilities/scenes/bouncy_ball.tscn" id="2_xj8kr"]
-
-[node name="BouncyBall" type="Node" groups=["network_sync"]]
-script = ExtResource("1_3n4n7")
-ball = ExtResource("2_xj8kr")

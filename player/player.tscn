@@ -1,8 +1,8 @@
 [gd_scene load_steps=8 format=3 uid="uid://dun8dcjxi0li0"]
 
 [ext_resource type="Script" uid="uid://wes4v070j7ba" path="res://player/player.gd" id="1_p55k6"]
-[ext_resource type="PackedScene" uid="uid://c2qh6bt3ve6bq" path="res://player/abilities/components/shield.tscn" id="2_rkbax"]
-[ext_resource type="PackedScene" uid="uid://bil7yda2egk5y" path="res://player/abilities/components/bouncy_ball.tscn" id="3_g1dw6"]
+[ext_resource type="PackedScene" uid="uid://c2qh6bt3ve6bq" path="res://player/abilities/deploy_shield/deploy_shield.tscn" id="2_rkbax"]
+[ext_resource type="PackedScene" uid="uid://bil7yda2egk5y" path="res://player/abilities/throw_bouncy_ball/throw_bouncy_ball.tscn" id="3_g1dw6"]
 [ext_resource type="PackedScene" uid="uid://ddwjlseep37eu" path="res://player/abilities/throw_axe/throw_axe.tscn" id="4_yw30f"]
 [ext_resource type="PackedScene" uid="uid://dvexkwbyye78h" path="res://player/abilities/swing_pan/swing_pan.tscn" id="5_qjkh3"]
 [ext_resource type="PackedScene" uid="uid://ooqryqjg5mct" path="res://player/abilities/shoot_bullet/shoot_bullet.tscn" id="6_g6k8r"]

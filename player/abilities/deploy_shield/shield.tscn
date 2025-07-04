@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bwiymd7bf4w0f"]
 
-[ext_resource type="Script" uid="uid://dihkj2u4sgk1q" path="res://player/abilities/scenes/shield.gd" id="1_60dwj"]
+[ext_resource type="Script" uid="uid://dihkj2u4sgk1q" path="res://player/abilities/deploy_shield/shield.gd" id="1_60dwj"]
 
 [sub_resource type="SGRectangleShape2D" id="SGRectangleShape2D_2h8co"]
 extents_x = 176881
