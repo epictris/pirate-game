@@ -119,6 +119,6 @@ func _on_syncmanager_sync_error(msg: String):
 	SyncManager.clear_peers()
 	pass
 
-func setup_match_for_replay(my_peer_id: int, peer_ids: Array, match_info: Dictionary) -> void:
+func setup_match_for_replay(_my_peer_id: int, _peer_ids: Array, _match_info: Dictionary) -> void:
 	connection_panel.visible = false
 	reset_button.visible = false
