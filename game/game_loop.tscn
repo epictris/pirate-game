@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dk2i1di725lqk"]
+
+[ext_resource type="Script" uid="uid://cas81wjjyreby" path="res://game/game_loop.gd" id="1_cvy3g"]
+
+[node name="GameLoop" type="Node2D" groups=["network_sync"]]
+script = ExtResource("1_cvy3g")
