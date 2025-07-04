@@ -12,6 +12,7 @@ func _ready() -> void:
 func _network_spawn(data: Dictionary) -> void:
 	velocity = data.direction.mul(SPEED)
 	fixed_position = data.fixed_position.copy()
+	collision_shape.disabled = true # disable collision shape initially to prevent collision with player
 	sync_to_physics_engine()
 
 func _cast_ray(exceptions: Array) -> SGRayCastCollision2D:
@@ -38,8 +39,6 @@ func _resolve_collision(collider: SGPhysicsBody2D, point: SGFixedVector2) -> voi
 func _resolve_ray_collision() -> bool:
 	var ray_cast_result = _cast_ray([self])
 	if !ray_cast_result:
-		# re-enable our collision shape if ray cast yields no result
-		collision_shape.disabled = false
 		return false
 	var inside_collider = _check_if_inside_collider(ray_cast_result)
 	if !inside_collider:
@@ -47,11 +46,8 @@ func _resolve_ray_collision() -> bool:
 		sync_to_physics_engine()
 		_resolve_collision(ray_cast_result.collider, ray_cast_result.point)
 		return true
+
 	# if we're inside a collision body, escape by excepting the body from collision then re-casting the ray
-
-	# disable our collision shape to prevent collision with the collision body
-	collision_shape.disabled = true
-
 	var recast_result = _cast_ray([self, inside_collider])
 	if recast_result:
 		fixed_position = recast_result.point.copy()
@@ -65,6 +61,7 @@ func _resolve_ray_collision() -> bool:
 func _update() -> void:
 	if _resolve_ray_collision():
 		return
+	collision_shape.disabled = false # enable collision shape the first time a ray cast yields no result
 	var collision_result = move_and_collide(velocity)
 	if collision_result:
 		_resolve_collision(collision_result.collider, fixed_position.add(collision_result.remainder))
