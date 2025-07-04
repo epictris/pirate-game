@@ -1,8 +1,5 @@
 class_name Player extends SGCharacterBody2D
 
-var arrow: PackedScene = preload("res://multiplayer/arrow.tscn")
-var bouncy_ball: PackedScene = preload("res://multiplayer/bouncy_ball.tscn")
-
 const MAX_SPEED = FI.ONE * 8 * 2
 const WALL_SLIDE_SPEED = FI.ONE * 2 * 2
 const WALL_FRICTION = FI.ONE * 2
@@ -78,9 +75,13 @@ enum MovementState {
 	WALL_SLIDING,
 }
 
+var frame_input: Dictionary = {}
+
 var spawn_position: SGFixedVector2
 
 func _ready():
+	collision_layer = CollisionLayer.PLAYERS
+	collision_mask = CollisionLayer.PLAYERS | CollisionLayer.ENVIRONMENT
 	respawn()
 
 func respawn() -> void:
@@ -94,7 +95,9 @@ func set_movement_override(override_movement: bool) -> void:
 	_movement_overridden = override_movement
 
 
+
 func _get_local_input() -> Dictionary:
+
 	var input := {
 		up = Input.is_action_pressed("ui_up"),
 		up_just_pressed = Input.is_action_just_pressed("ui_up"),
@@ -147,6 +150,9 @@ func _get_local_input() -> Dictionary:
 
 	return input
 
+func _network_preprocess(input: Dictionary) -> void:
+	frame_input = input
+
 func _jump() -> void:
 	movement_state = MovementState.JUMPING
 	velocity.y = -jump_velocity
@@ -175,14 +181,16 @@ func _resolve_movement(input: Dictionary) -> void:
 	_is_on_ceiling = is_on_ceiling()
 	_is_on_wall = is_on_wall()
 
-func _resolve_ability(input: Dictionary) -> void:
+func _resolve_abilities(input: Dictionary) -> void:
 	if input.get("primary_activated") and ability_primary and ability_primary.has_method("activate"):
 		var direction = input["primary_activated"]
 		return ability_primary.activate(SGFixed.vector2(direction.x, direction.y))
+	elif ability_primary.is_active() and ability_primary.has_method("_update"):
+		ability_primary._update()
 
 	if input.get("primary_updated") and ability_primary and ability_primary.has_method("update"):
 		var direction = input["primary_updated"]
-		return ability_primary.update(SGFixed.vector2(direction.x, direction.y))
+		return ability_primary.modify(SGFixed.vector2(direction.x, direction.y))
 
 	if input.get("primary_deactivated") and ability_primary and ability_primary.has_method("deactivate"):
 		var direction = input["primary_deactivated"]
@@ -191,20 +199,25 @@ func _resolve_ability(input: Dictionary) -> void:
 	if input.get("secondary_activated") and ability_secondary and ability_secondary.has_method("activate"):
 		var direction = input["secondary_activated"]
 		return ability_secondary.activate(SGFixed.vector2(direction.x, direction.y))
+	elif ability_secondary.is_active() and ability_secondary.has_method("_update"):
+		ability_secondary._update()
 
 	if input.get("secondary_updated") and ability_secondary and ability_secondary.has_method("update"):
 		var direction = input["secondary_updated"]
-		return ability_secondary.update(SGFixed.vector2(direction.x, direction.y))
+		return ability_secondary.modify(SGFixed.vector2(direction.x, direction.y))
 
 	if input.get("secondary_deactivated") and ability_secondary and ability_secondary.has_method("deactivate"):
 		var direction = input["secondary_deactivated"]
 		return ability_secondary.deactivate(SGFixed.vector2(direction.x, direction.y))
 
-func _network_process(input: Dictionary) -> void:
 
-	_resolve_ability(input)
+func _update() -> void:
+	_process_tick(frame_input)
+
+func _process_tick(input: Dictionary) -> void:
 	if !_movement_overridden:
 		_resolve_movement(input)
+	_resolve_abilities(input)
 
 func _save_state() -> Dictionary:
 	var state: Dictionary = {
@@ -261,9 +274,9 @@ func _predict_remote_input(previous_input: Dictionary, ticks_since_last_input: i
 func take_damage() -> void:
 	respawn()
 
-func _interpolate_state(old_state: Dictionary, new_state: Dictionary, weight: float) -> void:
-	position.x = lerp(SGFixed.to_float(old_state.fixed_position_x), SGFixed.to_float(new_state.fixed_position_x), weight)
-	position.y = lerp(SGFixed.to_float(old_state.fixed_position_y), SGFixed.to_float(new_state.fixed_position_y), weight)
+# func _interpolate_state(old_state: Dictionary, new_state: Dictionary, weight: float) -> void:
+# 	position.x = lerp(SGFixed.to_float(old_state.fixed_position_x), SGFixed.to_float(new_state.fixed_position_x), weight)
+# 	position.y = lerp(SGFixed.to_float(old_state.fixed_position_y), SGFixed.to_float(new_state.fixed_position_y), weight)
 
 func _apply_ground_friction() -> void:
 	if velocity.x > 0:
