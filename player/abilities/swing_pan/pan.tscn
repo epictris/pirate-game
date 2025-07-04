@@ -1,0 +1,33 @@
+[gd_scene load_steps=6 format=3 uid="uid://rc3tktj21q6m"]
+
+[ext_resource type="Script" uid="uid://cn5cw86btm2vd" path="res://player/abilities/swing_pan/pan.gd" id="1_30sih"]
+[ext_resource type="Texture2D" uid="uid://dlbwt5bsdvvrh" path="res://resources/pan.png" id="1_yq54b"]
+[ext_resource type="Script" uid="uid://3c3ikrq366ts" path="res://addons/godot-rollback-netcode/NetworkTimer.gd" id="3_f52fb"]
+[ext_resource type="PackedScene" uid="uid://wgl5grjbf2cn" path="res://collision_resolution/redirect.tscn" id="4_1x5xn"]
+
+[sub_resource type="SGRectangleShape2D" id="SGRectangleShape2D_t0lpx"]
+extents_x = 1829160
+extents_y = 1640689
+
+[node name="SGArea2D" type="SGCharacterBody2D" groups=["network_sync"]]
+script = ExtResource("1_30sih")
+
+[node name="SGCollisionShape2D" type="SGCollisionShape2D" parent="."]
+shape = SubResource("SGRectangleShape2D_t0lpx")
+fixed_position_x = 8265793
+position = Vector2(126.126, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(107, 0.999995)
+rotation = -2.39182
+scale = Vector2(0.313527, 0.313527)
+texture = ExtResource("1_yq54b")
+
+[node name="NetworkTimer" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("3_f52fb")
+one_shot = true
+wait_ticks = 8
+metadata/_custom_type_script = "uid://3c3ikrq366ts"
+
+[node name="Collision Resolution - Redirect" parent="." instance=ExtResource("4_1x5xn")]

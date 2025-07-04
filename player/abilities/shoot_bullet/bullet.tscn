@@ -1,0 +1,31 @@
+[gd_scene load_steps=6 format=3 uid="uid://dyauyn1icrn6c"]
+
+[ext_resource type="Script" uid="uid://cxl8ayu3rlxpg" path="res://player/abilities/shoot_bullet/bullet.gd" id="1_hucs2"]
+[ext_resource type="PackedScene" uid="uid://dyr4kjdjffjgx" path="res://player/abilities/shoot_bullet/explosion.tscn" id="2_qi76m"]
+
+[sub_resource type="SGCircleShape2D" id="SGCircleShape2D_0jge3"]
+radius = 771638
+
+[sub_resource type="Gradient" id="Gradient_hucs2"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.708108)
+colors = PackedColorArray(0.978755, 0.356375, 0, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_qi76m"]
+gradient = SubResource("Gradient_hucs2")
+width = 20
+height = 20
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 1)
+
+[node name="Bullet" type="SGCharacterBody2D" groups=["network_sync", "projectile"]]
+script = ExtResource("1_hucs2")
+explosion_scene = ExtResource("2_qi76m")
+
+[node name="CollisionShape" type="SGCollisionShape2D" parent="."]
+shape = SubResource("SGCircleShape2D_0jge3")
+unique_name_in_owner = true
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("GradientTexture2D_qi76m")

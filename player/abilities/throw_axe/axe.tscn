@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://dc1lgm2vokdc8"]
+
+[ext_resource type="Script" uid="uid://by3c8w8pl3048" path="res://player/abilities/throw_axe/axe.gd" id="1_dd3hk"]
+[ext_resource type="Texture2D" uid="uid://w1o530m5yyfk" path="res://resources/cleaver.webp" id="2_6qc2u"]
+
+[sub_resource type="SGRectangleShape2D" id="SGRectangleShape2D_dd3hk"]
+
+[node name="Axe" type="SGCharacterBody2D" groups=["network_sync", "projectile"]]
+script = ExtResource("1_dd3hk")
+
+[node name="CollisionShape" type="SGCollisionShape2D" parent="."]
+shape = SubResource("SGRectangleShape2D_dd3hk")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+scale = Vector2(0.144167, 0.144167)
+texture = ExtResource("2_6qc2u")
