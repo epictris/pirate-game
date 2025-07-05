@@ -12,3 +12,18 @@ currently just a 3D sailboat controller
 ## Mechanics
 - collide with ships while swimming to board
 - jump off the side of ships to disembark
+
+## To Do
+- create player animation manager component to remove animation handling from movement state code
+- add new states:
+    - hanging from ledge
+    - climbing up ledge
+    - sliding/rolling
+    - wall running
+- add proper rollback state management to new abilities/states
+- create resource for passing initialization info between movement states
+- clearly distinguish between public and private player functions
+
+## Ideas
+- separate files based on rollback-compatibility
+- add pattern matching linters to help prevent accidental implementation of rollback-incompatible code
