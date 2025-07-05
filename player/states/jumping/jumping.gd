@@ -15,8 +15,13 @@ func _is_facing_left(input: Dictionary, player: Player) -> bool:
 	return input.get("left") or player.velocity.x < 0
 
 func enter(input: Dictionary, player: Player) -> void:
-	SyncManager.spawn("jump_animation", player, jump_animation_scene, {"flip_h": _is_facing_left(input, player)})
+	var is_facing_left: bool = _is_facing_left(input, player)
+	SyncManager.spawn("jump_animation", player, jump_animation_scene, {"flip_h": is_facing_left})
 	player.velocity.y -= player.jump_velocity
+	if input.get("left"):
+		player.velocity.x -= SGFixed.div(player.MAX_SPEED, SGFixed.ONE * 10)
+	elif input.get("right"):
+		player.velocity.x += SGFixed.div(player.MAX_SPEED, SGFixed.ONE * 10)
 
 func exit(_player: Player) -> void:
 	SyncManager.despawn(jump_animation)
