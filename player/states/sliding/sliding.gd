@@ -29,8 +29,10 @@ func exit(player: Player) -> void:
 	player.sync_to_physics_engine()
 
 func preprocess_state_transition(input, player) -> PlayerState.MovementState:
-	if !input.get("down"):
-		return PlayerState.MovementState.RUNNING if player.velocity.x != 0 else PlayerState.MovementState.IDLE
+	if !input.get("down") and (input.get("left") or input.get("right")):
+		return PlayerState.MovementState.RUNNING
+	if input.get("up"):
+		return PlayerState.MovementState.JUMPING
 	return PlayerState.MovementState.SLIDING
 
 func process_state(_input: Dictionary, player: Player):
