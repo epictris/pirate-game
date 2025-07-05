@@ -1,6 +1,6 @@
 extends SGCharacterBody2D
 
-const SPEED = FI.ONE * 70
+const SPEED = FI.ONE * 40
 
 @export var explosion_scene: PackedScene
 @onready var collision_shape: SGCollisionShape2D = %CollisionShape

@@ -3,16 +3,18 @@
 [ext_resource type="Script" uid="uid://dihkj2u4sgk1q" path="res://player/abilities/deploy_shield/shield.gd" id="1_60dwj"]
 
 [sub_resource type="SGRectangleShape2D" id="SGRectangleShape2D_2h8co"]
-extents_x = 176881
-extents_y = 2322455
+extents_x = 65536
+extents_y = 786432
 
 [node name="Shield" type="SGArea2D" groups=["network_sync"]]
 script = ExtResource("1_60dwj")
 
 [node name="SGCollisionShape2D" type="SGCollisionShape2D" parent="."]
 shape = SubResource("SGRectangleShape2D_2h8co")
-fixed_position_x = -3000000
-position = Vector2(-44.7764, 0)
+fixed_position_x = -1872000
+fixed_scale_x = 65535
+position = Vector2(-28.5645, 0)
+scale = Vector2(0.999985, 1)
 
 [node name="ColorRect" type="ColorRect" parent="SGCollisionShape2D"]
 anchors_preset = 8
@@ -20,11 +22,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -0.2236
-offset_top = -32.0
-offset_right = 5.1314
-offset_bottom = 33.495
+offset_left = -1.43557
+offset_top = -13.0
+offset_right = 1.56443
+offset_bottom = 13.0
 grow_horizontal = 2
 grow_vertical = 2
-pivot_offset = Vector2(20, 20)
 metadata/_edit_use_anchors_ = true

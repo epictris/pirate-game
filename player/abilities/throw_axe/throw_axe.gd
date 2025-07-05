@@ -4,7 +4,7 @@ extends AbilityBase
 
 func _postprocess_on_activated(direction: SGFixedVector2) -> void:
 	player.activate_ability(self)
-	var axe_position: SGFixedVector2 = player.fixed_position.add(direction.mul(FI.ONE * 70))
+	var axe_position: SGFixedVector2 = player.fixed_position.add(direction.mul(FI.ONE * 30))
 	SyncManager.spawn(
 		"axe", 
 		player.get_parent(),

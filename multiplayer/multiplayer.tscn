@@ -127,6 +127,12 @@ fixed_position_x = 35100001
 fixed_position_y = 23592960
 position = Vector2(535.583, 360)
 
+[node name="ColorRect" type="ColorRect" parent="SGStaticBody2D/SGCollisionShape2D"]
+offset_left = -545.0
+offset_top = -10.0
+offset_right = 114.0
+offset_bottom = 10.0
+
 [node name="SGStaticBody2D5" type="SGStaticBody2D" parent="."]
 
 [node name="SGCollisionShape2D" type="SGCollisionShape2D" parent="SGStaticBody2D5"]
@@ -134,12 +140,24 @@ shape = SubResource("SGRectangleShape2D_wktud")
 fixed_position_x = 35100001
 position = Vector2(535.583, 0)
 
+[node name="ColorRect" type="ColorRect" parent="SGStaticBody2D5/SGCollisionShape2D"]
+offset_left = -545.0
+offset_top = -10.0
+offset_right = 95.0
+offset_bottom = 10.0
+
 [node name="SGStaticBody2D2" type="SGStaticBody2D" parent="."]
 
 [node name="SGCollisionShape2D" type="SGCollisionShape2D" parent="SGStaticBody2D2"]
 shape = SubResource("SGRectangleShape2D_nhdnw")
 fixed_position_y = 11409469
 position = Vector2(0, 174.095)
+
+[node name="ColorRect" type="ColorRect" parent="SGStaticBody2D2/SGCollisionShape2D"]
+offset_left = -10.0
+offset_top = -184.0
+offset_right = 10.0
+offset_bottom = 196.0
 
 [node name="SGStaticBody2D3" type="SGStaticBody2D" parent="."]
 
@@ -149,6 +167,12 @@ fixed_position_x = 41943040
 fixed_position_y = 11409469
 position = Vector2(640, 174.095)
 
+[node name="ColorRect" type="ColorRect" parent="SGStaticBody2D3/SGCollisionShape2D"]
+offset_left = -10.0
+offset_top = -184.0
+offset_right = 10.0
+offset_bottom = 205.0
+
 [node name="SGStaticBody2D4" type="SGStaticBody2D" parent="."]
 
 [node name="SGCollisionShape2D" type="SGCollisionShape2D" parent="SGStaticBody2D4"]
@@ -156,6 +180,12 @@ shape = SubResource("SGRectangleShape2D_uwdxy")
 fixed_position_x = 20971520
 fixed_position_y = 16384000
 position = Vector2(320, 250)
+
+[node name="ColorRect" type="ColorRect" parent="SGStaticBody2D4/SGCollisionShape2D"]
+offset_left = -200.0
+offset_top = -5.0
+offset_right = 200.0
+offset_bottom = 5.0
 
 [node name="SGStaticBody2D8" type="SGStaticBody2D" parent="."]
 
@@ -166,3 +196,9 @@ fixed_position_y = 10485760
 fixed_rotation = 16384
 position = Vector2(320, 160)
 rotation = 0.25
+
+[node name="ColorRect" type="ColorRect" parent="SGStaticBody2D8/SGCollisionShape2D"]
+offset_left = -200.0
+offset_top = -5.0
+offset_right = 200.0
+offset_bottom = 5.0

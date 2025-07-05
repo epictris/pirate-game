@@ -1,6 +1,24 @@
 extends Node
 
-func enter(player: Player) -> void:
+@export var wall_jump_animation_scene: PackedScene
+
+var wall_jump_animation: Node2D
+
+func _ready() -> void:
+	SyncManager.scene_spawned.connect(_on_scene_spawned)
+
+func _on_scene_spawned(scene_name: StringName, scene_node: Node, _data, _other) -> void:
+	if scene_name == "wall_jump_animation":
+		wall_jump_animation = scene_node
+
+func _is_facing_left(input: Dictionary, player: Player) -> bool:
+	return input.get("left") or player.velocity.x < 0
+
+func exit(_player: Player) -> void:
+	SyncManager.despawn(wall_jump_animation)
+
+func enter(_input: Dictionary, player: Player) -> void:
+	SyncManager.spawn("wall_jump_animation", player, wall_jump_animation_scene, {"flip_h": player._touching_wall_normal > 0})
 	player.velocity.y = -player.jump_velocity
 	player.velocity.x = SGFixed.mul(player._touching_wall_normal, player.jump_velocity)
 

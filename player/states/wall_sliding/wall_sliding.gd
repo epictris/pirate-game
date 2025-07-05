@@ -1,5 +1,23 @@
 extends Node
 
+@export var wall_slide_animation_scene: PackedScene
+
+var wall_slide_animation: Node2D
+
+func _ready() -> void:
+	SyncManager.scene_spawned.connect(_on_scene_spawned)
+
+func _on_scene_spawned(scene_name: StringName, scene_node: Node, _data, _other) -> void:
+	if scene_name == "wall_slide_animation":
+		wall_slide_animation = scene_node
+
+func enter(input: Dictionary, player: Player) -> void:
+	SyncManager.spawn("wall_slide_animation", player, wall_slide_animation_scene, {"flip_h": player._touching_wall_normal > 0})
+
+func exit(_player: Player) -> void:
+	SyncManager.despawn(wall_slide_animation)
+
+
 func preprocess_state_transition(input, player: Player) -> PlayerState.MovementState:
 	if input.get("up_just_pressed"):
 		return PlayerState.MovementState.WALL_JUMPING

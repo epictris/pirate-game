@@ -1,10 +1,21 @@
 extends Node
 
-func enter() -> void:
-	pass
+@export var idle_animation_scene: PackedScene
 
-func exit() -> void:
-	pass
+var idle_animation: Node2D
+
+func _ready() -> void:
+	SyncManager.scene_spawned.connect(_on_scene_spawned)
+
+func _on_scene_spawned(scene_name: StringName, scene_node: Node, _data, _other) -> void:
+	if scene_name == "idle_animation":
+		idle_animation = scene_node
+
+func enter(_input: Dictionary, player: Player) -> void:
+	SyncManager.spawn("idle_animation", player, idle_animation_scene)
+
+func exit(_player: Player) -> void:
+	SyncManager.despawn(idle_animation)
 
 func preprocess_state_transition(input, _player) -> PlayerState.MovementState:
 	if input.get("up"):

@@ -10,8 +10,11 @@ script = ExtResource("1_dd3hk")
 
 [node name="CollisionShape" type="SGCollisionShape2D" parent="."]
 shape = SubResource("SGRectangleShape2D_dd3hk")
+fixed_scale_x = 32766
+fixed_scale_y = 32768
+scale = Vector2(0.499969, 0.5)
 
 [node name="Sprite" type="Sprite2D" parent="."]
 unique_name_in_owner = true
-scale = Vector2(0.144167, 0.144167)
+scale = Vector2(0.07, 0.07)
 texture = ExtResource("2_6qc2u")
