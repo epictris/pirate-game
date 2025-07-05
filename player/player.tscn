@@ -28,7 +28,7 @@ script = ExtResource("1_p55k6")
 jump_height = 60
 jump_time_to_peak = 11
 jump_time_to_descent = 8
-ability_primary = NodePath("ThrowAxe")
+ability_primary = NodePath("Shoot Bullet")
 ability_secondary = NodePath("Shield")
 
 [node name="SGCollisionShape2D" type="SGCollisionShape2D" parent="."]
