@@ -5,6 +5,7 @@ const WALL_SLIDE_SPEED = FI.ONE_POINT_FIVE
 const WALL_FRICTION = FI.ONE_POINT_FIVE
 const GROUND_ACCEL = FI.ONE * 3
 const GROUND_FRICTION = FI.ONE_POINT_ONE
+var SLIDE_FRICTION = FI.POINT_FOUR
 const AIR_ACCEL = FI.POINT_FOUR
 const GRAVITY = FI.ONE * 2
 const JUMP = FI.ONE * 10
@@ -27,6 +28,7 @@ func reset_max_speed() -> void:
 
 var spawn_location_x: int
 var spawn_location_y: int
+
 
 @onready var jump_velocity: int = SGFixed.div(
 	SGFixed.mul(
@@ -55,6 +57,8 @@ var spawn_location_y: int
 		jump_time_to_descent * SGFixed.ONE
 	)
 )
+
+@onready var collision_shape: SGCollisionShape2D = %CollisionShape
 
 var _is_on_floor: bool = false
 var _is_on_ceiling: bool = false
@@ -279,6 +283,12 @@ func _apply_ground_friction() -> void:
 		velocity.x = max(velocity.x - GROUND_FRICTION, 0)
 	elif velocity.x < 0:
 		velocity.x = min(velocity.x + GROUND_FRICTION, 0)
+
+func apply_slide_friction() -> void:
+	if velocity.x > 0:
+		velocity.x = max(velocity.x - SLIDE_FRICTION, 0)
+	elif velocity.x < 0:
+		velocity.x = min(velocity.x + SLIDE_FRICTION, 0)
 
 func apply_gravity() -> void:
 	velocity.y -= fall_gravity

@@ -37,7 +37,7 @@ func process_state(_input: Dictionary, player: Player):
 	player.velocity.x = -player._touching_wall_normal # small x velocity to ensure is_on_wall() resolves to true
 	player.move_and_slide()
 
-func postprocess_state_transition(player: Player) -> PlayerState.MovementState:
+func postprocess_state_transition(_input: Dictionary, player: Player) -> PlayerState.MovementState:
 	if player.is_on_floor():
 		return PlayerState.MovementState.IDLE
 	elif !player.is_on_wall():
