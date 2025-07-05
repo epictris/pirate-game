@@ -1,7 +1,7 @@
 extends SGCharacterBody2D
 
-const SPEED = FI.ONE * 45
-const GRAVITY = FI.ONE * 3
+const SPEED = FI.ONE * 18
+const GRAVITY = FI.ONE_POINT_TWO
 
 @onready var sprite: Sprite2D = %Sprite
 	
@@ -21,7 +21,7 @@ func _network_spawn(data: Dictionary) -> void:
 func _update() -> void:
 	collision_mask = 1
 	collision_mask = 1
-	sprite.rotate(0.1 if _direction.x > 0 else -0.1)
+	sprite.rotate(0.2 if _direction.x > 0 else -0.2)
 	velocity.y += GRAVITY
 	var collision = move_and_collide(velocity)
 	if collision:
