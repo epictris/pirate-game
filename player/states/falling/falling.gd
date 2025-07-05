@@ -29,7 +29,7 @@ func process_state(input: Dictionary, player: Player):
 	player._apply_air_acceleration(input)
 	player.move_and_slide()
 
-func postprocess_state_transition(player: Player) -> PlayerState.MovementState:
+func postprocess_state_transition(_input: Dictionary, player: Player) -> PlayerState.MovementState:
 	if player.is_on_floor():
 		if player.velocity.x == 0:
 			return PlayerState.MovementState.IDLE

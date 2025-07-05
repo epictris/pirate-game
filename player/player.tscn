@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://dun8dcjxi0li0"]
+[gd_scene load_steps=23 format=3 uid="uid://dun8dcjxi0li0"]
 
 [ext_resource type="Script" uid="uid://wes4v070j7ba" path="res://player/player.gd" id="1_p55k6"]
 [ext_resource type="PackedScene" uid="uid://c2qh6bt3ve6bq" path="res://player/abilities/deploy_shield/deploy_shield.tscn" id="2_rkbax"]
@@ -19,6 +19,8 @@
 [ext_resource type="PackedScene" uid="uid://dwyxr6yehjsrc" path="res://player/states/jumping/jumping_animation.tscn" id="14_32hag"]
 [ext_resource type="PackedScene" uid="uid://c4x44yhbhqwmk" path="res://player/states/wall_jumping/wall_jump_animation.tscn" id="17_c35mf"]
 [ext_resource type="PackedScene" uid="uid://b81fpq42d74mp" path="res://player/states/wall_sliding/wall_sliding_animation.tscn" id="18_e7oew"]
+[ext_resource type="Script" uid="uid://oik3sd0cyeti" path="res://player/states/sliding/sliding.gd" id="20_x7c3f"]
+[ext_resource type="PackedScene" uid="uid://uksutqdnudr4" path="res://player/states/sliding/sliding_animation.tscn" id="21_bjvpn"]
 
 [sub_resource type="SGRectangleShape2D" id="SGRectangleShape2D_p55k6"]
 extents_y = 1638400
@@ -31,8 +33,10 @@ jump_time_to_descent = 8
 ability_primary = NodePath("Shoot Bullet")
 ability_secondary = NodePath("Shield")
 
-[node name="SGCollisionShape2D" type="SGCollisionShape2D" parent="."]
+[node name="CollisionShape" type="SGCollisionShape2D" parent="."]
 shape = SubResource("SGRectangleShape2D_p55k6")
+unique_name_in_owner = true
+position = Vector2(1, 0)
 
 [node name="Shield" parent="." instance=ExtResource("2_rkbax")]
 
@@ -44,7 +48,7 @@ shape = SubResource("SGRectangleShape2D_p55k6")
 
 [node name="Shoot Bullet" parent="." instance=ExtResource("6_g6k8r")]
 
-[node name="States" parent="." node_paths=PackedStringArray("idle", "running", "falling", "jumping", "wall_jumping", "wall_sliding") instance=ExtResource("7_8t03j")]
+[node name="States" parent="." node_paths=PackedStringArray("idle", "running", "falling", "jumping", "wall_jumping", "wall_sliding", "sliding") instance=ExtResource("7_8t03j")]
 unique_name_in_owner = true
 idle = NodePath("idle")
 running = NodePath("running")
@@ -52,6 +56,7 @@ falling = NodePath("falling")
 jumping = NodePath("jumping")
 wall_jumping = NodePath("wall_jumping")
 wall_sliding = NodePath("wall_sliding")
+sliding = NodePath("sliding")
 
 [node name="idle" type="Node" parent="States"]
 script = ExtResource("8_2ieo8")
@@ -76,3 +81,7 @@ wall_jump_animation_scene = ExtResource("17_c35mf")
 [node name="wall_sliding" type="Node" parent="States"]
 script = ExtResource("13_kb6p2")
 wall_slide_animation_scene = ExtResource("18_e7oew")
+
+[node name="sliding" type="Node" parent="States"]
+script = ExtResource("20_x7c3f")
+slide_animation_scene = ExtResource("21_bjvpn")

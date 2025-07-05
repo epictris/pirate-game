@@ -7,6 +7,7 @@ enum MovementState {
 	FALLING,
 	WALL_JUMPING,
 	WALL_SLIDING,
+	SLIDING,
 }
 
 @export var idle: Node
@@ -15,6 +16,7 @@ enum MovementState {
 @export var jumping: Node
 @export var wall_jumping: Node
 @export var wall_sliding: Node
+@export var sliding: Node
 
 var current_state: MovementState = MovementState.IDLE
 var current_state_node: Node
@@ -33,6 +35,8 @@ func _resolve_state(state: MovementState) -> Node:
 			return wall_jumping
 		MovementState.WALL_SLIDING:
 			return wall_sliding
+		MovementState.SLIDING:
+			return sliding
 		_:
 			assert(false, "Invalid state")
 			return null
@@ -56,7 +60,7 @@ func process_tick(input: Dictionary):
 
 	new_state.process_state(input, player)
 
-	current_state_node = _resolve_state(new_state.postprocess_state_transition(player))
+	current_state_node = _resolve_state(new_state.postprocess_state_transition(input, player))
 	if current_state_node != new_state:
 		if new_state.has_method("exit"):
 			new_state.exit(player)
