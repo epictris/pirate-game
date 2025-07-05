@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dun8dcjxi0li0"]
+[gd_scene load_steps=21 format=3 uid="uid://dun8dcjxi0li0"]
 
 [ext_resource type="Script" uid="uid://wes4v070j7ba" path="res://player/player.gd" id="1_p55k6"]
 [ext_resource type="PackedScene" uid="uid://c2qh6bt3ve6bq" path="res://player/abilities/deploy_shield/deploy_shield.tscn" id="2_rkbax"]
@@ -9,20 +9,25 @@
 [ext_resource type="PackedScene" uid="uid://cxdn8tswln1hx" path="res://player/states/states.tscn" id="7_8t03j"]
 [ext_resource type="Script" uid="uid://dxvqp5p1k8di3" path="res://player/states/idle/idle.gd" id="8_2ieo8"]
 [ext_resource type="Script" uid="uid://bcvipd6cn5jyt" path="res://player/states/running/running.gd" id="9_ebec5"]
+[ext_resource type="PackedScene" uid="uid://ck2iwvlol4h8i" path="res://player/states/idle/idle.tscn" id="9_kb6p2"]
 [ext_resource type="Script" uid="uid://d0f7uxdminck4" path="res://player/states/falling/falling.gd" id="10_yllr7"]
 [ext_resource type="Script" uid="uid://dn3d72c1wllin" path="res://player/states/jumping/jumping.gd" id="11_2ieo8"]
+[ext_resource type="PackedScene" uid="uid://c6561mpjvs1qs" path="res://player/states/running/running_animation.tscn" id="11_wodsf"]
 [ext_resource type="Script" uid="uid://bgjtp3t762s43" path="res://player/states/wall_jumping/wall_jumping.gd" id="12_yllr7"]
 [ext_resource type="Script" uid="uid://6ue0q38jhq7l" path="res://player/states/wall_sliding/wall_sliding.gd" id="13_kb6p2"]
+[ext_resource type="PackedScene" uid="uid://d063g6qk45mja" path="res://player/states/falling/falling_animation.tscn" id="13_tqiix"]
+[ext_resource type="PackedScene" uid="uid://dwyxr6yehjsrc" path="res://player/states/jumping/jumping_animation.tscn" id="14_32hag"]
+[ext_resource type="PackedScene" uid="uid://c4x44yhbhqwmk" path="res://player/states/wall_jumping/wall_jump_animation.tscn" id="17_c35mf"]
+[ext_resource type="PackedScene" uid="uid://b81fpq42d74mp" path="res://player/states/wall_sliding/wall_sliding_animation.tscn" id="18_e7oew"]
 
 [sub_resource type="SGRectangleShape2D" id="SGRectangleShape2D_p55k6"]
-extents_x = 983040
 extents_y = 1638400
 
 [node name="Player" type="SGCharacterBody2D" node_paths=PackedStringArray("ability_primary", "ability_secondary") groups=["network_sync", "player"]]
 script = ExtResource("1_p55k6")
-jump_height = 120
+jump_height = 70
 jump_time_to_peak = 11
-jump_time_to_descent = 7
+jump_time_to_descent = 8
 ability_primary = NodePath("ThrowAxe")
 ability_secondary = NodePath("Shield")
 
@@ -50,18 +55,24 @@ wall_sliding = NodePath("wall_sliding")
 
 [node name="idle" type="Node" parent="States"]
 script = ExtResource("8_2ieo8")
+idle_animation_scene = ExtResource("9_kb6p2")
 
 [node name="running" type="Node" parent="States"]
 script = ExtResource("9_ebec5")
+run_animation_scene = ExtResource("11_wodsf")
 
 [node name="falling" type="Node" parent="States"]
 script = ExtResource("10_yllr7")
+falling_animation_scene = ExtResource("13_tqiix")
 
 [node name="jumping" type="Node" parent="States"]
 script = ExtResource("11_2ieo8")
+jump_animation_scene = ExtResource("14_32hag")
 
 [node name="wall_jumping" type="Node" parent="States"]
 script = ExtResource("12_yllr7")
+wall_jump_animation_scene = ExtResource("17_c35mf")
 
 [node name="wall_sliding" type="Node" parent="States"]
 script = ExtResource("13_kb6p2")
+wall_slide_animation_scene = ExtResource("18_e7oew")

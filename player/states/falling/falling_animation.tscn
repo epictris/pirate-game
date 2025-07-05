@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://d063g6qk45mja"]
+
+[ext_resource type="Texture2D" uid="uid://l4gc4axn7lnt" path="res://player/states/jumping/Upward Jump.png" id="1_kl4ds"]
+[ext_resource type="Script" uid="uid://ri2v3le2atv" path="res://player/states/falling/falling_animation.gd" id="1_xqbjj"]
+
+[node name="FallingAnimation" type="Node2D"]
+script = ExtResource("1_xqbjj")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(0, -9)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("1_kl4ds")
+hframes = 11
+frame = 9

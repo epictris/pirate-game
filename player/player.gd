@@ -1,13 +1,13 @@
 class_name Player extends SGCharacterBody2D
 
-const MAX_SPEED = FI.ONE * 8 * 2
-const WALL_SLIDE_SPEED = FI.ONE * 2 * 2
-const WALL_FRICTION = FI.ONE * 2
-const GROUND_ACCEL = FI.ONE * 3 * 2
-const GROUND_FRICTION = FI.ONE + FI.ONE_POINT_TWO
-const AIR_ACCEL = FI.POINT_FOUR * 2
-const GRAVITY = FI.ONE * 2 * 2
-const JUMP = FI.ONE * 10 * 2
+const MAX_SPEED = FI.ONE * 12
+const WALL_SLIDE_SPEED = FI.ONE * 2
+const WALL_FRICTION = FI.ONE
+const GROUND_ACCEL = FI.ONE * 3
+const GROUND_FRICTION = FI.ONE_POINT_ONE
+const AIR_ACCEL = FI.POINT_FOUR
+const GRAVITY = FI.ONE * 2
+const JUMP = FI.ONE * 10
 
 var current_max_speed: int = MAX_SPEED
 

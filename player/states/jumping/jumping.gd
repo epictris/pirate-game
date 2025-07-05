@@ -1,7 +1,25 @@
 extends Node
 
-func enter(player: Player) -> void:
+@export var jump_animation_scene: PackedScene
+
+var jump_animation: Node2D
+
+func _ready() -> void:
+	SyncManager.scene_spawned.connect(_on_scene_spawned)
+
+func _on_scene_spawned(scene_name: StringName, scene_node: Node, _data, _other) -> void:
+	if scene_name == "jump_animation":
+		jump_animation = scene_node
+
+func _is_facing_left(input: Dictionary, player: Player) -> bool:
+	return input.get("left") or player.velocity.x < 0
+
+func enter(input: Dictionary, player: Player) -> void:
+	SyncManager.spawn("jump_animation", player, jump_animation_scene, {"flip_h": _is_facing_left(input, player)})
 	player.velocity.y -= player.jump_velocity
+
+func exit(_player: Player) -> void:
+	SyncManager.despawn(jump_animation)
 
 func preprocess_state_transition(_input: Dictionary, _player: Player) -> PlayerState.MovementState:
 	return PlayerState.MovementState.JUMPING
