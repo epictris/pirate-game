@@ -55,7 +55,7 @@ func _play_offline():
 
 func _spawn_host():
 	host_player = player_scene.instantiate()
-	host_player.spawn_position = SGFixed.vector2(SGFixed.ONE * 200, SGFixed.ONE * 400) 
+	host_player.spawn_position = SGFixed.vector2(SGFixed.ONE * 70, SGFixed.ONE * 130) 
 	add_child(host_player)
 
 
@@ -70,8 +70,8 @@ func _on_peer_connected(peer_id: int):
 		client_player.set_multiplayer_authority(peer_id)
 	else:
 		client_player.set_multiplayer_authority(multiplayer.get_unique_id())
-	host_player.spawn_position = SGFixed.vector2(SGFixed.ONE * 200, SGFixed.ONE * 400) 
-	client_player.spawn_position = SGFixed.vector2(SGFixed.ONE * 900, SGFixed.ONE * 400)
+	host_player.spawn_position = SGFixed.vector2(SGFixed.ONE * 70, SGFixed.ONE * 130) 
+	client_player.spawn_position = SGFixed.vector2(SGFixed.ONE * 300, SGFixed.ONE * 130)
 	add_child(host_player)
 	add_child(client_player)
 

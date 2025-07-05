@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dbdmk71mpvywe"]
+[gd_scene load_steps=7 format=3 uid="uid://dbdmk71mpvywe"]
 
 [ext_resource type="Script" uid="uid://ciqbe3pwo1nha" path="res://multiplayer/multiplayer.gd" id="1_o4y1c"]
 [ext_resource type="PackedScene" uid="uid://dun8dcjxi0li0" path="res://player/player.tscn" id="2_nhdnw"]
@@ -11,12 +11,8 @@ extents_x = 40986400
 extents_y = 32768000
 
 [sub_resource type="SGRectangleShape2D" id="SGRectangleShape2D_uwdxy"]
-extents_x = 18520416
-extents_y = 738392
-
-[sub_resource type="SGRectangleShape2D" id="SGRectangleShape2D_50t2w"]
-extents_x = 538840
-extents_y = 3033596
+extents_x = 13107200
+extents_y = 327680
 
 [node name="Multiplayer" type="Node2D"]
 script = ExtResource("1_o4y1c")
@@ -128,8 +124,8 @@ position = Vector2(577, 144)
 [node name="SGCollisionShape2D" type="SGCollisionShape2D" parent="SGStaticBody2D"]
 shape = SubResource("SGRectangleShape2D_wktud")
 fixed_position_x = 35100001
-fixed_position_y = 42250000
-position = Vector2(535.583, 644.684)
+fixed_position_y = 23592960
+position = Vector2(535.583, 360)
 
 [node name="SGStaticBody2D5" type="SGStaticBody2D" parent="."]
 
@@ -142,48 +138,31 @@ position = Vector2(535.583, 0)
 
 [node name="SGCollisionShape2D" type="SGCollisionShape2D" parent="SGStaticBody2D2"]
 shape = SubResource("SGRectangleShape2D_nhdnw")
-fixed_position_x = 3893834
 fixed_position_y = 11409469
-position = Vector2(59.4152, 174.095)
+position = Vector2(0, 174.095)
 
 [node name="SGStaticBody2D3" type="SGStaticBody2D" parent="."]
-fixed_position_x = 64880640
-position = Vector2(990, 0)
 
 [node name="SGCollisionShape2D" type="SGCollisionShape2D" parent="SGStaticBody2D3"]
 shape = SubResource("SGRectangleShape2D_nhdnw")
-fixed_position_x = 3893834
+fixed_position_x = 41943040
 fixed_position_y = 11409469
-position = Vector2(59.4152, 174.095)
+position = Vector2(640, 174.095)
 
 [node name="SGStaticBody2D4" type="SGStaticBody2D" parent="."]
-fixed_position_x = 36044800
-fixed_position_y = 28835840
-position = Vector2(550, 440)
 
 [node name="SGCollisionShape2D" type="SGCollisionShape2D" parent="SGStaticBody2D4"]
 shape = SubResource("SGRectangleShape2D_uwdxy")
+fixed_position_x = 20971520
+fixed_position_y = 16384000
+position = Vector2(320, 250)
 
 [node name="SGStaticBody2D8" type="SGStaticBody2D" parent="."]
-fixed_position_x = 36044800
-fixed_position_y = 11678515
-position = Vector2(550, 178.2)
 
 [node name="SGCollisionShape2D" type="SGCollisionShape2D" parent="SGStaticBody2D8"]
 shape = SubResource("SGRectangleShape2D_uwdxy")
-
-[node name="SGStaticBody2D6" type="SGStaticBody2D" parent="."]
-fixed_position_x = 17301504
-fixed_position_y = 26546825
-position = Vector2(264, 405.072)
-
-[node name="SGCollisionShape2D" type="SGCollisionShape2D" parent="SGStaticBody2D6"]
-shape = SubResource("SGRectangleShape2D_50t2w")
-
-[node name="SGStaticBody2D7" type="SGStaticBody2D" parent="."]
-fixed_position_x = 54520499
-fixed_position_y = 26546825
-position = Vector2(831.917, 405.072)
-
-[node name="SGCollisionShape2D" type="SGCollisionShape2D" parent="SGStaticBody2D7"]
-shape = SubResource("SGRectangleShape2D_50t2w")
+fixed_position_x = 20971520
+fixed_position_y = 10485760
+fixed_rotation = 16384
+position = Vector2(320, 160)
+rotation = 0.25
