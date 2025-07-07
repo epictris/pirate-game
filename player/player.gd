@@ -81,7 +81,7 @@ var spawn_position: SGFixedVector2
 
 var _current_ability: AbilityBase
 
-@onready var state_machine: PlayerState = %States
+@onready var state_machine: PlayerStateMachine = %States
 
 func _ready():
 	collision_layer = CollisionLayer.PLAYERS

@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://ddwjlseep37eu" path="res://player/abilities/throw_axe/throw_axe.tscn" id="4_yw30f"]
 [ext_resource type="PackedScene" uid="uid://dvexkwbyye78h" path="res://player/abilities/swing_pan/swing_pan.tscn" id="5_qjkh3"]
 [ext_resource type="PackedScene" uid="uid://ooqryqjg5mct" path="res://player/abilities/shoot_bullet/shoot_bullet.tscn" id="6_g6k8r"]
-[ext_resource type="PackedScene" uid="uid://cxdn8tswln1hx" path="res://player/states/states.tscn" id="7_8t03j"]
+[ext_resource type="PackedScene" uid="uid://cxdn8tswln1hx" path="res://player/states/state_manager.tscn" id="7_8t03j"]
 [ext_resource type="Script" uid="uid://dxvqp5p1k8di3" path="res://player/states/idle/idle.gd" id="8_2ieo8"]
 [ext_resource type="Script" uid="uid://bcvipd6cn5jyt" path="res://player/states/running/running.gd" id="9_ebec5"]
 [ext_resource type="PackedScene" uid="uid://ck2iwvlol4h8i" path="res://player/states/idle/idle.tscn" id="9_kb6p2"]
@@ -48,15 +48,9 @@ position = Vector2(1, 0)
 
 [node name="Shoot Bullet" parent="." instance=ExtResource("6_g6k8r")]
 
-[node name="States" parent="." node_paths=PackedStringArray("idle", "running", "falling", "jumping", "wall_jumping", "wall_sliding", "sliding") instance=ExtResource("7_8t03j")]
+[node name="States" parent="." node_paths=PackedStringArray("initial_state") instance=ExtResource("7_8t03j")]
 unique_name_in_owner = true
-idle = NodePath("idle")
-running = NodePath("running")
-falling = NodePath("falling")
-jumping = NodePath("jumping")
-wall_jumping = NodePath("wall_jumping")
-wall_sliding = NodePath("wall_sliding")
-sliding = NodePath("sliding")
+initial_state = NodePath("idle")
 
 [node name="idle" type="Node" parent="States"]
 script = ExtResource("8_2ieo8")
