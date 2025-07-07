@@ -1,42 +1,40 @@
-extends Node
+extends PlayerState
 
 @export var falling_animation_scene: PackedScene
 
 var falling_animation: Node2D
 
 func _ready() -> void:
+	state_name = State.FALLING
 	SyncManager.scene_spawned.connect(_on_scene_spawned)
+	super()
 
-func enter(input: Dictionary, player: Player) -> void:
-	SyncManager.spawn("falling_animation", player, falling_animation_scene, {"flip_h": _is_facing_left(input, player)})
+func enter(input: Dictionary, _from_state: State, _data: Dictionary = {}) -> void:
+	SyncManager.spawn("falling_animation", player, falling_animation_scene, {"flip_h": _is_facing_left(input)})
 
-func exit(_player: Player) -> void:
+func exit(_to_state: State, _data: Dictionary = {}) -> void:
 	SyncManager.despawn(falling_animation)
 
 func _on_scene_spawned(scene_name: StringName, scene_node: Node, _data, _other) -> void:
 	if scene_name == "falling_animation":
 		falling_animation = scene_node
 
-func _is_facing_left(input: Dictionary, player: Player) -> bool:
+func _is_facing_left(input: Dictionary) -> bool:
 	return input.get("left") or player.velocity.x < 0
 	
-
-func preprocess_state_transition(_input, _player) -> PlayerState.MovementState:
-	return PlayerState.MovementState.FALLING
-
-func process_state(input: Dictionary, player: Player):
+func process(input: Dictionary) -> void:
 	player.apply_gravity()
 	player._apply_air_acceleration(input)
 	player.move_and_slide()
 
-func postprocess_state_transition(_input: Dictionary, player: Player) -> PlayerState.MovementState:
+func get_postprocess_transition(_input: Dictionary) -> StateTransition:
 	if player.is_on_floor():
 		if player.velocity.x == 0:
-			return PlayerState.MovementState.IDLE
+			return self._transition_to(State.IDLE)
 		else:
-			return PlayerState.MovementState.RUNNING
+			return self._transition_to(State.RUNNING)
 	elif player.is_on_wall():
 		# IMPROVE: should not be setting values in this function
 		player._touching_wall_normal = player.get_last_slide_collision().normal.x
-		return PlayerState.MovementState.WALL_SLIDING
-	return PlayerState.MovementState.FALLING
+		return self._transition_to(State.WALL_SLIDING)
+	return null
