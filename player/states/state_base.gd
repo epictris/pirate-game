@@ -32,7 +32,7 @@ func process(_input: Dictionary) -> void:
 func get_postprocess_transition(_input: Dictionary) -> StateTransition:
 	return null
 
-func exit(to_state: State, _data: Dictionary = {}) -> void:
+func exit(_to_state: State, _data: Dictionary = {}) -> void:
 	return
 
 
