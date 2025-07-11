@@ -191,10 +191,10 @@ offset_bottom = 5.0
 
 [node name="SGCollisionShape2D" type="SGCollisionShape2D" parent="SGStaticBody2D8"]
 shape = SubResource("SGRectangleShape2D_uwdxy")
-fixed_position_x = 20971520
+fixed_position_x = 18350080
 fixed_position_y = 10485760
 fixed_rotation = 16384
-position = Vector2(320, 160)
+position = Vector2(280, 160)
 rotation = 0.25
 
 [node name="ColorRect" type="ColorRect" parent="SGStaticBody2D8/SGCollisionShape2D"]
