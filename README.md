@@ -14,15 +14,15 @@ currently just a 3D sailboat controller
 - jump off the side of ships to disembark
 
 ## To Do
-- create player animation manager component to remove animation handling from movement state code
+- [x] create player animation manager component to remove animation handling from movement state code
 - add new states:
-    - hanging from ledge
-    - climbing up ledge
-    - sliding/rolling
-    - wall running
-    - vaulting
+    - [ ] hanging from ledge
+    - [ ] climbing up ledge
+    - [x] sliding/rolling
+    - [ ] wall running
+    - [ ] vaulting
 - add proper rollback state management to new abilities/states
-- create resource for passing initialization info between movement states
+- [x] create resource for passing initialization info between movement states
 - clearly distinguish between public and private player functions
 - disallow use of abilities while in specific states
 
