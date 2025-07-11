@@ -64,8 +64,6 @@ var _is_on_floor: bool = false
 var _is_on_ceiling: bool = false
 var _is_on_wall: bool = false
 
-var _touching_wall_normal: int
-
 enum MovementState {
 	IDLE,
 	RUNNING,	
@@ -82,6 +80,7 @@ var spawn_position: SGFixedVector2
 var _current_ability: AbilityBase
 
 @onready var state_machine: PlayerStateMachine = %States
+@onready var animation_manager: AnimationManager = %AnimationManager
 
 func _ready():
 	collision_layer = CollisionLayer.PLAYERS
@@ -100,6 +99,9 @@ func activate_ability(ability: AbilityBase, allow_overwrite: bool = false) -> vo
 	assert(allow_overwrite or !_current_ability, "Attempting to activate an ability while an ability is already active")
 	_current_ability = ability
 
+func play_animation(animation_name: String) -> void:
+	animation_manager.play_animation(animation_name)
+
 func deactivate_ability(ability: AbilityBase) -> void:
 	assert(_current_ability == ability, "Attempting to deactivate ability that is not currently active")
 	_current_ability = null
@@ -113,11 +115,11 @@ func is_ability_active(ability: AbilityBase) -> bool:
 func _get_local_input() -> Dictionary:
 
 	var input := {
-		up = Input.is_action_pressed("ui_up"),
-		up_just_pressed = Input.is_action_just_pressed("ui_up"),
-		down = Input.is_action_pressed("ui_down"),
-		left = Input.is_action_pressed("ui_left"),
-		right = Input.is_action_pressed("ui_right"),
+		up = Input.is_action_pressed("jump"),
+		up_just_pressed = Input.is_action_just_pressed("jump"),
+		down = Input.is_action_pressed("move_down"),
+		left = Input.is_action_pressed("move_left"),
+		right = Input.is_action_pressed("move_right"),
 	}
 
 	if Input.is_action_just_pressed("left_click"):
@@ -223,6 +225,8 @@ func _process_tick(input: Dictionary) -> void:
 	
 	_postprocess_ability_input(input)
 
+	animation_manager.update_animation(input)
+
 func _save_state() -> Dictionary:
 	var state: Dictionary = {
 		fixed_position_x = fixed_position_x,
@@ -232,7 +236,6 @@ func _save_state() -> Dictionary:
 		is_on_floor = _is_on_floor,
 		is_on_ceiling = _is_on_ceiling,
 		is_on_wall = _is_on_wall,
-		touching_wall_normal = _touching_wall_normal,
 		max_speed = current_max_speed,
 	}
 	return state
@@ -245,7 +248,6 @@ func _load_state(state: Dictionary) -> void:
 	_is_on_floor = state["is_on_floor"]
 	_is_on_ceiling = state["is_on_ceiling"]
 	_is_on_wall = state["is_on_wall"]
-	_touching_wall_normal = state["touching_wall_normal"]
 	current_max_speed = state["max_speed"]
 	sync_to_physics_engine()
 
