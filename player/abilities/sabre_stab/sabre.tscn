@@ -1,0 +1,49 @@
+[gd_scene load_steps=2 format=3 uid="uid://dst5iyhtossig"]
+
+[ext_resource type="Script" uid="uid://clkncwy0xeign" path="res://player/abilities/sabre_stab/sabre.gd" id="1_jaqu8"]
+
+[node name="Sabre" type="SGArea2D" groups=["network_sync"]]
+script = ExtResource("1_jaqu8")
+
+[node name="Frame 1" type="SGCollisionPolygon2D" parent="."]
+fixed_polygon_pairs = [[796207, -409519], [796207, 350318], [1958681, 129362], [1958681, -215790]]
+
+[node name="Frame 2" type="SGCollisionPolygon2D" parent="."]
+fixed_polygon_pairs = [[796207, -409519], [796207, 350318], [1958681, 129362], [1958681, -215790]]
+
+[node name="Frame 3" type="SGCollisionPolygon2D" parent="."]
+fixed_polygon_pairs = [[796207, -409519], [796207, 350318], [2862707, 120508], [2852965, -220444]]
+
+[node name="Frame 4" type="SGCollisionPolygon2D" parent="."]
+fixed_polygon_pairs = [[796207, -409519], [796207, 350318], [6428099, 81542], [6418357, -103546]]
+
+[node name="Frame 5" type="SGCollisionPolygon2D" parent="."]
+fixed_polygon_pairs = [[796207, -409519], [796207, 350318], [6428099, 81542], [6418357, -103546]]
+
+[node name="Frame 6" type="SGCollisionPolygon2D" parent="."]
+fixed_polygon_pairs = [[796207, -409519], [796207, 350318], [6428099, 81542], [6418357, -103546]]
+
+[node name="Frame 7" type="SGCollisionPolygon2D" parent="."]
+fixed_polygon_pairs = [[796207, -409519], [796207, 350318], [6428099, 81542], [6418357, -103546]]
+
+[node name="Frame 8" type="SGCollisionPolygon2D" parent="."]
+fixed_polygon_pairs = [[796207, -409519], [796207, 350318], [6428099, 81542], [6418357, -103546]]
+
+[node name="Frame 9" type="SGCollisionPolygon2D" parent="."]
+fixed_polygon_pairs = [[796207, -409519], [796207, 350318], [6428099, 81542], [6418357, -103546]]
+
+[node name="Frame 10" type="SGCollisionPolygon2D" parent="."]
+fixed_polygon_pairs = [[796207, -409519], [796207, 350318], [6428099, 81542], [6418357, -103546]]
+
+[node name="Frame 11" type="SGCollisionPolygon2D" parent="."]
+fixed_polygon_pairs = [[796207, -409519], [796207, 350318], [4684369, 149733], [4703852, -191219]]
+
+[node name="Frame 12" type="SGCollisionPolygon2D" parent="."]
+fixed_polygon_pairs = [[796207, -409519], [796207, 350318], [2736067, 256889], [2716584, -308117]]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+visible = false
+offset_left = -10.0
+offset_top = -25.0
+offset_right = 10.0
+offset_bottom = 25.0
