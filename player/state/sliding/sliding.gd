@@ -7,12 +7,16 @@ func _ready() -> void:
 
 func enter(_input: Dictionary, _from_state: State, _data: Dictionary = {}) -> void:
 	player.sliding_collision_shape.disabled = false
+	player.sliding_collision_shape.visible = true
 	player.standing_collision_shape.disabled = true
+	player.standing_collision_shape.visible = false
 	player.sync_to_physics_engine()
 
 func exit(_to_state: State, _data: Dictionary = {}) -> void:
 	player.sliding_collision_shape.disabled = true
+	player.sliding_collision_shape.visible = false
 	player.standing_collision_shape.disabled = false
+	player.standing_collision_shape.visible = true
 	player.sync_to_physics_engine()
 
 func get_preprocess_transition(input: Dictionary) -> StateTransition:

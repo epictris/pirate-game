@@ -1,0 +1,30 @@
+[gd_scene load_steps=2 format=3 uid="uid://dkn42fwwvctj5"]
+
+[ext_resource type="Script" uid="uid://c46xaxlb5n20t" path="res://player/abilities/sabre_slice/sabre.gd" id="1_keria"]
+
+[node name="Sabre" type="SGArea2D" groups=["network_sync"]]
+script = ExtResource("1_keria")
+
+[node name="Frame 1" type="SGCollisionPolygon2D" parent="."]
+fixed_polygon_pairs = [[-651828, -1712235], [-1918224, -4264509], [-1080803, -4600115], [-193978, -1858357]]
+
+[node name="Frame 2" type="SGCollisionPolygon2D" parent="."]
+fixed_polygon_pairs = [[-934332, -4634686], [-96563, -1858357], [390512, -1829133], [565859, -4771068]]
+
+[node name="Frame 3" type="SGCollisionPolygon2D" parent="."]
+fixed_polygon_pairs = [[682757, -4780809], [507410, -1848616], [965261, -1556371], [3176583, -3757951]]
+
+[node name="Frame 4" type="SGCollisionPolygon2D" parent="."]
+fixed_polygon_pairs = [[3264256, -3689760], [4117282, -1373090], [1487076, -798341], [1052934, -1517405]]
+
+[node name="Frame 5" type="SGCollisionPolygon2D" parent="."]
+fixed_polygon_pairs = [[4136765, -1265933], [3848328, 1170584], [1589922, 34036], [1516300, -691185]]
+
+[node name="Frame 6" type="SGCollisionPolygon2D" parent="."]
+fixed_polygon_pairs = [[3302803, 1910939], [1344760, 556870], [1539591, 118502], [3789879, 1238775]]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_left = -10.0
+offset_top = -25.0
+offset_right = 10.0
+offset_bottom = 25.0

@@ -22,10 +22,6 @@ func reset_max_speed() -> void:
 @export var jump_time_to_peak: int
 @export var jump_time_to_descent: int
 
-@export var ability_primary: AbilityBase
-@export var ability_secondary: AbilityBase
-@export var ability_special: AbilityBase
-
 var spawn_location_x: int
 var spawn_location_y: int
 

@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://ciaka2o1djlmj"]
+
+[ext_resource type="Script" uid="uid://bahn0o5j6kf3" path="res://player/abilities/sabre_slice/sabre_slice.gd" id="1_0txnc"]
+[ext_resource type="PackedScene" uid="uid://dkn42fwwvctj5" path="res://player/abilities/sabre_slice/sabre.tscn" id="2_m6hlo"]
+
+[node name="Sabre Slice" type="Node"]
+script = ExtResource("1_0txnc")
+sabre_scene = ExtResource("2_m6hlo")
