@@ -3,6 +3,6 @@
 [ext_resource type="Script" uid="uid://c3vcmeyc8xfj5" path="res://player/abilities/swing_pan/swing_pan.gd" id="1_t6iej"]
 [ext_resource type="PackedScene" uid="uid://rc3tktj21q6m" path="res://player/abilities/swing_pan/pan.tscn" id="2_ai1oy"]
 
-[node name="SwingPan" type="Node"]
+[node name="SwingPan" type="Node" groups=["network_sync"]]
 script = ExtResource("1_t6iej")
 pan_scene = ExtResource("2_ai1oy")
