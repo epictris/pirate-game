@@ -10,7 +10,13 @@ func _network_spawn(data: Dictionary) -> void:
 	fixed_position_y = data["fixed_position_y"]
 ```
 
-Any storing of references to the node, or extra configuration that needs to be run on the parent whenever the node is spawned should be done in a function connected to the `SyncManager.scene_spawned` signal. eg:
+If you need to:
+- store a reference to the spawned node
+- perform additional configuration on the parent whenever the node is spawned
+
+This should be implemented in a function connected to the `SyncManager.scene_spawned` signal.
+
+This function will be run whenever ANY scene is spawned/respawned - not just scenes spawned by this script instance. To ensure that the function isn't run on all instances of a class, include the node path of the node that called the spawn function in the spawn data. eg:
 
 ```gdscript
 @export var shield: PackedScene
@@ -20,9 +26,17 @@ func _ready() -> void:
 	SyncManager.scene_spawned.connect(_on_scene_spawned)
 
 func activate(direction: SGFixedVector2) -> void:
-	SyncManager.spawn("shield", owner, shield, {}) # don't set the node reference here
+	SyncManager.spawn(
+		"shield",
+		owner,
+		shield,
+		{ 
+			creator = get_path() # add node path of creator to spawn data
+		}
+	) # don't set the node reference here
 
 func _on_scene_spawned(name, spawned_node, scene, data) -> void:
-	if name == "shield":
+	if name == "shield" and data.get("creator") == get_path(): # check spawner path to ensure code is only run on this instance
 		shield_instance = spawned_node # set the node reference here instead
 ```
+
