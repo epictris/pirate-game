@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://dyr4kjdjffjgx" path="res://player/abilities/shoot_bullet/explosion.tscn" id="3_vx1jy"]
 [ext_resource type="Script" uid="uid://3c3ikrq366ts" path="res://addons/godot-rollback-netcode/NetworkTimer.gd" id="4_0511y"]
 
-[node name="Shoot Bullet" type="Node"]
+[node name="Shoot Bullet" type="Node" groups=["network_sync"]]
 script = ExtResource("1_y1hiy")
 bullet_scene = ExtResource("2_o15hn")
 explosion_scene = ExtResource("3_vx1jy")

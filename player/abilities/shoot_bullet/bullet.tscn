@@ -25,6 +25,7 @@ explosion_scene = ExtResource("2_qi76m")
 
 [node name="CollisionShape" type="SGCollisionShape2D" parent="."]
 shape = SubResource("SGCircleShape2D_0jge3")
+disabled = true
 fixed_scale_x = 16384
 fixed_scale_y = 16384
 unique_name_in_owner = true
