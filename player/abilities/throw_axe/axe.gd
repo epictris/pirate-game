@@ -21,7 +21,6 @@ func _network_spawn(data: Dictionary) -> void:
 func _update() -> void:
 	collision_mask = 1
 	sprite.rotate(0.2 if _direction.x > 0 else -0.2)
-	print(sprite.rotation)
 	velocity.y += GRAVITY
 	var collision = move_and_collide(velocity)
 	if collision:
