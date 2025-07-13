@@ -53,10 +53,13 @@ static func _node_name_sort_callback(a: Node, b: Node) -> bool:
 
 func _alphabetize_children(parent: Node) -> void:
 	var children = parent.get_children()
-	children.sort_custom(Callable(self, '_node_name_sort_callback'))
-	for index in range(children.size()):
-		var child = children[index]
-		parent.move_child(child, index)
+	var spawned_children = children.filter(func(child): return child.get_meta("spawned_node", false))
+	var count_non_spawned_children = children.size() - spawned_children.size()
+	spawned_children.sort_custom(Callable(self, '_node_name_sort_callback'))
+
+	for index in range(spawned_children.size()):
+		var child = spawned_children[index]
+		parent.move_child(child, index + count_non_spawned_children)
 
 func _instance_scene(resource_path: String) -> Node:
 	if retired_nodes.has(resource_path):
@@ -79,7 +82,9 @@ func _instance_scene(resource_path: String) -> Node:
 
 	#print ("Instancing new %s" % resource_path)
 	var scene = load(resource_path)
-	return scene.instantiate()
+	var spawned_node = scene.instantiate()
+	spawned_node.set_meta("spawned_node", true)
+	return spawned_node
 
 func spawn(name: String, parent: Node, scene: PackedScene, data: Dictionary, rename: bool = true, signal_name: String = '') -> Node:
 	var spawned_node = _instance_scene(scene.resource_path)
