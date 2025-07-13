@@ -13,14 +13,14 @@ func _ready() -> void:
 	cooldown_timer.timeout.connect(_on_timeout)
 
 func _preprocess_on_activated(direction: SGFixedVector2) -> void:
-	player.activate_ability(self)
+	ability_manager.activate_ability(self)
 	current_direction = direction
 
 func _preprocess_on_updated(_direction: SGFixedVector2) -> void:
 	current_direction = _direction
 
 func _preprocess_on_deactivated(_direction: SGFixedVector2) -> void:
-	player.deactivate_ability(self)
+	ability_manager.deactivate_ability(self)
 
 func _hook_after_player_movement() -> void:
 	on_cooldown = false

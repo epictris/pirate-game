@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://dun8dcjxi0li0"]
+[gd_scene load_steps=20 format=3 uid="uid://dun8dcjxi0li0"]
 
 [ext_resource type="Script" uid="uid://wes4v070j7ba" path="res://player/player.gd" id="1_p55k6"]
 [ext_resource type="PackedScene" uid="uid://c2qh6bt3ve6bq" path="res://player/abilities/deploy_shield/deploy_shield.tscn" id="2_rkbax"]
@@ -11,8 +11,10 @@
 [ext_resource type="Script" uid="uid://bcvipd6cn5jyt" path="res://player/state/running/running.gd" id="9_ebec5"]
 [ext_resource type="Script" uid="uid://d0f7uxdminck4" path="res://player/state/falling/falling.gd" id="10_yllr7"]
 [ext_resource type="Script" uid="uid://dn3d72c1wllin" path="res://player/state/jumping/jumping.gd" id="11_2ieo8"]
+[ext_resource type="Script" uid="uid://bsqufbnsnxg1o" path="res://player/abilities/ability_manager.gd" id="12_tqiix"]
 [ext_resource type="Script" uid="uid://bgjtp3t762s43" path="res://player/state/wall_jumping/wall_jumping.gd" id="12_yllr7"]
 [ext_resource type="Script" uid="uid://6ue0q38jhq7l" path="res://player/state/wall_sliding/wall_sliding.gd" id="13_kb6p2"]
+[ext_resource type="PackedScene" uid="uid://c7spohb6pgbva" path="res://player/abilities/ability_manager.tscn" id="16_32hag"]
 [ext_resource type="Script" uid="uid://oik3sd0cyeti" path="res://player/state/sliding/sliding.gd" id="20_x7c3f"]
 [ext_resource type="PackedScene" uid="uid://lt4w6rvtjptm" path="res://player/animation/animation_manager.tscn" id="22_bjvpn"]
 
@@ -27,8 +29,8 @@ script = ExtResource("1_p55k6")
 jump_height = 60
 jump_time_to_peak = 11
 jump_time_to_descent = 8
-ability_primary = NodePath("Shoot Bullet")
-ability_secondary = NodePath("SwingPan")
+ability_primary = NodePath("Abilities/Shoot Bullet")
+ability_secondary = NodePath("Abilities/SwingPan")
 
 [node name="AnimationManager" parent="." instance=ExtResource("22_bjvpn")]
 unique_name_in_owner = true
@@ -46,16 +48,6 @@ disabled = true
 fixed_position_y = 917504
 unique_name_in_owner = true
 position = Vector2(0, 14)
-
-[node name="Shield" parent="." instance=ExtResource("2_rkbax")]
-
-[node name="BouncyBall" parent="." instance=ExtResource("3_g1dw6")]
-
-[node name="ThrowAxe" parent="." instance=ExtResource("4_yw30f")]
-
-[node name="SwingPan" parent="." instance=ExtResource("5_qjkh3")]
-
-[node name="Shoot Bullet" parent="." instance=ExtResource("6_g6k8r")]
 
 [node name="States" parent="." node_paths=PackedStringArray("initial_state") instance=ExtResource("7_8t03j")]
 unique_name_in_owner = true
@@ -81,3 +73,19 @@ script = ExtResource("13_kb6p2")
 
 [node name="sliding" type="Node" parent="States"]
 script = ExtResource("20_x7c3f")
+
+[node name="Abilities" parent="." node_paths=PackedStringArray("primary", "secondary") groups=["network_sync"] instance=ExtResource("16_32hag")]
+unique_name_in_owner = true
+script = ExtResource("12_tqiix")
+primary = NodePath("Shoot Bullet")
+secondary = NodePath("ThrowAxe")
+
+[node name="Shield" parent="Abilities" instance=ExtResource("2_rkbax")]
+
+[node name="BouncyBall" parent="Abilities" instance=ExtResource("3_g1dw6")]
+
+[node name="ThrowAxe" parent="Abilities" instance=ExtResource("4_yw30f")]
+
+[node name="SwingPan" parent="Abilities" instance=ExtResource("5_qjkh3")]
+
+[node name="Shoot Bullet" parent="Abilities" instance=ExtResource("6_g6k8r")]

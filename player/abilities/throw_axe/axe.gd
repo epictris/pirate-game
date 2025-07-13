@@ -20,8 +20,8 @@ func _network_spawn(data: Dictionary) -> void:
 
 func _update() -> void:
 	collision_mask = 1
-	collision_mask = 1
 	sprite.rotate(0.2 if _direction.x > 0 else -0.2)
+	print(sprite.rotation)
 	velocity.y += GRAVITY
 	var collision = move_and_collide(velocity)
 	if collision:
@@ -35,13 +35,13 @@ func _load_state(state: Dictionary) -> void:
 	fixed_position_y = state["fixed_position_y"]
 	velocity.x = state["velocity_x"]
 	velocity.y = state["velocity_y"]
-	rotation = state["_rotation"]
+	sprite.rotation = state["_rotation"]
 	sync_to_physics_engine()
 
 func _interpolate_state(old_state: Dictionary, new_state: Dictionary, weight: float) -> void:
 	position.x = lerp(SGFixed.to_float(old_state.fixed_position_x), SGFixed.to_float(new_state.fixed_position_x), weight)
 	position.y = lerp(SGFixed.to_float(old_state.fixed_position_y), SGFixed.to_float(new_state.fixed_position_y), weight)
-	rotation = lerp_angle(old_state._rotation, new_state._rotation, weight)
+	sprite.rotation = lerp_angle(old_state._rotation, new_state._rotation, weight)
 
 func _save_state() -> Dictionary:
 	var state: Dictionary = {
@@ -49,6 +49,6 @@ func _save_state() -> Dictionary:
 		fixed_position_y = fixed_position_y,
 		velocity_x = velocity.x,
 		velocity_y = velocity.y,
-		_rotation = rotation,
+		_rotation = sprite.rotation,
 	}
 	return state
