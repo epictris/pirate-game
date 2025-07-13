@@ -34,7 +34,6 @@ func get_postprocess_transition(input: Dictionary) -> StateTransition:
 	if !player.is_on_floor():
 		return self._transition_to(State.FALLING)
 	if !input.get("down"):
-		print(SyncManager.current_tick, ": sliding to idle")
 		if player.velocity.x == 0:
 			return self._transition_to(State.IDLE)
 		else:

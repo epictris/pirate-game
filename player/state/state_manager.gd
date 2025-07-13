@@ -42,10 +42,6 @@ func process_tick(input: Dictionary):
 	player._is_on_floor = player.is_on_floor()
 	player._is_on_wall = player.is_on_wall()
 
-	if player._is_on_floor and player._is_on_wall:
-		print("is on floor and wall")
-
-
 func _save_state() -> Dictionary:
 	return {
 		state_name = current_state_node.state_name,
