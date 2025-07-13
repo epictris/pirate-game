@@ -6,15 +6,13 @@ func _ready() -> void:
 
 
 func enter(_input: Dictionary, _from_state: State, _data: Dictionary = {}) -> void:
-	player.collision_shape.shape.extents.x = 65536 * 25
-	player.collision_shape.shape.extents.y = 65536 * 10
-	player.collision_shape.fixed_position.y += 65536 * 14
+	player.sliding_collision_shape.disabled = false
+	player.standing_collision_shape.disabled = true
 	player.sync_to_physics_engine()
 
 func exit(_to_state: State, _data: Dictionary = {}) -> void:
-	player.collision_shape.shape.extents.x = 65536 * 10
-	player.collision_shape.shape.extents.y = 65536 * 25
-	player.collision_shape.fixed_position.y -= 65536 * 14
+	player.sliding_collision_shape.disabled = true
+	player.standing_collision_shape.disabled = false
 	player.sync_to_physics_engine()
 
 func get_preprocess_transition(input: Dictionary) -> StateTransition:
@@ -36,6 +34,7 @@ func get_postprocess_transition(input: Dictionary) -> StateTransition:
 	if !player.is_on_floor():
 		return self._transition_to(State.FALLING)
 	if !input.get("down"):
+		print(SyncManager.current_tick, ": sliding to idle")
 		if player.velocity.x == 0:
 			return self._transition_to(State.IDLE)
 		else:

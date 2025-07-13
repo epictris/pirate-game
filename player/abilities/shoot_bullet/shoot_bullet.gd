@@ -23,6 +23,7 @@ func _preprocess_on_deactivated(_direction: SGFixedVector2) -> void:
 	player.deactivate_ability(self)
 
 func _hook_after_player_movement() -> void:
+	on_cooldown = false
 	if !on_cooldown:
 		on_cooldown = true
 		var data = {
@@ -35,3 +36,11 @@ func _hook_after_player_movement() -> void:
 
 func _on_timeout() -> void:
 	on_cooldown = false
+
+func _save_state() -> Dictionary:
+	return {
+		on_cooldown = on_cooldown,
+	}
+
+func _load_state(state: Dictionary) -> void:
+	on_cooldown = state["on_cooldown"]

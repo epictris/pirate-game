@@ -58,7 +58,8 @@ var spawn_location_y: int
 	)
 )
 
-@onready var collision_shape: SGCollisionShape2D = %CollisionShape
+@onready var standing_collision_shape: SGCollisionShape2D = %StandingCollisionShape
+@onready var sliding_collision_shape: SGCollisionShape2D = %SlidingCollisionShape
 
 var _is_on_floor: bool = false
 var _is_on_ceiling: bool = false
@@ -124,82 +125,108 @@ func _get_local_input() -> Dictionary:
 
 	if Input.is_action_just_pressed("left_click"):
 		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
-		input["primary_activated"] = SGFixed.vector2(direction.x, direction.y)
+		input["primary_activated"] = true
+		input["direction"] = {
+			x =  direction.x, 
+			y = direction.y
+		}
 
 	if Input.is_action_pressed("left_click"):
 		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
-		input["primary_updated"] = SGFixed.vector2(direction.x, direction.y)
+		input["primary_updated"] = true
+		input["direction"] = {
+			x =  direction.x, 
+			y = direction.y
+		}
 
 	if Input.is_action_just_released("left_click"):
 		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
-		input["primary_deactivated"] = SGFixed.vector2(direction.x, direction.y)
+		input["primary_deactivated"] = true
+		input["direction"] = {
+			x =  direction.x, 
+			y = direction.y
+		}
 
 	if Input.is_action_just_pressed("right_click"):
 		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
-		input["secondary_activated"] = SGFixed.vector2(direction.x, direction.y)
+		input["secondary_activated"] = true
+		input["direction"] = {
+			x =  direction.x, 
+			y = direction.y
+		}
 
 	if Input.is_action_pressed("right_click"):
 		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
-		input["secondary_updated"] = SGFixed.vector2(direction.x, direction.y)
+		input["secondary_updated"] = true
+		input["direction"] = {
+			x =  direction.x, 
+			y = direction.y
+		}
 
 	if Input.is_action_just_released("right_click"):
 		var direction = SGFixed.from_float_vector2(position.direction_to(get_viewport().get_mouse_position()))
-		input["secondary_deactivated"] = SGFixed.vector2(direction.x, direction.y)
+		input["secondary_deactivated"] = true
+		input["direction"] = {
+			x =  direction.x, 
+			y = direction.y
+		}
 
 	return input
 
 func _network_preprocess(input: Dictionary) -> void:
 	frame_input = input
+	if frame_input.has("direction"):
+		frame_input["direction"] = SGFixed.vector2(frame_input["direction"].x, frame_input["direction"].y)
 
 func _preprocess_ability_input(input: Dictionary) -> void:
 	if ability_primary:
 		if !_current_ability and input.get("primary_activated") and ability_primary.has_method("_preprocess_on_activated"):
-			ability_primary._preprocess_on_activated(input["primary_activated"])
+			ability_primary._preprocess_on_activated(input["direction"])
 		if !_current_ability and input.get("primary_updated") and ability_primary.has_method("_preprocess_on_activated"):
 			# Treat update as activation input if no ability is active
-			ability_primary._preprocess_on_activated(input["primary_updated"])
+			ability_primary._preprocess_on_activated(input["direction"])
 		if _current_ability == ability_primary:
 			if input.get("primary_updated") and ability_primary.has_method("_preprocess_on_updated"):
-				ability_primary._preprocess_on_updated(input["primary_updated"])
+				ability_primary._preprocess_on_updated(input["direction"])
 			if input.get("primary_deactivated") and ability_primary.has_method("_preprocess_on_deactivated"):
-				ability_primary._preprocess_on_deactivated(input["primary_deactivated"])
+				ability_primary._preprocess_on_deactivated(input["direction"])
 
 	if ability_secondary:
 		if !_current_ability and input.get("secondary_activated") and ability_secondary.has_method("_preprocess_on_activated"):
-			ability_secondary._preprocess_on_activated(input["secondary_activated"])
+			ability_secondary._preprocess_on_activated(input["direction"])
 		if !_current_ability and input.get("secondary_updated") and ability_secondary.has_method("_preprocess_on_activated"):
 			# Treat update as activation input if no ability is active
-			ability_secondary._preprocess_on_activated(input["secondary_updated"])
+			ability_secondary._preprocess_on_activated(input["direction"])
 		if _current_ability == ability_secondary:
 			if input.get("secondary_updated") and ability_secondary.has_method("_preprocess_on_updated"):
-				ability_secondary._preprocess_on_updated(input["secondary_updated"])
+				ability_secondary._preprocess_on_updated(input["direction"])
 			if input.get("secondary_deactivated") and ability_secondary.has_method("_preprocess_on_deactivated"):
-				ability_secondary._preprocess_on_deactivated(input["secondary_deactivated"])
+				ability_secondary._preprocess_on_deactivated(input["direction"])
 
 func _postprocess_ability_input(input: Dictionary) -> void:
 	if ability_primary:
 		if (!_current_ability or _current_ability == ability_primary) and input.get("primary_activated") and ability_primary.has_method("_postprocess_on_activated"):
-			ability_primary._postprocess_on_activated(input["primary_activated"])
+			ability_primary._postprocess_on_activated(input["direction"])
 		if !_current_ability and input.get("primary_updated") and ability_primary.has_method("_postprocess_on_activated"):
 			# Treat update as activation input if no ability is active
-			ability_primary._postprocess_on_activated(input["primary_updated"])
+			ability_primary._postprocess_on_activated(input["direction"])
 		if _current_ability == ability_primary:
 			if input.get("primary_updated") and ability_primary.has_method("_postprocess_on_updated"):
-				ability_primary._postprocess_on_updated(input["primary_updated"])
+				ability_primary._postprocess_on_updated(input["direction"])
 			if input.get("primary_deactivated") and ability_primary.has_method("_postprocess_on_deactivated"):
-				ability_primary._postprocess_on_deactivated(input["primary_deactivated"])
+				ability_primary._postprocess_on_deactivated(input["direction"])
 
 	if ability_secondary:
 		if (!_current_ability or _current_ability == ability_secondary) and input.get("secondary_activated") and ability_secondary.has_method("_postprocess_on_activated"):
-			ability_secondary._postprocess_on_activated(input["secondary_activated"])
+			ability_secondary._postprocess_on_activated(input["direction"])
 		if !_current_ability and input.get("secondary_updated") and ability_secondary.has_method("_postprocess_on_activated"):
 			# Treat update as activation input if no ability is active
-			ability_secondary._postprocess_on_activated(input["secondary_updated"])
+			ability_secondary._postprocess_on_activated(input["direction"])
 		if _current_ability == ability_secondary:
 			if input.get("secondary_updated") and ability_secondary.has_method("_postprocess_on_updated"):
-				ability_secondary._postprocess_on_updated(input["secondary_updated"])
+				ability_secondary._postprocess_on_updated(input["direction"])
 			if input.get("secondary_deactivated") and ability_secondary.has_method("_postprocess_on_deactivated"):
-				ability_secondary._postprocess_on_deactivated(input["secondary_deactivated"])
+				ability_secondary._postprocess_on_deactivated(input["direction"])
 
 func _update() -> void:
 	_process_tick(frame_input)
@@ -237,7 +264,11 @@ func _save_state() -> Dictionary:
 		is_on_ceiling = _is_on_ceiling,
 		is_on_wall = _is_on_wall,
 		max_speed = current_max_speed,
+		standing_shape_disabled = standing_collision_shape.disabled,
+		sliding_shape_disabled = sliding_collision_shape.disabled,
 	}
+	if _current_ability:
+		state["current_ability"] = _current_ability.get_path()
 	return state
 
 func _load_state(state: Dictionary) -> void:
@@ -249,6 +280,9 @@ func _load_state(state: Dictionary) -> void:
 	_is_on_ceiling = state["is_on_ceiling"]
 	_is_on_wall = state["is_on_wall"]
 	current_max_speed = state["max_speed"]
+	_current_ability = get_node(state["current_ability"]) if state.has("current_ability") else null
+	standing_collision_shape.disabled = state["standing_shape_disabled"]
+	sliding_collision_shape.disabled = state["sliding_shape_disabled"]
 	sync_to_physics_engine()
 
 

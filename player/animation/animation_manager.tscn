@@ -1112,7 +1112,7 @@ _data = {
 &"wall_slide_right": SubResource("Animation_rtg6u")
 }
 
-[node name="AnimationManager" type="Node2D"]
+[node name="AnimationManager" type="Node2D" groups=["network_sync"]]
 script = ExtResource("1_qrxcr")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]

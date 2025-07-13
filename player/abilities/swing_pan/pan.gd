@@ -8,12 +8,13 @@ var _direction: SGFixedVector2
 
 func _ready():
 	collision_mask = CollisionLayer.PLAYERS
-	timer.timeout.connect(_on_timeout)
 
 func _network_spawn(data: Dictionary) -> void:
 	_direction = data["direction"]
 	fixed_rotation = _direction.angle()
+	timer.timeout.connect(_on_timeout)
 	timer.start()
+	sync_to_physics_engine()
 
 func _save_state() -> Dictionary:
 	return {

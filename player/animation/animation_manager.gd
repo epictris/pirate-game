@@ -26,7 +26,7 @@ func update_animation(_input: Dictionary) -> void:
 				animation_player.play(Animations.WALL_SLIDE_RIGHT if state_transition.data["wall_normal"] <= 0 else Animations.WALL_SLIDE_LEFT)
 			PlayerState.State.SLIDING:
 				animation_player.play(Animations.START_SLIDE_RIGHT if player.velocity.x >= 0 else Animations.START_SLIDE_LEFT)
-				state_transition = null
+		state_transition = null
 
 	match movement_state:
 		PlayerState.State.IDLE:
@@ -45,3 +45,11 @@ func _on_animation_finished(anim_name: StringName) -> void:
 		animation_player.play(Animations.SLIDE_RIGHT)
 	if anim_name == Animations.START_SLIDE_LEFT:
 		animation_player.play(Animations.SLIDE_LEFT)
+
+func _save_state() -> Dictionary:
+	return {
+		movement_state = movement_state,
+	}
+
+func _load_state(state: Dictionary) -> void:
+	movement_state = state["movement_state"]

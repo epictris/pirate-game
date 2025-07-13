@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://dun8dcjxi0li0"]
+[gd_scene load_steps=18 format=3 uid="uid://dun8dcjxi0li0"]
 
 [ext_resource type="Script" uid="uid://wes4v070j7ba" path="res://player/player.gd" id="1_p55k6"]
 [ext_resource type="PackedScene" uid="uid://c2qh6bt3ve6bq" path="res://player/abilities/deploy_shield/deploy_shield.tscn" id="2_rkbax"]
@@ -19,23 +19,33 @@
 [sub_resource type="SGRectangleShape2D" id="SGRectangleShape2D_p55k6"]
 extents_y = 1638400
 
+[sub_resource type="SGRectangleShape2D" id="SGRectangleShape2D_wodsf"]
+extents_x = 1638400
+
 [node name="Player" type="SGCharacterBody2D" node_paths=PackedStringArray("ability_primary", "ability_secondary") groups=["network_sync", "player"]]
 script = ExtResource("1_p55k6")
 jump_height = 60
 jump_time_to_peak = 11
 jump_time_to_descent = 8
-ability_primary = NodePath("ThrowAxe")
-ability_secondary = NodePath("Shield")
+ability_primary = NodePath("Shoot Bullet")
+ability_secondary = NodePath("SwingPan")
 
 [node name="AnimationManager" parent="." instance=ExtResource("22_bjvpn")]
 unique_name_in_owner = true
 position = Vector2(0, 24.575)
 scale = Vector2(0.73, 0.73)
 
-[node name="CollisionShape" type="SGCollisionShape2D" parent="."]
+[node name="StandingCollisionShape" type="SGCollisionShape2D" parent="." groups=["network_sync"]]
 shape = SubResource("SGRectangleShape2D_p55k6")
 unique_name_in_owner = true
 position = Vector2(1, 0)
+
+[node name="SlidingCollisionShape" type="SGCollisionShape2D" parent="." groups=["network_sync"]]
+shape = SubResource("SGRectangleShape2D_wodsf")
+disabled = true
+fixed_position_y = 917504
+unique_name_in_owner = true
+position = Vector2(0, 14)
 
 [node name="Shield" parent="." instance=ExtResource("2_rkbax")]
 
@@ -66,7 +76,7 @@ script = ExtResource("11_2ieo8")
 [node name="wall_jumping" type="Node" parent="States"]
 script = ExtResource("12_yllr7")
 
-[node name="wall_sliding" type="Node" parent="States"]
+[node name="wall_sliding" type="Node" parent="States" groups=["network_sync"]]
 script = ExtResource("13_kb6p2")
 
 [node name="sliding" type="Node" parent="States"]

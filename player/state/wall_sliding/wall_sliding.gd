@@ -36,3 +36,11 @@ func get_postprocess_transition(_input: Dictionary) -> StateTransition:
 		player.velocity.x = 0
 		return self._transition_to(State.FALLING)
 	return null
+
+func _save_state() -> Dictionary:
+	return {
+		touching_wall_normal = _touching_wall_normal,
+	}
+
+func _load_state(state: Dictionary) -> void:
+	_touching_wall_normal = state["touching_wall_normal"]

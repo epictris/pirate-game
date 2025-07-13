@@ -60,6 +60,7 @@ func _update() -> void:
 	if _resolve_ray_collision():
 		return
 	collision_shape.disabled = false # enable collision shape the first time a ray cast yields no result
+	sync_to_physics_engine()
 	var collision_result = move_and_collide(velocity)
 	if collision_result:
 		_resolve_collision(collision_result.collider, fixed_position.add(collision_result.remainder))
@@ -75,6 +76,7 @@ func _save_state() -> Dictionary:
 		fixed_position_y = fixed_position.y,
 		velocity_x = velocity.x,
 		velocity_y = velocity.y,
+		disabled = collision_shape.disabled,
 	}
 
 func _load_state(state: Dictionary) -> void:
@@ -82,6 +84,7 @@ func _load_state(state: Dictionary) -> void:
 	fixed_position.y = state["fixed_position_y"]
 	velocity.x = state["velocity_x"]
 	velocity.y = state["velocity_y"]
+	collision_shape.disabled = state["disabled"]
 	sync_to_physics_engine()
 
 func _interpolate_state(old_state: Dictionary, new_state: Dictionary, weight: float) -> void:

@@ -27,7 +27,7 @@ texture = ExtResource("1_yq54b")
 unique_name_in_owner = true
 script = ExtResource("3_f52fb")
 one_shot = true
-wait_ticks = 8
+wait_ticks = 15
 metadata/_custom_type_script = "uid://3c3ikrq366ts"
 
 [node name="Collision Resolution - Redirect" parent="." instance=ExtResource("4_1x5xn")]
