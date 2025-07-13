@@ -1,9 +1,11 @@
 class_name AbilityBase extends Node
 
 var player: Player
+var ability_manager: AbilityManager
 
 func _ready() -> void:
 	player = owner
+	ability_manager = get_parent()
 
 func _preprocess_on_activated(_direction: SGFixedVector2) -> void:
 	pass

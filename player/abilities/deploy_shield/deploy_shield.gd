@@ -41,7 +41,7 @@ func _hook_after_player_movement() -> void:
 	shield_instance.sync_to_physics_engine()
 
 func _postprocess_on_activated(_direction: SGFixedVector2) -> void:
-	player.activate_ability(self)
+	ability_manager.activate_ability(self)
 	SyncManager.spawn(
 		"shield",
 		owner,
@@ -54,7 +54,7 @@ func _postprocess_on_activated(_direction: SGFixedVector2) -> void:
 func _postprocess_on_deactivated(_direction: SGFixedVector2) -> void:
 	SyncManager.despawn(shield_instance)
 	shield_instance = null
-	player.deactivate_ability(self)
+	ability_manager.deactivate_ability(self)
 
 
 func _on_scene_spawned(node_name, spawned_node, _scene, _data) -> void:
