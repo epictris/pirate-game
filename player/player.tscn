@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://dun8dcjxi0li0"]
+[gd_scene load_steps=22 format=3 uid="uid://dun8dcjxi0li0"]
 
 [ext_resource type="Script" uid="uid://wes4v070j7ba" path="res://player/player.gd" id="1_p55k6"]
 [ext_resource type="PackedScene" uid="uid://c2qh6bt3ve6bq" path="res://player/abilities/deploy_shield/deploy_shield.tscn" id="2_rkbax"]
@@ -16,6 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://c7spohb6pgbva" path="res://player/abilities/ability_manager.tscn" id="16_32hag"]
 [ext_resource type="PackedScene" uid="uid://diukkcb52doyu" path="res://player/abilities/sabre_stab/sabre_stab.tscn" id="18_c35mf"]
 [ext_resource type="PackedScene" uid="uid://ciaka2o1djlmj" path="res://player/abilities/sabre_slice/sabre_slice.tscn" id="18_e7oew"]
+[ext_resource type="Script" uid="uid://jvxuswijvc7p" path="res://addons/godot-rollback-netcode/NetworkRandomNumberGenerator.gd" id="19_c35mf"]
 [ext_resource type="Script" uid="uid://oik3sd0cyeti" path="res://player/state/sliding/sliding.gd" id="20_x7c3f"]
 [ext_resource type="PackedScene" uid="uid://lt4w6rvtjptm" path="res://player/animation/animation_manager.tscn" id="22_bjvpn"]
 
@@ -76,7 +77,7 @@ script = ExtResource("20_x7c3f")
 [node name="Abilities" parent="." node_paths=PackedStringArray("primary", "secondary") groups=["network_sync"] instance=ExtResource("16_32hag")]
 unique_name_in_owner = true
 primary = NodePath("Sabre Slice")
-secondary = NodePath("Sabre Stab")
+secondary = NodePath("Shoot Bullet")
 
 [node name="Shield" parent="Abilities" instance=ExtResource("2_rkbax")]
 
@@ -91,3 +92,8 @@ secondary = NodePath("Sabre Stab")
 [node name="Sabre Slice" parent="Abilities" groups=["network_sync"] instance=ExtResource("18_e7oew")]
 
 [node name="Sabre Stab" parent="Abilities" groups=["network_sync"] instance=ExtResource("18_c35mf")]
+
+[node name="RNG" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("19_c35mf")
+metadata/_custom_type_script = "uid://jvxuswijvc7p"

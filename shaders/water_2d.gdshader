@@ -34,14 +34,14 @@ float hash(vec2 p) {
 float noise(vec2 p) {
     vec2 i = floor(p);
     vec2 f = fract(p);
-    
+
     float a = hash(i);
     float b = hash(i + vec2(1.0, 0.0));
     float c = hash(i + vec2(0.0, 1.0));
     float d = hash(i + vec2(1.0, 1.0));
-    
+
     vec2 u = f * f * (3.0 - 2.0 * f);
-    
+
     return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
 }
 
@@ -51,14 +51,14 @@ float fbm(vec2 p, int octaves, float roughness) {
     float amplitude = 1.0;
     float frequency = 1.0;
     float max_value = 0.0;
-    
+
     for (int i = 0; i < octaves; i++) {
         value += amplitude * noise(p * frequency);
         max_value += amplitude;
         amplitude *= roughness;
         frequency *= 2.0;
     }
-    
+
     return value / max_value;
 }
 
@@ -72,25 +72,25 @@ float ocean_height(vec3 world_pos) {
 void fragment() {
     // Convert UV (0-1) to actual pixel coordinates within the ColorRect
     vec2 local_coords = UV * rect_size * view_scale;
-    
+
     // Calculate orthogonal vector to cross_section_direction for the cross-section plane
     vec3 forward = normalize(cross_section_direction);
     vec3 up = vec3(0.0, 1.0, 0.0);
     vec3 right = normalize(cross(forward, up));
-    
+
     // Convert local coordinates to offsets in the cross-section plane
     float horizontal_offset = (local_coords.x - rect_size.x * 0.5) / 300.0;
     float vertical_offset = -((local_coords.y - rect_size.y * 0.5) / 300.0);
-    
+
     // Calculate 3D world position by offsetting from the base world_position
     vec3 world_pos = world_position + right * horizontal_offset + up * vertical_offset;
-    
+
     // Get ocean surface height at this XZ position
     float surface_height = ocean_height(world_pos);
-    
+
     // Determine if this pixel is above or below the ocean surface
     float depth_below_surface = surface_height - world_pos.y;
-    
+
     if (depth_below_surface > 0.0) {
         // We're below the ocean surface - render water
         float depth_factor = clamp(depth_below_surface / ocean_depth, 0.0, 1.0);
@@ -100,14 +100,14 @@ void fragment() {
         float foam_noise = fbm(world_pos.xz * 5.0 + TIME * 2.0, 3, 0.6);
         float foam_factor = 1.0 - smoothstep(0.0, 0.3, depth_below_surface);
         foam_factor *= foam_noise;
-        
+
         // Mix colors based on depth and foam
         vec4 water_color = mix(ocean_color, deep_color, depth_factor);
         vec4 final_color = mix(water_color, foam_color, foam_factor * foam_threshold);
-        
+
         // Add some transparency based on depth
         final_color.a = mix(0.8, 1.0, depth_factor);
-        
+
         COLOR = final_color;
     } else {
         // We're above the ocean surface - render sky/air

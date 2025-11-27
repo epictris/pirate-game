@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://dbdmk71mpvywe"]
+[gd_scene load_steps=8 format=3 uid="uid://dbdmk71mpvywe"]
 
 [ext_resource type="Script" uid="uid://ciqbe3pwo1nha" path="res://multiplayer/multiplayer.gd" id="1_o4y1c"]
 [ext_resource type="PackedScene" uid="uid://dun8dcjxi0li0" path="res://player/player.tscn" id="2_nhdnw"]
 [ext_resource type="PackedScene" uid="uid://dk2i1di725lqk" path="res://game/game_loop.tscn" id="3_uwdxy"]
+[ext_resource type="Script" uid="uid://jvxuswijvc7p" path="res://addons/godot-rollback-netcode/NetworkRandomNumberGenerator.gd" id="4_50t2w"]
 
 [sub_resource type="SGRectangleShape2D" id="SGRectangleShape2D_wktud"]
 extents_x = 40986400
@@ -202,3 +203,8 @@ offset_left = -200.0
 offset_top = -5.0
 offset_right = 200.0
 offset_bottom = 5.0
+
+[node name="RootNetworkRNG" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("4_50t2w")
+metadata/_custom_type_script = "uid://jvxuswijvc7p"

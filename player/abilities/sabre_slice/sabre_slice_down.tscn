@@ -1,0 +1,37 @@
+[gd_scene load_steps=3 format=3 uid="uid://dkn42fwwvctj5"]
+
+[ext_resource type="Script" uid="uid://c46xaxlb5n20t" path="res://player/abilities/sabre_slice/sabre_slice_down.gd" id="1_p24et"]
+[ext_resource type="Script" uid="uid://jvxuswijvc7p" path="res://addons/godot-rollback-netcode/NetworkRandomNumberGenerator.gd" id="2_hkpwl"]
+
+[node name="Sabre" type="SGArea2D" groups=["network_sync"]]
+script = ExtResource("1_p24et")
+
+[node name="Frame 1" type="SGCollisionPolygon2D" parent="."]
+fixed_polygon_pairs = [[-603488, -1668744], [-1577639, -3174249], [-1360266, -3415774], [-386116, -1837811]]
+
+[node name="Frame 2" type="SGCollisionPolygon2D" parent="."]
+fixed_polygon_pairs = [[-1313362, -3453777], [-315059, -1875814], [31125, -1964374], [-508279, -4049539]]
+
+[node name="Frame 3" type="SGCollisionPolygon2D" parent="."]
+fixed_polygon_pairs = [[-411669, -4105894], [119685, -1988526], [627351, -1838822], [2390719, -4613534]]
+
+[node name="Frame 4" type="SGCollisionPolygon2D" parent="."]
+fixed_polygon_pairs = [[2468515, -4548702], [5450682, -3122448], [5645171, -88417], [1487076, -798341], [672975, -1763945]]
+
+[node name="Frame 5" type="SGCollisionPolygon2D" parent="."]
+fixed_polygon_pairs = [[5619239, -49519], [4115189, 1013688], [1456642, -27417], [1516300, -691185]]
+
+[node name="Frame 6" type="SGCollisionPolygon2D" parent="."]
+fixed_polygon_pairs = [[2558748, 1463666], [1249187, 257833], [1430710, 63344], [3985530, 1013688]]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+visible = false
+offset_left = -10.0
+offset_top = -25.0
+offset_right = 10.0
+offset_bottom = 25.0
+
+[node name="NetworkRandomNumberGenerator" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("2_hkpwl")
+metadata/_custom_type_script = "uid://jvxuswijvc7p"

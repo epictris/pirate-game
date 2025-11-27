@@ -13,11 +13,12 @@ const DummyNetworkAdaptor = preload("res://addons/godot-rollback-netcode/DummyNe
 @onready var message_label: Label = %MessageLabel
 @onready var reset_button: Button = %ResetButton
 @onready var spawn_point: Marker2D = %SpawnPoint
+@onready var root_rng: NetworkRandomNumberGenerator = %RootNetworkRNG
 
 var logging_enabled = true
 
-var host_player: SGCharacterBody2D
-var client_player: SGCharacterBody2D
+var host_player: Player
+var client_player: Player
 
 func _ready():
 	join_button.pressed.connect(_join_game)
@@ -40,6 +41,7 @@ func _join_game():
 	message_label.text = "Connecting..."
 
 func _host_game():
+	root_rng.randomize()
 	var peer = ENetMultiplayerPeer.new()
 	peer.create_server(int(port_field.text), 1)
 	multiplayer.multiplayer_peer = peer
@@ -76,9 +78,16 @@ func _on_peer_connected(peer_id: int):
 	add_child(client_player)
 
 	if multiplayer.is_server():
+		rpc("setup_match", { mother_seed = root_rng.get_seed()})
 		message_label.text = "Starting..."
 		await get_tree().create_timer(1.0).timeout
 		SyncManager.start()
+
+@rpc("any_peer", "call_local")
+func setup_match(info: Dictionary) -> void:
+	root_rng.set_seed(info["mother_seed"])
+	host_player.rng.set_seed(root_rng.randi())
+	client_player.rng.set_seed(root_rng.randi())
 
 func _on_peer_disconnected(peer_id: int):
 	message_label.text = "Disconnected"

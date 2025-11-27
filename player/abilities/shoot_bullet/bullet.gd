@@ -21,15 +21,17 @@ func _cast_ray(exceptions: Array) -> SGRayCastCollision2D:
 		fixed_position,
 		velocity, 
 		collision_mask,
-		exceptions
+		exceptions,
+		true,
 	)
 
 func _check_if_inside_collider(ray_cast_result: SGRayCastCollision2D) -> SGCollisionObject2D:
 	return ray_cast_result.collider if ray_cast_result.normal.dot(velocity.normalized()) > 0 else null
 
-func _resolve_collision(collider: SGPhysicsBody2D, point: SGFixedVector2) -> void:
+func _resolve_collision(collider: SGCollisionObject2D, point: SGFixedVector2) -> void:
 	if collider.has_meta("resolve_collision"):
-		collider.get_meta("resolve_collision").call({"collider": self})
+		collider.get_meta("resolve_collision").call({"collider": self, "point": point})
+		return
 	elif collider.has_method("get_hit"):
 		collider.get_hit(self)
 	_explode(point)

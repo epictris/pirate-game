@@ -23,7 +23,6 @@ func _preprocess_on_deactivated(_direction: SGFixedVector2) -> void:
 	ability_manager.deactivate_ability(self)
 
 func _hook_after_player_movement() -> void:
-	on_cooldown = false
 	if !on_cooldown:
 		on_cooldown = true
 		var data = {

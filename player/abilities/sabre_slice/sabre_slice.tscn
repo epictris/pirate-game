@@ -1,8 +1,18 @@
-[gd_scene load_steps=3 format=3 uid="uid://ciaka2o1djlmj"]
+[gd_scene load_steps=5 format=3 uid="uid://ciaka2o1djlmj"]
 
 [ext_resource type="Script" uid="uid://bahn0o5j6kf3" path="res://player/abilities/sabre_slice/sabre_slice.gd" id="1_0txnc"]
-[ext_resource type="PackedScene" uid="uid://dkn42fwwvctj5" path="res://player/abilities/sabre_slice/sabre.tscn" id="2_m6hlo"]
+[ext_resource type="PackedScene" uid="uid://dkn42fwwvctj5" path="res://player/abilities/sabre_slice/sabre_slice_down.tscn" id="2_m6hlo"]
+[ext_resource type="PackedScene" uid="uid://1asadt7js36p" path="res://player/abilities/sabre_slice/sabre_slice_up.tscn" id="3_egy81"]
+[ext_resource type="Script" uid="uid://3c3ikrq366ts" path="res://addons/godot-rollback-netcode/NetworkTimer.gd" id="3_lomyo"]
 
 [node name="Sabre Slice" type="Node"]
 script = ExtResource("1_0txnc")
-sabre_scene = ExtResource("2_m6hlo")
+sabre_slice_down_scene = ExtResource("2_m6hlo")
+sabre_slice_up_scene = ExtResource("3_egy81")
+
+[node name="ComboTimer" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("3_lomyo")
+one_shot = true
+wait_ticks = 2
+metadata/_custom_type_script = "uid://3c3ikrq366ts"

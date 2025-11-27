@@ -24,7 +24,6 @@ SyncManager="*res://addons/godot-rollback-netcode/SyncManager.gd"
 SyncDebugger="*res://addons/godot-rollback-netcode/SyncDebugger.gd"
 SyncReplay="*res://addons/godot-rollback-netcode/SyncReplay.gd"
 DebugDraw2D="*res://addons/debugdraw2d/DebugDraw2D.gd"
-SpawnTargetManager="*res://rollback/spawn_target_manager.gd"
 
 [debug_draw_3d]
 
